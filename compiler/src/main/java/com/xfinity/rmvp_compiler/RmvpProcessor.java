@@ -1,0 +1,244 @@
+package com.xfinity.rmvp_compiler;
+
+import com.google.auto.service.AutoService;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
+import com.sun.tools.javac.code.Symbol;
+import com.sun.tools.javac.code.Type;
+import com.sun.tools.javac.util.Pair;
+import com.xfinity.rmvp_annotations.ComponentViewClass;
+import com.xfinity.rmvp_annotations.ClickableComponentBinder;
+import com.xfinity.rmvp_annotations.DefaultPresenter;
+import com.xfinity.rmvp_annotations.DefaultPresenterConstructor;
+import com.xfinity.rmvp_annotations.ComponentViewHolder;
+import com.xfinity.rmvp_annotations.ComponentViewHolderBinder;
+
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.MirroredTypeException;
+import javax.lang.model.type.TypeMirror;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.squareup.javapoet.JavaFile.builder;
+import static com.xfinity.rmvp_compiler.Utils.getPackageName;
+import static javax.lang.model.SourceVersion.latestSupported;
+
+@AutoService(Processor.class)
+public class RmvpProcessor extends AbstractProcessor {
+    public static String DEFAULT_VIEW_BINDER = "com.xfinity.rmvp.view.ClickableComponentViewBinder";
+
+    private final Messager messager = new Messager();
+
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        messager.init(processingEnv);
+    }
+
+    @Override
+    public Set<String> getSupportedAnnotationTypes() {
+        Set<String> annotations = new LinkedHashSet<>();
+        annotations.add(ComponentViewClass.class.getCanonicalName());
+        annotations.add(ComponentViewHolder.class.getCanonicalName());
+        annotations.add(ComponentViewHolderBinder.class.getCanonicalName());
+        annotations.add(DefaultPresenter.class.getCanonicalName());
+        annotations.add(DefaultPresenterConstructor.class.getCanonicalName());
+        return annotations;
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return latestSupported();
+    }
+
+    @Override
+    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+        StringBuilder packageName = null;
+        List<ComponentViewInfo> componentViewInfoList = new ArrayList<>();
+
+        for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(ComponentViewHolder.class)) {
+            // annotation is only allowed on classes, so we can safely cast here
+            TypeElement annotatedClass = (TypeElement) annotatedElement;
+            if (!isValidClass(annotatedClass)) {
+                continue;
+            }
+
+            if (packageName == null) {
+                try {
+                    packageName = new StringBuilder(getPackageName(processingEnv.getElementUtils(), annotatedClass));
+                } catch (UnnamedPackageException e) {
+                    e.printStackTrace();
+                }
+
+                //Epic hackery
+                if (packageName != null) {
+                    String[] packageNameTokens = packageName.toString().split("\\.");
+                    if (packageNameTokens.length >= 3) {
+                        packageName = new StringBuilder(packageNameTokens[0] + "." + packageNameTokens[1] + "." + packageNameTokens[2]);
+                    }
+
+                    packageName.append(".rmvp");
+                }
+            }
+
+            int viewType = annotatedElement.getAnnotation(ComponentViewHolder.class).viewType();
+
+            String viewHolderClassName = ((Symbol.ClassSymbol) annotatedClass).fullname.toString();
+
+            componentViewInfoList.add(new ComponentViewInfo(viewType, viewHolderClassName));
+        }
+
+        for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(ComponentViewHolderBinder.class)) {
+            TypeElement annotatedClass = (TypeElement) annotatedElement;
+            String viewHolderClassName = ((Type.ClassType) annotatedClass.getInterfaces().get(0))
+                    .typarams_field.get(0).toString();
+
+            for (ComponentViewInfo componentViewInfo : componentViewInfoList) {
+                if (viewHolderClassName.equals(componentViewInfo.viewHolder)) {
+                    componentViewInfo.viewBinder = ((Symbol.ClassSymbol) annotatedClass).fullname.toString();
+                }
+            }
+        }
+
+        for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(ComponentViewClass.class)) {
+            TypeElement annotatedClass = (TypeElement) annotatedElement;
+            String viewHolderClassName = null;
+            try {
+                annotatedElement.getAnnotation(ComponentViewClass.class).viewHolderClass();
+            } catch (MirroredTypeException exception) {
+                TypeMirror typeMirror = exception.getTypeMirror();
+                viewHolderClassName = typeMirror.toString();
+            }
+
+            boolean useDefaultBinder = annotatedClass.getAnnotationsByType(ClickableComponentBinder.class).length > 0;
+
+            for (ComponentViewInfo componentViewInfo : componentViewInfoList) {
+                if (viewHolderClassName.equals(componentViewInfo.viewHolder)) {
+                    componentViewInfo.componentView = ((Symbol.ClassSymbol) annotatedClass).fullname.toString();
+                    componentViewInfo.viewTypeName = annotatedClass.getSimpleName().toString();
+
+                    if (componentViewInfo.viewBinder == null && useDefaultBinder) {
+                        componentViewInfo.viewBinder = DEFAULT_VIEW_BINDER;
+                    }
+                }
+            }
+        }
+
+        for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(DefaultPresenter.class)) {
+            TypeElement annotatedClass = (TypeElement) annotatedElement;
+            String viewClassName = null;
+            //TODO : validate class
+
+            try {
+                annotatedElement.getAnnotation(DefaultPresenter.class).viewClass();
+            } catch (MirroredTypeException exception) {
+                TypeMirror typeMirror = exception.getTypeMirror();
+                viewClassName = typeMirror.toString();
+            }
+
+            for (ComponentViewInfo componentViewInfo : componentViewInfoList) {
+                if (viewClassName.equals(componentViewInfo.componentView)) {
+                    componentViewInfo.defaultPresenter = ((Symbol.ClassSymbol) annotatedClass).fullname.toString();
+                }
+            }
+        }
+
+        Map<String, List<Pair<TypeName, String>>> defaultPresenterConstructorMap = new HashMap<>();
+        for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(DefaultPresenterConstructor.class)) {
+            Symbol.MethodSymbol annotatedCtor = (Symbol.MethodSymbol) annotatedElement;
+
+            List<Pair<TypeName, String>> ctorParams = new ArrayList<>();
+            ctorParams.addAll(annotatedCtor.params
+                                      .stream()
+                                      .map(param -> new Pair<>(TypeName.get(param.type), param.name.toString()))
+                                      .collect(Collectors.toList()));
+
+            Symbol.ClassSymbol presenterClass = (Symbol.ClassSymbol) annotatedCtor.owner;
+            defaultPresenterConstructorMap.put(presenterClass.fullname.toString(), ctorParams);
+        }
+
+        if (packageName != null) {
+            try {
+                generateCode(packageName.toString(), componentViewInfoList, defaultPresenterConstructorMap);
+            } catch (UnnamedPackageException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isValidClass(TypeElement annotatedClass) {
+        TypeElement applicationTypeElement = processingEnv.getElementUtils().getTypeElement("android.support.v7.widget.RecyclerView.ViewHolder");
+        return processingEnv.getTypeUtils().isAssignable(annotatedClass.asType(), applicationTypeElement.asType());
+    }
+
+    private void generateCode(String packageName, List<ComponentViewInfo> componentInfoList,
+                              Map<String, List<Pair<TypeName, String>>> defaultPresenterContructorMap)
+            throws UnnamedPackageException, IOException {
+        CodeGenerator codeGenerator =
+                new CodeGenerator(componentInfoList, defaultPresenterContructorMap);
+        TypeSpec generatedClass = codeGenerator.generateComponentRegistry();
+
+        JavaFile javaFile = builder(packageName, generatedClass).build();
+        javaFile.writeTo(processingEnv.getFiler());
+
+
+        List<Pair<String, TypeSpec>> viewDelegates = codeGenerator.generateViewBaseClasses();
+        for (Pair<String, TypeSpec> viewDelegate : viewDelegates) {
+            JavaFile file = builder(viewDelegate.fst, viewDelegate.snd).build();
+            file.writeTo(processingEnv.getFiler());
+        }
+    }
+
+    private String getClassNameFromFullName(String fullName) {
+        return fullName.substring(fullName.lastIndexOf(".") + 1, fullName.length());
+    }
+
+    class ComponentViewInfo {
+        int viewType;
+        String viewHolder;
+        String viewTypeName;
+        String defaultPresenter;
+        String componentView;
+        String viewBinder;
+
+        ComponentViewInfo(int viewType, String viewHolder) {
+            this.viewType = viewType;
+            this.viewHolder = viewHolder;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            ComponentViewInfo that = (ComponentViewInfo) o;
+
+            return viewType == that.viewType;
+        }
+
+        @Override
+        public int hashCode() {
+            return viewType;
+        }
+    }
+}
+

@@ -1,0 +1,35 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+dependencies {
+  compile project(path: ':rmvp-annotations')
+  compile 'com.google.auto.service:auto-service:1.0-rc3'
+  compile 'com.squareup:javapoet:1.9.0'
+  compile files("${System.properties['java.home']}/../lib/tools.jar")
+}
+
+task sourceJar(type: Jar) {
+  from sourceSets.main.allJava
+}
+
+publishing {
+  repositories {
+    maven {
+      url "$buildDir/repo"
+    }
+  }
+
+  publications {
+    mavenJava(MavenPublication) {
+      groupId rootProject.groupId
+      artifactId "$rootProject.artifactPrefix-compiler"
+      version rootProject.publishVersion
+
+      from components.java
+
+      artifact sourceJar {
+        classifier "sources"
+      }
+    }
+  }
+}
