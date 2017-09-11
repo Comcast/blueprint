@@ -1,0 +1,54 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+    defaultConfig {
+        applicationId "com.xfinity.rmvp_sample"
+        minSdkVersion 17
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar']),
+            project(':library'),
+            project(':rmvp-annotations'),
+            'com.android.support:appcompat-v7:25.3.1',
+            'com.android.support.constraint:constraint-layout:1.0.2',
+            'com.android.support:recyclerview-v7:25.4.0',
+            'com.xfinity:loadingdots:1.0.2',
+            'jp.wasabeef:recyclerview-animators:2.2.6'
+
+    kapt project(':compiler')
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile 'junit:junit:4.12',
+                'org.mockito:mockito-core:2.8.9'
+
+    testCompile('com.nhaarman:mockito-kotlin:1.4.0',
+                {
+                    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
+                })
+
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.google.com'}
+}
