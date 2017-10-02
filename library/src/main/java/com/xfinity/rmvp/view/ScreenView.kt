@@ -36,5 +36,4 @@ interface ScreenView {
     fun positionOfFirst(viewType: Int) : Int
     fun updateComponents(newComponents: List<Component>)
     fun updateComponents(newComponents: List<Component>, diffGenerator: (List<Component>) -> DiffUtil.Callback)
-    fun showError(msg: String, actionLabel: String)
 }
