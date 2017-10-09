@@ -115,9 +115,6 @@ class ScreenViewDelegate(componentRegistry: ComponentRegistry,
         diff.dispatchUpdatesTo(componentAdapter)
     }
 
-    override fun showError(msg: String, actionLabel: String) {
-        //no op
-    }
 }
 
 class DefaultComponentDiffCallback(val oldComponents: List<Component>, val newComponents: List<Component>) : DiffUtil.Callback() {
