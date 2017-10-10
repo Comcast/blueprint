@@ -20,7 +20,8 @@ import com.xfinity.rmvp.view.ComponentView
 open class ComponentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private val componentRegistry: ComponentRegistry
 
-    private val presenterMap = mutableMapOf<Int, ComponentPresenter>()
+    private val defaultPresenterMap = mutableMapOf<Int, ComponentPresenter>()
+    private val overridePresenterMap = mutableMapOf<Int, ComponentPresenter>()
     internal val components = mutableListOf<Component>()
     private val componentViews = mutableListOf<ComponentView<RecyclerView.ViewHolder>>()
 
@@ -44,8 +45,12 @@ open class ComponentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val componentView = componentViews[position]
-        val presenter: ComponentPresenter = presenterMap[componentView.getViewType()] ?:
-                throw IllegalStateException("Presenter for " + componentView.javaClass.simpleName + " is null.")
+        var presenter: ComponentPresenter? = overridePresenterMap[position]
+
+        if (presenter == null) {
+            presenter = defaultPresenterMap[componentView.getViewType()] ?:
+                    throw IllegalStateException("Presenter for " + componentView.javaClass.simpleName + " is null.")
+        }
 
         val componentModel = components[position].model
 
@@ -182,16 +187,16 @@ open class ComponentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         val componentView = componentRegistry.getComponentView(component.viewType) ?:
                 throw IllegalStateException("No ComponentView registered for type " + component.viewType)
 
-        if (!presenterMap.containsValue(component.presenter)) {
+        if (!defaultPresenterMap.containsValue(component.presenter)) {
             if (component.presenter != null) {
-                presenterMap.put(component.viewType, component.presenter)
+                overridePresenterMap.put(position, component.presenter)
             } else {
                 val defaultPresenter = componentRegistry.getDefaultPresenter(component.viewType)
                 if (defaultPresenter == null) {
                     throw IllegalStateException("Presenter for " + componentView.javaClass.simpleName +
-                            " is not specified in presenterMap or Component Registry")
+                            " is not specified in defaultPresenterMap or Component Registry")
                 } else {
-                    presenterMap.put(component.viewType, defaultPresenter)
+                    defaultPresenterMap.put(component.viewType, defaultPresenter)
                 }
             }
         }
