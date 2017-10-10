@@ -28,6 +28,6 @@ ext {
     artifactPrefix = 'rmvp'
     groupId = 'com.xfinity'
     uploadName = 'rmvp'
-    publishVersion = '0.9.3'
+    publishVersion = '0.9.4'
     description = 'RecyclerView MVP Library'
 }
