@@ -44,7 +44,7 @@ open class ComponentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val componentView = componentViews[position]
-        val presenter: ComponentPresenter = presenterMap[componentView.getViewType()] ?:
+        val presenter: ComponentPresenter = components[position].presenter ?: presenterMap[componentView.getViewType()] ?:
                 throw IllegalStateException("Presenter for " + componentView.javaClass.simpleName + " is null.")
 
         val componentModel = components[position].model
@@ -176,30 +176,24 @@ open class ComponentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    fun addComponentData(position: Int, component: Component) {
+    private fun addComponentData(position: Int, component: Component) {
         components.add(position, component)
 
         val componentView = componentRegistry.getComponentView(component.viewType) ?:
                 throw IllegalStateException("No ComponentView registered for type " + component.viewType)
 
-        if (!presenterMap.containsValue(component.presenter)) {
-            if (component.presenter != null) {
-                presenterMap.put(component.viewType, component.presenter)
-            } else {
-                val defaultPresenter = componentRegistry.getDefaultPresenter(component.viewType)
-                if (defaultPresenter == null) {
-                    throw IllegalStateException("Presenter for " + componentView.javaClass.simpleName +
-                            " is not specified in presenterMap or Component Registry")
-                } else {
-                    presenterMap.put(component.viewType, defaultPresenter)
-                }
-            }
+        val defaultPresenter = componentRegistry.getDefaultPresenter(component.viewType)
+        if (defaultPresenter == null && component.presenter == null) {
+            throw IllegalStateException("Presenter for " + componentView.javaClass.simpleName +
+                    " is not specified and has no default")
+        } else if (defaultPresenter != null && !presenterMap.containsValue(defaultPresenter)) {
+            presenterMap.put(component.viewType, defaultPresenter)
         }
 
         componentViews.add(position, componentView)
     }
 
-    fun removeComponentData(position: Int) {
+    private fun removeComponentData(position: Int) {
         components.removeAt(position)
 
         if (componentViews.size > position) {
