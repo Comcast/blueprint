@@ -1,4 +1,4 @@
-# RecyclerView MVP
+# RMVP
 The RMVP library provides a compact framework for constructing mvp architecture within a multi-view type recycling, scrollable
 list UI.  It uses the Android RecyclerView library, and currently only support LinearLayouts
 
