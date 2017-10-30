@@ -35,18 +35,18 @@ with which to present each view.  in onCreateViewHolder, the Adapter queries the
 To use Blueprint, in your project build.gradle add
 
 ```xml
-compile 'com.xfinity:rmvp-library:<version>'
-compile 'com.xfinity:rmvp-annotations:<version>'
+compile 'com.xfinity:blueprint-library:<version>'
+compile 'com.xfinity:blueprint-annotations:<version>'
 ```
 
 and either
 
 ```xml
-annotationProcessor "com.xfinity:rmvp-compiler:<version>"
+annotationProcessor "com.xfinity:blueprint-compiler:<version>"
 ```
 
 or, if you're using kotlin,
 ```xml
-kapt "com.xfinity:rmvp-compiler:<version>"
+kapt "com.xfinity:blueprint-compiler:<version>"
 ```
-Current version is 0.9.2
+Current version is 0.9.5
