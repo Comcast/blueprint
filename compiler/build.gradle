@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 dependencies {
-  compile project(path: ':rmvp-annotations')
+  compile project(path: ':blueprint-annotations')
   compile 'com.google.auto.service:auto-service:1.0-rc3'
   compile 'com.squareup:javapoet:1.9.0'
   compile files("${System.properties['java.home']}/../lib/tools.jar")

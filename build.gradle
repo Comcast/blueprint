@@ -25,9 +25,9 @@ task clean(type: Delete) {
 }
 
 ext {
-    artifactPrefix = 'rmvp'
+    artifactPrefix = 'blueprint'
     groupId = 'com.xfinity'
-    uploadName = 'rmvp'
-    publishVersion = '0.9.4'
-    description = 'RecyclerView MVP Library'
+    uploadName = 'blueprint'
+    publishVersion = '0.9.5'
+    description = 'Blueprint for Android'
 }

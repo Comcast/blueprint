@@ -10,7 +10,7 @@
   -->
 
 <resources>
-    <string name="app_name">RMVP Sample</string>
+    <string name="app_name">Blueprint Sample</string>
     <string name="static_screen">Static Screen Example</string>
     <string name="dynamic_screen">Dynamic Screen Example</string>
 </resources>

@@ -1,1 +1,1 @@
-include ':app', ':library', ':compiler', ':rmvp-annotations'
+include ':app', ':library', ':compiler', ':blueprint-annotations'

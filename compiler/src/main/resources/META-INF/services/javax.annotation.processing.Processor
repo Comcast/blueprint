@@ -9,4 +9,4 @@
 # limitations under the License.
 #
 
-com.xfinity.rmvp_compiler.RmvpProcessor
+com.xfinity.blueprint_compiler.BlueprintProcessor

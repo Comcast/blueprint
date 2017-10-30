@@ -18,7 +18,7 @@
     android:layout_height="match_parent"
     android:background="@color/disabled_bg"
     android:orientation="vertical"
-    tools:context="com.xfinity.rmvp_sample.StaticScreenActivity">
+    tools:context="com.xfinity.blueprint_sample.StaticScreenActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

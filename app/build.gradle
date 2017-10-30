@@ -24,7 +24,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar']),
             project(':library'),
-            project(':rmvp-annotations'),
+            project(':blueprint-annotations'),
             'com.android.support:appcompat-v7:25.3.1',
             'com.android.support.constraint:constraint-layout:1.0.2',
             'com.android.support:recyclerview-v7:25.4.0',
