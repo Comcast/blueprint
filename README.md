@@ -1,5 +1,5 @@
-# RMVP
-The RMVP library provides a compact framework for constructing mvp architecture within a multi-view type recycling, scrollable
+# Blueprint
+Blueprint is a library that provides a compact framework for constructing mvp architecture within a multi-view type recycling, scrollable
 list UI.  It uses the Android RecyclerView library, and currently only support LinearLayouts
 
 ## Design
@@ -32,7 +32,7 @@ with which to present each view.  in onCreateViewHolder, the Adapter queries the
    
 ### Setup
 
-To use RMVP, in your project build.gradle add
+To use Blueprint, in your project build.gradle add
 
 ```xml
 compile 'com.xfinity:rmvp-library:<version>'
