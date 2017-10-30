@@ -11,17 +11,21 @@
 
 package com.xfinity.blueprint_sample
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.argThat
+import com.nhaarman.mockito_kotlin.argumentCaptor
+import com.nhaarman.mockito_kotlin.never
+import com.nhaarman.mockito_kotlin.verify
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.view.ScreenView
+import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
+import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
 import com.xfinity.blueprint_sample.mvp.model.FooterModel
 import com.xfinity.blueprint_sample.mvp.model.HeaderModel
-import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
 import com.xfinity.blueprint_sample.mvp.presenter.DynamicScreenPresenter
 import com.xfinity.blueprint_sample.mvp.view.DynamicScreenView
-import com.xfinity.blueprint_sample.rmvp.AppComponentRegistry
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
