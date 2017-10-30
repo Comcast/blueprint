@@ -1,34 +1,74 @@
 apply plugin: 'java'
-apply plugin: 'maven-publish'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
+group rootProject.groupId
+
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 
-task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from tasks.javadoc.destinationDir
 }
 
-publishing {
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
     repositories {
-        maven {
-            url "$buildDir/repo"
-        }
-    }
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-    publications {
-        mavenJava(MavenPublication) {
-            groupId rootProject.groupId
-            artifactId "$rootProject.artifactPrefix-annotations"
-            version rootProject.publishVersion
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
 
-            from components.java
+            pom.project {
+                group rootProject.groupId
+                name "$rootProject.projectName Annotations"
+                version rootProject.publishVersion
+                packaging 'jar'
+                description 'Annotations Library for Blueprint, a compact framework for constructing mvp architectures in Android'
+                artifactId "$rootProject.artifactPrefix-annotations"
+                url 'https://github.com/Comcast/blueprint'
 
-            artifact sourceJar {
-                classifier "sources"
+                scm {
+                    url 'scm:git@github.com:Comcast/blueprint.git'
+                    connection 'scm:git@github.com:Comcast/blueprint.git'
+                    developerConnection 'scm:git@github.com:Comcast/blueprint.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'dapp'
+                        name 'Mark Dappollone'
+                    }
+                }
             }
         }
     }
