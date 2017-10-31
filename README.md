@@ -49,4 +49,4 @@ or, if you're using kotlin,
 ```xml
 kapt "com.xfinity:blueprint-compiler:<version>"
 ```
-Current version is 0.9.5
+Current version is 0.9.6
