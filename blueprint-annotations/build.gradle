@@ -6,8 +6,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-group rootProject.groupId
-
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 
@@ -41,7 +39,7 @@ uploadArchives {
             }
 
             pom.project {
-                group rootProject.groupId
+                groupId rootProject.groupId
                 name "$rootProject.projectName Annotations"
                 version rootProject.publishVersion
                 packaging 'jar'

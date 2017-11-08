@@ -36,8 +36,6 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
-group rootProject.groupId
-
 repositories {
     mavenCentral()
 }
@@ -85,7 +83,7 @@ uploadArchives {
             }
 
             pom.project {
-                group rootProject.groupId
+                groupId rootProject.groupId
                 name "$rootProject.projectName Library"
                 version rootProject.publishVersion
                 packaging 'aar'

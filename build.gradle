@@ -18,10 +18,11 @@ allprojects {
     repositories {
         jcenter()
     }
-}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+    apply plugin: 'maven'
+
+    group = 'com.xfinity'
+    version = '0.9.6'
 }
 
 ext {
@@ -29,6 +30,6 @@ ext {
     groupId = 'com.xfinity'
     projectName = 'Blueprint'
     uploadName = 'blueprint'
-    publishVersion = '0.9.5'
+    publishVersion = '0.9.6'
     description = 'Blueprint for Android'
 }

@@ -9,8 +9,6 @@ dependencies {
   compile files("${System.properties['java.home']}/../lib/tools.jar")
 }
 
-group rootProject.groupId
-
 task javadocJar(type: Jar, dependsOn: javadoc) {
   classifier = 'javadoc'
   from tasks.javadoc.destinationDir
@@ -41,7 +39,7 @@ uploadArchives {
       }
 
       pom.project {
-        group rootProject.groupId
+        groupId rootProject.groupId
         name "$rootProject.projectName Compiler"
         version rootProject.publishVersion
         packaging 'jar'
