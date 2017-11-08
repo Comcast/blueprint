@@ -17,8 +17,8 @@ import com.xfinity.blueprint.ComponentAdapter
 import com.xfinity.blueprint.ComponentRegistry
 import com.xfinity.blueprint.model.Component
 
-class ScreenViewDelegate(componentRegistry: ComponentRegistry,
-                         var loadingView: View? = null) : ScreenView {
+open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
+                              private var loadingView: View? = null) : ScreenView {
     val componentAdapter = ComponentAdapter(componentRegistry)
 
     override fun refresh() {

@@ -54,7 +54,7 @@ class DynamicScreenActivity : AppCompatActivity() {
         presenter.present()
 
         recyclerView.itemAnimator = SlideInUpAnimator()
-        recyclerView.adapter = screenViewDelegate.getComponentAdapter()
+        recyclerView.adapter = screenViewDelegate.componentAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

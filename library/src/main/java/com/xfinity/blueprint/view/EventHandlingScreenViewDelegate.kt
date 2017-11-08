@@ -12,7 +12,6 @@
 package com.xfinity.blueprint.view
 
 import android.view.View
-import com.xfinity.blueprint.ComponentAdapter
 import com.xfinity.blueprint.ComponentRegistry
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
@@ -20,10 +19,5 @@ import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
 class EventHandlingScreenViewDelegate(componentRegistry: ComponentRegistry,
                                       override val componentEventManager: ComponentEventManager,
                                       override val presenter: EventHandlingScreenPresenter<*>,
-                                      loadingView: View? = null,
-                                      val screenViewDelegate: ScreenViewDelegate = ScreenViewDelegate(componentRegistry, loadingView)) :
-        EventHandlingScreenView, ScreenView by screenViewDelegate {
-    fun getComponentAdapter() : ComponentAdapter {
-        return screenViewDelegate.componentAdapter
-    }
-}
+                                      loadingView: View? = null) :
+        EventHandlingScreenView, ScreenViewDelegate(componentRegistry, loadingView)
