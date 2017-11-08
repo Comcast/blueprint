@@ -22,7 +22,7 @@ allprojects {
     apply plugin: 'maven'
 
     group = 'com.xfinity'
-    version = '0.9.6'
+    version = '0.9.7'
 }
 
 ext {
@@ -30,6 +30,6 @@ ext {
     groupId = 'com.xfinity'
     projectName = 'Blueprint'
     uploadName = 'blueprint'
-    publishVersion = '0.9.6'
+    publishVersion = '0.9.7'
     description = 'Blueprint for Android'
 }
