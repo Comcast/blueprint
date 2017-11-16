@@ -2,4 +2,4 @@
 build/
 .gradle/
 local.properties
-*.iml
+*.iml./gradle.properties
