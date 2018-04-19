@@ -20,11 +20,6 @@ import com.xfinity.blueprint_sample.R
 
 @ComponentViewClass(viewHolderClass = HeaderViewHolder::class)
 class HeaderView : HeaderViewBase() {
-
-    fun setHeader(header: String) {
-        viewHolder.textView.text = header
-    }
-
     fun setEnabled(enabled: Boolean) {
         viewHolder.itemView.isEnabled = enabled
     }
@@ -32,5 +27,5 @@ class HeaderView : HeaderViewBase() {
 
 @ComponentViewHolder(viewType = R.layout.header_view)
 class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val textView : TextView = itemView.findViewById(R.id.header) as TextView
+    val header : TextView = itemView.findViewById(R.id.header) as TextView
 }

@@ -21,7 +21,7 @@ import com.xfinity.blueprint_annotations.DefaultPresenter
 @DefaultPresenter(viewClass = FooterView::class)
 class FooterPresenter : ComponentPresenter {
     override fun present(componentView: ComponentView<*>, componentModel: ComponentModel) {
-        (componentView as FooterView).setFooter((componentModel as FooterModel).footer)
+        (componentView as FooterView).setFooterText((componentModel as FooterModel).footer)
     }
 
     override fun onComponentClicked(componentView: ComponentView<*>, position: Int) {

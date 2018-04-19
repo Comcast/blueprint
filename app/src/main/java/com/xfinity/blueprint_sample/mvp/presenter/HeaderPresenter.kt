@@ -25,7 +25,7 @@ class HeaderPresenter : ComponentPresenter {
 
         if (componentModel.enabled) {
             componentView.setEnabled(true)
-            componentView.setHeader(componentModel.header)
+            componentView.setHeaderText(componentModel.header)
         }
     }
 

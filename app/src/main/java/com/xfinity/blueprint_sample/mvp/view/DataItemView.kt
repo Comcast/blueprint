@@ -21,13 +21,9 @@ import com.xfinity.blueprint_sample.R
 
 @ClickableComponentBinder
 @ComponentViewClass(viewHolderClass = DataItemViewHolder::class)
-class DataItemView : DataItemViewBase() {
-    fun setData(data: String) {
-        viewHolder.textView.text = data
-    }
-}
+class DataItemView : DataItemViewBase()
 
 @ComponentViewHolder(viewType = R.layout.data_item_view)
 class DataItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val textView : TextView = itemView.findViewById(R.id.data) as TextView
+    val data : TextView = itemView.findViewById(R.id.data) as TextView
 }

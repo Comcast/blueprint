@@ -22,12 +22,12 @@ import com.xfinity.blueprint_sample.mvp.view.DataItemView
 class DataItemPresenter(componentEventManager: ComponentEventManager) :
         EventEmittingComponentPresenter(componentEventManager) {
     override fun present(componentView: ComponentView<*>, componentModel: ComponentModel) {
-        (componentView as DataItemView).setData((componentModel as DataItemModel).data)
+        (componentView as DataItemView).setDataText((componentModel as DataItemModel).data)
     }
 
     override fun onComponentClicked(componentView: ComponentView<*>, position: Int) {
         if (componentView is DataItemView) {
-            componentView.setData("Component $position was clicked")
+            componentView.setDataText("Component $position was clicked")
         }
 
         componentEventManager.postEvent(DataItemClickedEvent("This is the event for position $position"))
