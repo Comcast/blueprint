@@ -11,10 +11,9 @@
 
 package com.xfinity.blueprint_sample.mvp.presenter
 
+import com.xfinity.blueprint.addComponent
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.model.Component
-import com.xfinity.blueprint.model.ComponentModel
-import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
@@ -39,11 +38,12 @@ class DynamicScreenPresenter : EventHandlingScreenPresenter<DynamicScreenView> {
     override fun present() {
         val screenComponents = mutableListOf<Component>()
         if (!model.headerModel.header.isEmpty()) {
-            screenComponents.add(Component(model.headerModel, AppComponentRegistry.HeaderView_VIEW_TYPE))
+            screenComponents.addComponent(AppComponentRegistry.HeaderView_VIEW_TYPE, model.headerModel)
 
             if (!model.headerModel.enabled) {
-                screenComponents.add(Component(object : ComponentModel{},
-                        AppComponentRegistry.LoadingDotsView_VIEW_TYPE, DefaultComponentPresenter()))
+
+                screenComponents.addComponent(AppComponentRegistry.LoadingDotsView_VIEW_TYPE)
+
                 val timer = Timer()
                 timer.schedule(object : TimerTask() {
                     override fun run() {
@@ -52,7 +52,7 @@ class DynamicScreenPresenter : EventHandlingScreenPresenter<DynamicScreenView> {
                             dataItemModel.enabled = true
                         }
 
-                        view.runOnUiThread (Runnable {
+                        view.runOnUiThread(Runnable {
                             view.setEnabled(true)
                             present()
                             view.onComponentChanged(headerPosition)
@@ -65,27 +65,26 @@ class DynamicScreenPresenter : EventHandlingScreenPresenter<DynamicScreenView> {
         if (model.dataItemModels[0].enabled) {
             for (dataItemModel in model.dataItemModels) {
                 if (dataItemModel.enabled) {
-                    screenComponents.add(Component(dataItemModel, AppComponentRegistry.DataItemView_VIEW_TYPE,
-                            dataItemPresenter))
+                    screenComponents
+                            .addComponent(AppComponentRegistry.DataItemView_VIEW_TYPE, dataItemModel, dataItemPresenter)
                 }
             }
         }
 
 
         if (model.headerModel.enabled && !model.footerModel.enabled) {
-            screenComponents.add(Component(object : ComponentModel{},
-                    AppComponentRegistry.LoadingDotsView_VIEW_TYPE, DefaultComponentPresenter()))
+            screenComponents.addComponent(AppComponentRegistry.LoadingDotsView_VIEW_TYPE)
             val timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
                     model.footerModel.enabled = true
-                    view.runOnUiThread (Runnable {
+                    view.runOnUiThread(Runnable {
                         present()
                     })
                 }
             }, 3000)
         } else if (model.footerModel.enabled) {
-            screenComponents.add(Component(model.footerModel, AppComponentRegistry.FooterView_VIEW_TYPE))
+            screenComponents.addComponent(AppComponentRegistry.FooterView_VIEW_TYPE, model.footerModel)
         }
 
         view.updateComponents(screenComponents)

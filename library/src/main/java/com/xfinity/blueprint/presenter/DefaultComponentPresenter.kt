@@ -18,3 +18,18 @@ open class DefaultComponentPresenter : ComponentPresenter {
     override fun present(componentView: ComponentView<*>, componentModel: ComponentModel) {}
     override fun onComponentClicked(componentView: ComponentView<*>, position: Int) {}
 }
+
+@Suppress("UNCHECKED_CAST")
+abstract class DefaultComponentReflectionPresenter<in CV : ComponentView<*>, in CM : ComponentModel> : ComponentPresenter {
+
+    override fun present(componentView: ComponentView<*>, componentModel: ComponentModel) {
+        presentView(componentView as CV, componentModel as CM)
+    }
+
+    override fun onComponentClicked(componentView: ComponentView<*>, position: Int) {
+        onComponentViewClicked(componentView as CV, position)
+    }
+
+    abstract fun presentView(view: CV, model: CM)
+    open fun onComponentViewClicked(view: CV, position: Int) {}
+}
