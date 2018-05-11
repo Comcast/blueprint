@@ -11,9 +11,9 @@
 
 package com.xfinity.blueprint_sample.mvp.view
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
+import com.xfinity.blueprint.view.ViewHolder
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_sample.R
@@ -31,6 +31,6 @@ class HeaderView : HeaderViewBase() {
 }
 
 @ComponentViewHolder(viewType = R.layout.header_view)
-class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val textView : TextView = itemView.findViewById(R.id.header) as TextView
+class HeaderViewHolder(itemView: View) : ViewHolder(itemView) {
+    val textView = findView<TextView>(R.id.header)
 }
