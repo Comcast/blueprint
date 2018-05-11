@@ -11,25 +11,20 @@
 
 package com.xfinity.blueprint_sample.mvp.presenter
 
-import com.xfinity.blueprint.model.ComponentModel
-import com.xfinity.blueprint.presenter.ComponentPresenter
-import com.xfinity.blueprint.view.ComponentView
+import com.xfinity.blueprint.presenter.DefaultComponentReflectionPresenter
 import com.xfinity.blueprint_annotations.DefaultPresenter
 import com.xfinity.blueprint_sample.mvp.model.HeaderModel
 import com.xfinity.blueprint_sample.mvp.view.HeaderView
 
 @DefaultPresenter(viewClass = HeaderView::class)
-class HeaderPresenter : ComponentPresenter {
-    override fun present(componentView: ComponentView<*>, componentModel: ComponentModel) {
-        (componentView as HeaderView).setEnabled((componentModel as HeaderModel).enabled)
+class HeaderPresenter : DefaultComponentReflectionPresenter<HeaderView, HeaderModel>() {
 
-        if (componentModel.enabled) {
-            componentView.setEnabled(true)
-            componentView.setHeader(componentModel.header)
+    override fun presentView(view: HeaderView, model: HeaderModel) {
+        view.setEnabled(model.enabled)
+
+        if (model.enabled) {
+            view.setEnabled(true)
+            view.setHeader(model.header)
         }
-    }
-
-    override fun onComponentClicked(componentView: ComponentView<*>, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

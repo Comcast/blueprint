@@ -12,9 +12,7 @@
 package com.xfinity.blueprint_sample.mvp.presenter
 
 import com.xfinity.blueprint.event.ComponentEventManager
-import com.xfinity.blueprint.model.ComponentModel
-import com.xfinity.blueprint.presenter.EventEmittingComponentPresenter
-import com.xfinity.blueprint.view.ComponentView
+import com.xfinity.blueprint.presenter.EventEmittingComponentReflectionPresenter
 import com.xfinity.blueprint_annotations.DefaultPresenter
 import com.xfinity.blueprint_annotations.DefaultPresenterConstructor
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
@@ -23,22 +21,16 @@ import com.xfinity.blueprint_sample.mvp.view.DataItemView
 @DefaultPresenter(viewClass = DataItemView::class)
 class DefaultDataItemPresenter
 @DefaultPresenterConstructor constructor(componentEventManager: ComponentEventManager,
-                                         val defaultDataItemName: String,
-                                         val defaultDataItemId: Int) :
-        EventEmittingComponentPresenter(componentEventManager) {
-    override fun present(componentView: ComponentView<*>, componentModel: ComponentModel) {
-        if ((componentModel as DataItemModel).data.isEmpty()) {
-            (componentView as DataItemView).setData(defaultDataItemName + defaultDataItemId)
-        } else {
-            (componentView as DataItemView).setData(componentModel.data)
-        }
+                                         private val dataItemName: String,
+                                         private val dataItemId: Int) :
+        EventEmittingComponentReflectionPresenter<DataItemView, DataItemModel>(componentEventManager) {
+
+    override fun presentView(view: DataItemView, model: DataItemModel) {
+        view.setData(if (model.data.isNotEmpty()) model.data else dataItemName + dataItemId)
     }
 
-    override fun onComponentClicked(componentView: ComponentView<*>, position: Int) {
-        if (componentView is DataItemView) {
-            componentView.setData("Component $position was clicked")
-        }
-
+    override fun onComponentViewClicked(view: DataItemView, position: Int) {
+        view.setData("Component $position was clicked")
         componentEventManager.postEvent(DataItemPresenter.DataItemClickedEvent("default data item clicked"))
     }
 }
