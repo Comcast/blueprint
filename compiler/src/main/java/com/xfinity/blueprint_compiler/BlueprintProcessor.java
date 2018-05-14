@@ -49,7 +49,7 @@ import static javax.lang.model.SourceVersion.latestSupported;
 
 @AutoService(Processor.class)
 public class BlueprintProcessor extends AbstractProcessor {
-    public static String DEFAULT_VIEW_BINDER = "com.xfinity.blueprint.view.ClickableComponentViewBinder";
+    public static final String DEFAULT_VIEW_BINDER = "com.xfinity.blueprint.view.ClickableComponentViewBinder";
 
     private final Messager messager = new Messager();
 
@@ -171,11 +171,9 @@ public class BlueprintProcessor extends AbstractProcessor {
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(DefaultPresenterConstructor.class)) {
             Symbol.MethodSymbol annotatedCtor = (Symbol.MethodSymbol) annotatedElement;
 
-            List<Pair<TypeName, String>> ctorParams = new ArrayList<>();
-            ctorParams.addAll(annotatedCtor.params
-                                      .stream()
-                                      .map(param -> new Pair<>(TypeName.get(param.type), param.name.toString()))
-                                      .collect(Collectors.toList()));
+            List<Pair<TypeName, String>> ctorParams = annotatedCtor.params
+                    .stream()
+                    .map(param -> new Pair<>(TypeName.get(param.type), param.name.toString())).collect(Collectors.toList());
 
             Symbol.ClassSymbol presenterClass = (Symbol.ClassSymbol) annotatedCtor.owner;
             defaultPresenterConstructorMap.put(presenterClass.fullname.toString(), ctorParams);
@@ -184,7 +182,7 @@ public class BlueprintProcessor extends AbstractProcessor {
         if (packageName != null) {
             try {
                 generateCode(packageName.toString(), componentViewInfoList, defaultPresenterConstructorMap);
-            } catch (UnnamedPackageException | IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -199,7 +197,7 @@ public class BlueprintProcessor extends AbstractProcessor {
 
     private void generateCode(String packageName, List<ComponentViewInfo> componentInfoList,
                               Map<String, List<Pair<TypeName, String>>> defaultPresenterContructorMap)
-            throws UnnamedPackageException, IOException {
+            throws IOException {
         CodeGenerator codeGenerator =
                 new CodeGenerator(componentInfoList, defaultPresenterContructorMap);
         TypeSpec generatedClass = codeGenerator.generateComponentRegistry();
@@ -215,13 +213,9 @@ public class BlueprintProcessor extends AbstractProcessor {
         }
     }
 
-    private String getClassNameFromFullName(String fullName) {
-        return fullName.substring(fullName.lastIndexOf(".") + 1, fullName.length());
-    }
-
     class ComponentViewInfo {
-        int viewType;
-        String viewHolder;
+        final int viewType;
+        final String viewHolder;
         String viewTypeName;
         String defaultPresenter;
         String componentView;

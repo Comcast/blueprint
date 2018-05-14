@@ -20,4 +20,10 @@ class DataItemModel : ComponentModel {
     override fun equals(other: Any?): Boolean {
         return other is DataItemModel && other.enabled == enabled
     }
+
+    override fun hashCode(): Int {
+        var result = data.hashCode()
+        result = 31 * result + enabled.hashCode()
+        return result
+    }
 }

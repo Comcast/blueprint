@@ -3,10 +3,10 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 dependencies {
-  compile project(path: ':blueprint-annotations')
-  compile 'com.google.auto.service:auto-service:1.0-rc3'
-  compile 'com.squareup:javapoet:1.9.0'
-  compile files("${System.properties['java.home']}/../lib/tools.jar")
+  implementation project(path: ':blueprint-annotations')
+  implementation 'com.google.auto.service:auto-service:1.0-rc3'
+  implementation 'com.squareup:javapoet:1.9.0'
+  implementation files("${System.properties['java.home']}/../lib/tools.jar")
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
