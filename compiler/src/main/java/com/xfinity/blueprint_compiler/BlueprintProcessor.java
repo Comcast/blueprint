@@ -31,9 +31,12 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeMirror;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,7 +112,50 @@ public class BlueprintProcessor extends AbstractProcessor {
 
             String viewHolderClassName = ((Symbol.ClassSymbol) annotatedClass).fullname.toString();
 
-            componentViewInfoList.add(new ComponentViewInfo(viewType, viewHolderClassName));
+            Map<String, String> children = new HashMap<>();
+            List<String> methodNames = new ArrayList<>();
+            for (Element enclosedElement : annotatedElement.getEnclosedElements()) {
+                // We only look at fields
+                if (enclosedElement instanceof Symbol.MethodSymbol) {
+                    methodNames.add(enclosedElement.getSimpleName().toString().toLowerCase());
+                }
+            }
+
+            for (Element enclosedElement : annotatedElement.getEnclosedElements()) {
+                // We only look at fields
+                if (enclosedElement.getKind().isField()) {
+                    VariableElement variable = (VariableElement) enclosedElement;
+                    String variableName = enclosedElement.getSimpleName().toString();
+
+                    //we'll only generate methods for this field if this class has
+                    // a getter for the field. We'll assume a naming convention of getFieldName()
+                    boolean hasGetter = false;
+                    for (String methodName : methodNames) {
+                        if (methodName.equals("get" + variableName.toLowerCase())) {
+                            hasGetter = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasGetter) {
+                        continue;
+                    }
+
+                    if (isEditText(variable)) {
+                        children.put(variableName, "android.widget.EditText");
+                    } else if (isTextView(variable)) {
+                        children.put(variableName, "android.widget.TextView");
+                    } else if (isImageView(variable)) {
+                        children.put(variableName, "android.widget.ImageView");
+                    } else if (isAndroidView(variable)) {
+                        children.put(variableName, "android.view.View");
+                    }
+                }
+            }
+
+            ComponentViewInfo componentViewInfo = new ComponentViewInfo(viewType, viewHolderClassName);
+            componentViewInfo.children = children;
+            componentViewInfoList.add(componentViewInfo);
         }
 
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(ComponentViewHolderBinder.class)) {
@@ -190,6 +236,26 @@ public class BlueprintProcessor extends AbstractProcessor {
         return true;
     }
 
+    private boolean isAndroidView(VariableElement variable) {
+        TypeElement viewElement = processingEnv.getElementUtils().getTypeElement("android.view.View");
+        return processingEnv.getTypeUtils().isAssignable(variable.asType(), viewElement.asType());
+    }
+
+    private boolean isTextView(VariableElement variable) {
+        TypeElement textViewElement = processingEnv.getElementUtils().getTypeElement("android.widget.TextView");
+        return processingEnv.getTypeUtils().isAssignable(variable.asType(), textViewElement.asType());
+    }
+
+    private boolean isEditText(VariableElement variable) {
+        TypeElement textViewElement = processingEnv.getElementUtils().getTypeElement("android.widget.EditText");
+        return processingEnv.getTypeUtils().isAssignable(variable.asType(), textViewElement.asType());
+    }
+
+    private boolean isImageView(VariableElement variable) {
+        TypeElement textViewElement = processingEnv.getElementUtils().getTypeElement("android.widget.ImageView");
+        return processingEnv.getTypeUtils().isAssignable(variable.asType(), textViewElement.asType());
+    }
+
     private boolean isValidClass(TypeElement annotatedClass) {
         TypeElement applicationTypeElement = processingEnv.getElementUtils().getTypeElement("android.support.v7.widget.RecyclerView.ViewHolder");
         return processingEnv.getTypeUtils().isAssignable(annotatedClass.asType(), applicationTypeElement.asType());
@@ -220,6 +286,7 @@ public class BlueprintProcessor extends AbstractProcessor {
         String defaultPresenter;
         String componentView;
         String viewBinder;
+        Map<String, String> children;
 
         ComponentViewInfo(int viewType, String viewHolder) {
             this.viewType = viewType;
