@@ -127,24 +127,18 @@ public class BlueprintProcessor extends AbstractProcessor {
                     VariableElement variable = (VariableElement) enclosedElement;
                     String variableName = enclosedElement.getSimpleName().toString();
 
-                    //TODO: in kotlin, none of the fields will be public, since vals are backed by
-                    // private final fields
-                    // Only do things with Public items
-                    // (because we set/get outside the ViewHolder in the view class)
-                    if (variable.getModifiers().contains(Modifier.PUBLIC)) {
-                        //If the variable isn't public (kotlin vals won't be) then we need to make sure this class has
-                        // a getter for this field. We'll assume a naming convention of getFieldName()
-                        boolean hasGetter = false;
-                        for (String methodName : methodNames) {
-                            if (methodName.equals("get" + variableName.toLowerCase())) {
-                                hasGetter = true;
-                                break;
-                            }
+                    //we'll only generate methods for this field if this class has
+                    // a getter for the field. We'll assume a naming convention of getFieldName()
+                    boolean hasGetter = false;
+                    for (String methodName : methodNames) {
+                        if (methodName.equals("get" + variableName.toLowerCase())) {
+                            hasGetter = true;
+                            break;
                         }
+                    }
 
-                        if (!hasGetter) {
-                            continue;
-                        }
+                    if (!hasGetter) {
+                        continue;
                     }
 
                     if (isEditText(variable)) {
