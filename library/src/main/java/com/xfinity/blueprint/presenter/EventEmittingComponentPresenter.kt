@@ -12,5 +12,10 @@
 package com.xfinity.blueprint.presenter
 
 import com.xfinity.blueprint.event.ComponentEventManager
+import com.xfinity.blueprint.model.ComponentModel
+import com.xfinity.blueprint.view.ComponentView
 
-abstract class EventEmittingComponentPresenter(val componentEventManager: ComponentEventManager) : ComponentPresenter
+
+interface EventEmittingComponentPresenter<in V : ComponentView<*>, in M : ComponentModel> : ComponentPresenter<V, M> {
+    val componentEventManager: ComponentEventManager
+}
