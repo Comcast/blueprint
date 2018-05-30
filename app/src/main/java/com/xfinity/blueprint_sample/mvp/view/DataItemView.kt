@@ -16,14 +16,16 @@ import android.view.View
 import android.widget.TextView
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
-import com.xfinity.blueprint_annotations.ClickableComponentBinder
 import com.xfinity.blueprint_sample.R
 
-@ClickableComponentBinder
 @ComponentViewClass(viewHolderClass = DataItemViewHolder::class)
 class DataItemView : DataItemViewBase() {
     fun setData(data: String) {
         viewHolder.textView.text = data
+    }
+
+    fun setBehavior(behavior: (position: Int) -> Unit) {
+        viewHolder.itemView.setOnClickListener { behavior.invoke(viewHolder.adapterPosition) }
     }
 }
 
