@@ -13,6 +13,7 @@ package com.xfinity.blueprint_sample.mvp.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.ComponentPresenter
 import com.xfinity.blueprint.view.ComponentView
 import com.xfinity.blueprint.view.ComponentViewBinder
@@ -29,7 +30,10 @@ class LoadingDotsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 @ComponentViewHolderBinder
 class LoadingDotsViewBinder : ComponentViewBinder<LoadingDotsViewHolder> {
-    override fun bind(componentPresenter: ComponentPresenter, componentView: ComponentView<out LoadingDotsViewHolder>, viewHolder: LoadingDotsViewHolder, position: Int) {
+
+    override fun bind(componentPresenter: ComponentPresenter<ComponentView<*>, ComponentModel>,
+                      componentView: ComponentView<out LoadingDotsViewHolder>,
+                      viewHolder: LoadingDotsViewHolder, position: Int) {
         //if there were any binding, it would go here
     }
 }
