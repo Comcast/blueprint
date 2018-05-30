@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.squareup.javapoet.TypeName.INT;
+import static com.squareup.javapoet.TypeName.VOID;
 import static com.squareup.javapoet.TypeSpec.classBuilder;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
@@ -287,21 +288,96 @@ final class CodeGenerator {
                 onBindViewHolderMethodFields.add(viewBinderFieldSpec);
             }
 
+            List<MethodSpec> methods = new ArrayList<>(Arrays.asList(getViewHolderMethod,
+                                                                     setViewHolderMethod,
+                                                                     getComponentViewBinderMethod,
+                                                                     onCreateViewHolderMethod,
+                                                                     onBindViewHolderMethod,
+                                                                     getViewTypeMethod));
+            if (componentViewInfo.children != null) {
+                for (String child : componentViewInfo.children.keySet()) {
+                    String type = componentViewInfo.children.get(child);
+                    String childCapitalized = child.substring(0, 1).toUpperCase() + child.substring(1);
+
+                    String childGetter = "get" + childCapitalized + "()";
+                    if (type.equals("android.widget.TextView")) {
+                        methods.add(getSetTextMethodSpec(childCapitalized, childGetter));
+                    }
+
+                    if (type.equals("android.widget.ImageView")) {
+                        methods.add(getSetImageDrawableMethodSpec(childCapitalized, childGetter));
+                    }
+
+                    methods.add(getSetVisibilityMethodSpec(child, childGetter));
+                    methods.add(getSetBackgroundColorMethodSpec(childCapitalized, childGetter));
+                }
+            }
+
             onBindViewHolderMethodFields.add(viewHolderFieldSpec);
             TypeSpec.Builder classBuilder = classBuilder(componentViewInfo.viewTypeName + "Base")
                     .addModifiers(PUBLIC)
                     .addSuperinterface(componentViewTypeName)
                     .addFields(onBindViewHolderMethodFields)
-                    .addMethods(Arrays.asList(getViewHolderMethod,
-                                              setViewHolderMethod,
-                                              getComponentViewBinderMethod,
-                                              onCreateViewHolderMethod,
-                                              onBindViewHolderMethod,
-                                              getViewTypeMethod));
+                    .addMethods(methods);
 
             viewDelegatePairs.add(new Pair<>(componentViewPackageName, classBuilder.build()));
         }
 
         return viewDelegatePairs;
     }
+
+    private MethodSpec getSetTextMethodSpec(String childNameCapitalized, String childGetterName) {
+        ParameterSpec textParam =
+                ParameterSpec.builder(ClassName.get("java.lang", "CharSequence"),
+                                      "text").build();
+
+        //Warning:  this code assumes that fields all have getters, and that they're named getFieldName()
+        return  MethodSpec.methodBuilder("set" + childNameCapitalized + "Text")
+                          .addModifiers(PUBLIC)
+                          .addParameter(textParam)
+                          .returns(VOID)
+                          .addStatement("viewHolder." + childGetterName + ".setText(text)")
+                          .build();
+
+    }
+
+    private MethodSpec getSetVisibilityMethodSpec(String childName, String childGetterName) {
+        ParameterSpec visibilityParam =
+                ParameterSpec.builder(INT, "visibility").build();
+
+        return MethodSpec.methodBuilder("set" + childName + "Visibility")
+                          .addModifiers(PUBLIC)
+                          .addParameter(visibilityParam)
+                          .returns(VOID)
+                          .addStatement("viewHolder." + childGetterName + ".setVisibility(visibility)")
+                          .build();
+    }
+
+    private MethodSpec getSetBackgroundColorMethodSpec(String childName, String childGetterName) {
+        ParameterSpec colorParam =
+                ParameterSpec.builder(INT, "color").build();
+
+        return MethodSpec.methodBuilder("set" + childName + "BackgroundColor")
+                          .addModifiers(PUBLIC)
+                          .addParameter(colorParam)
+                          .returns(VOID)
+                          .addStatement("viewHolder." + childGetterName + ".setBackgroundColor(color)")
+                          .build();
+
+    }
+
+    private MethodSpec getSetImageDrawableMethodSpec(String childName, String childGetterName) {
+        ParameterSpec imageParam =
+                ParameterSpec.builder(ClassName.get("android.graphics.drawable", "Drawable"),
+                                      "drawable").build();
+
+        return MethodSpec.methodBuilder("set" + childName + "Image")
+                         .addModifiers(PUBLIC)
+                         .addParameter(imageParam)
+                         .returns(VOID)
+                         .addStatement("viewHolder." + childGetterName + ".setImageDrawable(drawable)")
+                         .build();
+
+    }
+
 }
