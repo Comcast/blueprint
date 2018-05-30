@@ -14,7 +14,6 @@ package com.xfinity.blueprint.presenter
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.view.ComponentView
 
-open class DefaultComponentPresenter : ComponentPresenter {
-    override fun present(componentView: ComponentView<*>, componentModel: ComponentModel) {}
-    override fun onComponentClicked(componentView: ComponentView<*>, position: Int) {}
+open class DefaultComponentPresenter : ComponentPresenter<ComponentView<*>, ComponentModel> {
+    override fun present(view: ComponentView<*>, model: ComponentModel) {}
 }

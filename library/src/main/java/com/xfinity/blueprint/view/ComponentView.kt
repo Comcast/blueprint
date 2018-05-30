@@ -13,6 +13,7 @@ package com.xfinity.blueprint.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.ComponentPresenter
 
 /**
@@ -22,6 +23,6 @@ interface ComponentView<T : RecyclerView.ViewHolder> {
     var viewHolder: T
     val componentViewBinder: ComponentViewBinder<T>
     fun onCreateViewHolder(parent: ViewGroup) : T
-    fun onBindViewHolder(componentPresenter: ComponentPresenter, viewHolder: RecyclerView.ViewHolder, position: Int)
+    fun onBindViewHolder(componentPresenter: ComponentPresenter<ComponentView<*>, ComponentModel>, viewHolder: RecyclerView.ViewHolder, position: Int)
     fun getViewType() : Int
 }

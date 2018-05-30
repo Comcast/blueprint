@@ -15,4 +15,6 @@ import com.xfinity.blueprint.presenter.ComponentPresenter
 
 interface ComponentModel
 
-data class Component(val model: ComponentModel, val viewType: Int, val presenter: ComponentPresenter? = null)
+data class Component(val model: ComponentModel,
+                     val viewType: Int,
+                     val presenter: ComponentPresenter<*, *>? = null)
