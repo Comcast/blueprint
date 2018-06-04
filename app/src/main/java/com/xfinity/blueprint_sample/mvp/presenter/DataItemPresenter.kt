@@ -21,9 +21,9 @@ class DataItemPresenter(override val componentEventManager: ComponentEventManage
         EventEmittingComponentPresenter<DataItemView, DataItemModel> {
 
     override fun present(view: DataItemView, model: DataItemModel) {
-        view.setData(model.data)
+        view.setDataText(model.data)
         view.setBehavior { position ->
-            view.setData("Component $position was clicked")
+            view.setDataText("Component $position was clicked")
             componentEventManager.postEvent(DataItemClickedEvent("This is the event for position $position"))
         }
     }
