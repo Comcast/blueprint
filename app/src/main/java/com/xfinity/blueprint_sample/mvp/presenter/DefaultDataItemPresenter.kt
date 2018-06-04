@@ -28,13 +28,13 @@ class DefaultDataItemPresenter
     override fun present(view: DataItemView, model: DataItemModel) {
 
         if (model.data.isEmpty()) {
-            view.setData(defaultDataItemName + defaultDataItemId)
+            view.setDataText(defaultDataItemName + defaultDataItemId)
         } else {
-            view.setData(model.data)
+            view.setDataText(model.data)
         }
 
         view.setBehavior { position ->
-            view.setData("Component $position was clicked")
+            view.setDataText("Component $position was clicked")
             componentEventManager.postEvent(DataItemPresenter.DataItemClickedEvent("default data item clicked"))
         }
     }
