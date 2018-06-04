@@ -14,13 +14,14 @@ package com.xfinity.blueprint
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.xfinity.blueprint.model.Component
+import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.ComponentPresenter
 import com.xfinity.blueprint.view.ComponentView
 
 open class ComponentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private val componentRegistry: ComponentRegistry
 
-    private val presenterMap = mutableMapOf<Int, ComponentPresenter>()
+    private val presenterMap = mutableMapOf<Int, ComponentPresenter<ComponentView<*>, ComponentModel>>()
     internal val components = mutableListOf<Component>()
     private val componentViews = mutableListOf<ComponentView<RecyclerView.ViewHolder>>()
 
@@ -44,8 +45,16 @@ open class ComponentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val componentView = componentViews[position]
-        val presenter: ComponentPresenter = components[position].presenter ?: presenterMap[componentView.getViewType()] ?:
-                throw IllegalStateException("Presenter for " + componentView.javaClass.simpleName + " is null.")
+
+        val presenter: ComponentPresenter<ComponentView<*>, ComponentModel> = components[position].presenter?.let {
+            try {
+                @Suppress("UNCHECKED_CAST")
+                it as ComponentPresenter<ComponentView<*>, ComponentModel>
+            } catch (e: ClassCastException) {
+                throw ClassCastException("Presenter for ${componentView.javaClass.simpleName} is unsupported. ${e.message}")
+            }
+        } ?: presenterMap[componentView.getViewType()]
+        ?: throw IllegalStateException("Presenter for " + componentView.javaClass.simpleName + " is null.")
 
         val componentModel = components[position].model
 
@@ -168,7 +177,7 @@ open class ComponentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     fun clear(notify: Boolean) {
         val count = itemCount
-        
+
         components.clear()
         componentViews.clear()
         if (notify) {

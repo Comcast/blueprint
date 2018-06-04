@@ -11,20 +11,14 @@
 
 package com.xfinity.blueprint_sample.mvp.presenter
 
+import com.xfinity.blueprint.presenter.ComponentPresenter
+import com.xfinity.blueprint_annotations.DefaultPresenter
 import com.xfinity.blueprint_sample.mvp.model.FooterModel
 import com.xfinity.blueprint_sample.mvp.view.FooterView
-import com.xfinity.blueprint.model.ComponentModel
-import com.xfinity.blueprint.presenter.ComponentPresenter
-import com.xfinity.blueprint.view.ComponentView
-import com.xfinity.blueprint_annotations.DefaultPresenter
 
 @DefaultPresenter(viewClass = FooterView::class)
-class FooterPresenter : ComponentPresenter {
-    override fun present(componentView: ComponentView<*>, componentModel: ComponentModel) {
-        (componentView as FooterView).setFooterText((componentModel as FooterModel).footer)
-    }
-
-    override fun onComponentClicked(componentView: ComponentView<*>, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+class FooterPresenter : ComponentPresenter<FooterView, FooterModel> {
+    override fun present(view: FooterView, model: FooterModel) {
+        view.setFooter(model.footer)
     }
 }

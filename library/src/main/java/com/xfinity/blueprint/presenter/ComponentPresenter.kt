@@ -14,7 +14,6 @@ package com.xfinity.blueprint.presenter
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.view.ComponentView
 
-interface ComponentPresenter {
-    fun present(componentView: ComponentView<*>, componentModel: ComponentModel)
-    fun onComponentClicked(componentView: ComponentView<*>, position: Int)
+interface ComponentPresenter<in V : ComponentView<*>, in M : ComponentModel> {
+    fun present(view: V, model: M)
 }

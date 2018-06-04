@@ -13,26 +13,20 @@ package com.xfinity.blueprint_sample.mvp.presenter
 
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
-import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.EventEmittingComponentPresenter
-import com.xfinity.blueprint.view.ComponentView
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample.mvp.view.DataItemView
 
-class DataItemPresenter(componentEventManager: ComponentEventManager) :
-        EventEmittingComponentPresenter(componentEventManager) {
-    override fun present(componentView: ComponentView<*>, componentModel: ComponentModel) {
-        (componentView as DataItemView).setDataText((componentModel as DataItemModel).data)
-    }
+class DataItemPresenter(override val componentEventManager: ComponentEventManager) :
+        EventEmittingComponentPresenter<DataItemView, DataItemModel> {
 
-    override fun onComponentClicked(componentView: ComponentView<*>, position: Int) {
-        if (componentView is DataItemView) {
-            componentView.setDataText("Component $position was clicked")
+    override fun present(view: DataItemView, model: DataItemModel) {
+        view.setData(model.data)
+        view.setBehavior { position ->
+            view.setData("Component $position was clicked")
+            componentEventManager.postEvent(DataItemClickedEvent("This is the event for position $position"))
         }
-
-        componentEventManager.postEvent(DataItemClickedEvent("This is the event for position $position"))
     }
-
 
     data class DataItemClickedEvent(val toast: String) : ComponentEvent
 }
