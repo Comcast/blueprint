@@ -308,7 +308,7 @@ final class CodeGenerator {
                         methods.add(getSetImageDrawableMethodSpec(childCapitalized, childGetter));
                     }
 
-                    methods.add(getSetVisibilityMethodSpec(child, childGetter));
+                    methods.add(getSetVisibilityMethodSpec(childCapitalized, childGetter));
                     methods.add(getSetBackgroundColorMethodSpec(childCapitalized, childGetter));
                 }
             }
