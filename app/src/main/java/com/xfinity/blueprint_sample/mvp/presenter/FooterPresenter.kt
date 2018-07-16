@@ -19,6 +19,6 @@ import com.xfinity.blueprint_sample.mvp.view.FooterView
 @DefaultPresenter(viewClass = FooterView::class)
 class FooterPresenter : ComponentPresenter<FooterView, FooterModel> {
     override fun present(view: FooterView, model: FooterModel) {
-        view.setFooter(model.footer)
+        view.setFooterText(model.footer)
     }
 }
