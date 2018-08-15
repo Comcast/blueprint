@@ -12,6 +12,7 @@
 package com.xfinity.blueprint_sample.mvp.presenter
 
 import com.xfinity.blueprint.event.ComponentEvent
+import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.DefaultComponentPresenter
@@ -20,17 +21,20 @@ import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
 import com.xfinity.blueprint_sample.mvp.view.DynamicScreenView
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 
-class DynamicScreenPresenter : EventHandlingScreenPresenter<DynamicScreenView> {
+
+class DynamicScreenPresenter(override val componentEventManager: ComponentEventManager) :
+        EventHandlingScreenPresenter<DynamicScreenView> {
+
     var model: DynamicScreenModel = DynamicScreenModel()
     lateinit var view: DynamicScreenView
-    lateinit var dataItemPresenter: DataItemPresenter
+    private val dataItemPresenter: DataItemPresenter = DataItemPresenter(componentEventManager)
     var headerPosition = 0
 
     override fun attachView(screenView: DynamicScreenView) {
         view = screenView
-        dataItemPresenter = DataItemPresenter(view.componentEventManager)
     }
 
     /**
@@ -114,13 +118,5 @@ class DynamicScreenPresenter : EventHandlingScreenPresenter<DynamicScreenView> {
             dataItemModel.enabled = true
         }
         present()
-    }
-
-    fun onResume() {
-        view.resume()
-    }
-
-    fun onPause() {
-        view.pause()
     }
 }
