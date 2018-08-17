@@ -12,6 +12,17 @@
 package com.xfinity.blueprint.presenter
 
 import com.xfinity.blueprint.event.ComponentEventListener
-import com.xfinity.blueprint.view.EventHandlingScreenView
+import com.xfinity.blueprint.event.ComponentEventManager
+import com.xfinity.blueprint.view.ScreenView
 
-interface EventHandlingScreenPresenter<in T : EventHandlingScreenView> : ScreenPresenter<T>, ComponentEventListener
+interface EventHandlingScreenPresenter<in T : ScreenView> : ScreenPresenter<T>, ComponentEventListener {
+    val componentEventManager : ComponentEventManager
+
+    fun resume() {
+        componentEventManager.registerListener(this)
+    }
+
+    fun pause() {
+        componentEventManager.unregisterListener(this)
+    }
+}

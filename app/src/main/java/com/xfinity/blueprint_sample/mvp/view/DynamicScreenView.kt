@@ -11,13 +11,13 @@
 
 package com.xfinity.blueprint_sample.mvp.view
 
-import com.xfinity.blueprint.view.EventHandlingScreenView
-import com.xfinity.blueprint.view.EventHandlingScreenViewDelegate
+import com.xfinity.blueprint.view.ScreenView
+import com.xfinity.blueprint.view.ScreenViewDelegate
 import com.xfinity.blueprint_sample.DynamicScreenActivity
 
-class DynamicScreenView(val screenViewDelegate: EventHandlingScreenViewDelegate,
-                        val activity: DynamicScreenActivity) :
-        EventHandlingScreenView by screenViewDelegate {
+class DynamicScreenView(private val screenViewDelegate: ScreenViewDelegate,
+                        private val activity: DynamicScreenActivity)
+    : ScreenView by screenViewDelegate {
 
     fun setEnabled(enabled: Boolean) {
         activity.setEnabled(enabled)

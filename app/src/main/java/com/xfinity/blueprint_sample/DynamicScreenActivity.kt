@@ -20,7 +20,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.xfinity.blueprint.event.ComponentEventManager
-import com.xfinity.blueprint.view.EventHandlingScreenViewDelegate
+import com.xfinity.blueprint.view.ScreenViewDelegate
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.presenter.DynamicScreenPresenter
 import com.xfinity.blueprint_sample.mvp.view.DynamicScreenView
@@ -34,10 +34,9 @@ class DynamicScreenActivity : AppCompatActivity() {
     //These would be injected
     private val componentEventManager = ComponentEventManager()
     private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
-    private val presenter = DynamicScreenPresenter()
+    private val presenter = DynamicScreenPresenter(componentEventManager)
 
-    private val screenViewDelegate: EventHandlingScreenViewDelegate =
-            EventHandlingScreenViewDelegate(componentRegistry, componentEventManager, presenter)
+    private val screenViewDelegate: ScreenViewDelegate = ScreenViewDelegate(componentRegistry)
     private val mainScreenView = DynamicScreenView(screenViewDelegate, this)
 
     lateinit var content : View
@@ -78,12 +77,12 @@ class DynamicScreenActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        presenter.onResume()
+        presenter.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        presenter.onPause()
+        presenter.pause()
     }
 
     fun setEnabled(enabled: Boolean) {
