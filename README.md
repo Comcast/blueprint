@@ -1,3 +1,5 @@
+[![Maven Central][mavenbadge-svg]][mavencentral]
+
 # Blueprint
 Blueprint is a library that provides a compact framework for constructing mvp architecture within a multi-view type recycling, scrollable
 list UI.  It uses the Android RecyclerView library, and currently only support LinearLayouts
@@ -49,4 +51,6 @@ or, if you're using kotlin,
 ```xml
 kapt "com.xfinity:blueprint-compiler:<version>"
 ```
-Current version is 0.9.6
+
+[mavenbadge-svg]: https://maven-badges.herokuapp.com/maven-central/com.xfinity/blueprint-library/badge.svg
+[mavencentral]: https://search.maven.org/artifact/com.xfinity/blueprint-library
