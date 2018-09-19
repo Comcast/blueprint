@@ -11,6 +11,7 @@
 
 package com.xfinity.blueprint_compiler;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -309,6 +310,9 @@ final class CodeGenerator {
                     }
 
                     methods.add(getSetVisibilityMethodSpec(childCapitalized, childGetter));
+                    methods.add(getMakeVisibleMethodSpec(childCapitalized, childGetter));
+                    methods.add(getMakeGoneMethodSpec(childCapitalized, childGetter));
+                    methods.add(getMakeInvisibleMethodSpec(childCapitalized, childGetter));
                     methods.add(getSetBackgroundColorMethodSpec(childCapitalized, childGetter));
                 }
             }
@@ -345,12 +349,41 @@ final class CodeGenerator {
         ParameterSpec visibilityParam =
                 ParameterSpec.builder(INT, "visibility").build();
 
+        AnnotationSpec deprecatedAnnotation = AnnotationSpec.builder(ClassName.get("java.lang", "Deprecated")).build();
+
         return MethodSpec.methodBuilder("set" + childName + "Visibility")
+                          .addJavadoc("@deprecated.  Use make$LVisible(), make$LInvisible(), or make$LGone() instead", childName,
+                                      childName, childName)
+                          .addAnnotation(deprecatedAnnotation)
                           .addModifiers(PUBLIC)
                           .addParameter(visibilityParam)
                           .returns(VOID)
                           .addStatement("viewHolder." + childGetterName + ".setVisibility(visibility)")
                           .build();
+    }
+
+    private MethodSpec getMakeVisibleMethodSpec(String childName, String childGetterName) {
+        return MethodSpec.methodBuilder("make" + childName + "Visible")
+                         .addModifiers(PUBLIC)
+                         .returns(VOID)
+                         .addStatement("viewHolder." + childGetterName + ".setVisibility(android.view.View.VISIBLE)")
+                         .build();
+    }
+
+    private MethodSpec getMakeGoneMethodSpec(String childName, String childGetterName) {
+        return MethodSpec.methodBuilder("make" + childName + "Gone")
+                         .addModifiers(PUBLIC)
+                         .returns(VOID)
+                         .addStatement("viewHolder." + childGetterName + ".setVisibility(android.view.View.GONE)")
+                         .build();
+    }
+
+    private MethodSpec getMakeInvisibleMethodSpec(String childName, String childGetterName) {
+        return MethodSpec.methodBuilder("make" + childName + "Invisible")
+                         .addModifiers(PUBLIC)
+                         .returns(VOID)
+                         .addStatement("viewHolder." + childGetterName + ".setVisibility(android.view.View.INVISIBLE)")
+                         .build();
     }
 
     private MethodSpec getSetBackgroundColorMethodSpec(String childName, String childGetterName) {
