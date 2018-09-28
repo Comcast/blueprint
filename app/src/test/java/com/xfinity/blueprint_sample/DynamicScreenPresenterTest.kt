@@ -36,19 +36,18 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class DynamicScreenPresenterTest {
-    @Mock internal lateinit var dynamicScreenModel: DynamicScreenModel
-    @Mock internal lateinit var mainView: DynamicScreenView
-    @Mock internal lateinit var emptyHeaderModel: HeaderModel
-    @Mock internal lateinit var footerModel: FooterModel
+    @Mock private lateinit var dynamicScreenModel: DynamicScreenModel
+    @Mock private lateinit var mainView: DynamicScreenView
+    @Mock private lateinit var emptyHeaderModel: HeaderModel
+    @Mock private lateinit var footerModel: FooterModel
 
-    val dataItemModels = mutableListOf<DataItemModel>()
+    private val dataItemModels = mutableListOf<DataItemModel>()
 
-    internal var mainPresenter = DynamicScreenPresenter()
-    internal var componentEventManager = ComponentEventManager()
+    private lateinit var mainPresenter: DynamicScreenPresenter
 
     @Before
     fun setup() {
-        `when`<ComponentEventManager>(mainView.componentEventManager).thenReturn(componentEventManager)
+        mainPresenter = DynamicScreenPresenter(ComponentEventManager())
     }
 
     @Test
