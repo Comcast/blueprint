@@ -54,3 +54,9 @@ kapt "com.xfinity:blueprint-compiler:<version>"
 
 [mavenbadge-svg]: https://maven-badges.herokuapp.com/maven-central/com.xfinity/blueprint-library/badge.svg
 [mavencentral]: https://search.maven.org/artifact/com.xfinity/blueprint-library
+
+
+### Usage
+After creating your component view layout, create a ViewHolder to find your views.
+
+
