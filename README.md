@@ -54,3 +54,23 @@ kapt "com.xfinity:blueprint-compiler:<version>"
 
 [mavenbadge-svg]: https://maven-badges.herokuapp.com/maven-central/com.xfinity/blueprint-library/badge.svg
 [mavencentral]: https://search.maven.org/artifact/com.xfinity/blueprint-library
+
+### Usage
+
+#### Creating Component
+After creating your layout, create a view holder class and annotate with @ComponentViewHolder(viewType = R.layout.layout_name) 
+
+![alt text](https://github.com/Comcast/blueprint/blob/mrtvrgn-doc-v2/layout_viewHolder.PNG)
+
+When you create a view class and annotate with @ComponentViewClass(viewHolderClass = yourViewHolderClass), you can build the project. Base view class will be available for you yo extend from.
+
+![alt text](https://github.com/Comcast/blueprint/blob/mrtvrgn-doc-v2/viewClass.PNG)
+
+Finally, if you have a model that you wish to use in the component, you can simple extend from ComponentModel and create you component presenter and to create you need to extend from ComponentPresenter by passing view and model as Type parameters.
+
+![alt text](https://github.com/Comcast/blueprint/blob/mrtvrgn-doc-v2/componentModel.PNG)
+
+At this point, the your component presenter should give you the view and model with present(view, model) method.
+
+To display this component, simply add to your screenView in any of your screen presenter.
+
