@@ -62,7 +62,7 @@ After creating your layout, create a view holder class and annotate with @Compon
 
 ![alt text](https://github.com/Comcast/blueprint/blob/mrtvrgn-doc-v2/layout_viewHolder.PNG)
 
-When you create a view class and annotate with @ComponentViewClass(viewHolderClass = yourViewHolderClass), you can build the project. Base view class will be available for you yo extend from.
+When you create a view class and annotate with @ComponentViewClass(viewHolderClass = yourViewHolderClass), you can build the project. Base view class will be available for you to extend from.
 
 ![alt text](https://github.com/Comcast/blueprint/blob/mrtvrgn-doc-v2/viewClass.PNG)
 
