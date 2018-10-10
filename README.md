@@ -66,7 +66,7 @@ When you create a view class and annotate with @ComponentViewClass(viewHolderCla
 
 ![alt text](https://github.com/Comcast/blueprint/blob/mrtvrgn-doc-v2/viewClass.PNG)
 
-Finally, if you have a model that you wish to use in the component, you can simple extend from ComponentModel and create you component presenter and to create you need to extend from ComponentPresenter by passing view and model as Type parameters.
+Finally, if you have a model that you wish to use in the component, you can simply extend from ComponentModel and create your component presenter; to create it, you need to extend from ComponentPresenter by passing view and model as Type parameters.
 
 ![alt text](https://github.com/Comcast/blueprint/blob/mrtvrgn-doc-v2/componentModel.PNG)
 
