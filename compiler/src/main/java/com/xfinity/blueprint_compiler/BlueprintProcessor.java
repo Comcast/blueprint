@@ -92,7 +92,7 @@ public class BlueprintProcessor extends AbstractProcessor {
 
             if (packageName == null) {
                 try {
-                    packageName = new StringBuilder(getPackageName(processingEnv.getElementUtils(), annotatedClass));
+                    packageName = new StringBuilder(Utils.getPackageName(processingEnv.getElementUtils(), annotatedClass));
                 } catch (UnnamedPackageException e) {
                     e.printStackTrace();
                 }
