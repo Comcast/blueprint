@@ -12,9 +12,17 @@
 package com.xfinity.blueprint.model
 
 import com.xfinity.blueprint.presenter.ComponentPresenter
+import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 
 interface ComponentModel
 
 data class Component(val model: ComponentModel,
                      val viewType: Int,
-                     val presenter: ComponentPresenter<*, *>? = null)
+                     val presenter: ComponentPresenter<*, *>? = null) {
+
+    /**
+     *  Alternate constructor for creating components that are just a static view, with no presentation necessary.
+     *  Meant for things like dividers, headers, footers, etc.
+     */
+    constructor(viewType: Int) : this(object: ComponentModel {}, viewType, DefaultComponentPresenter())
+}
