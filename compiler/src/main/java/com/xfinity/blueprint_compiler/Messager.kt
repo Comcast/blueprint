@@ -26,12 +26,12 @@ internal class Messager {
 
     fun note(e: Element, msg: String, vararg args: Any) {
         checkInitialized()
-        messager.printMessage(NOTE, String.format(msg, *args), e)
+        messager.printMessage(NOTE, msg.format(*args), e)
     }
 
     fun warn(e: Element, msg: String, vararg args: Any) {
         checkInitialized()
-        messager.printMessage(WARNING, String.format(msg, *args), e)
+        messager.printMessage(WARNING, msg.format(*args), e)
     }
 
     fun error(e: Element, msg: String, vararg args: Any) {
