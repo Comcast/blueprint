@@ -36,7 +36,7 @@ internal class Messager {
 
     fun error(e: Element, msg: String, vararg args: Any) {
         checkInitialized()
-        messager.printMessage(ERROR, String.format(msg, *args), e)
+        messager.printMessage(ERROR, msg.format(*args), e)
     }
 
     private fun checkInitialized() {

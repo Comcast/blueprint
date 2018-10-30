@@ -9,13 +9,8 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_compiler;
+package com.xfinity.blueprint_compiler
 
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeElement
 
-class UnnamedPackageException extends Exception {
-
-  public UnnamedPackageException(TypeElement typeElement) {
-    super("The package of " + typeElement.getSimpleName() + " is unnamed");
-  }
-}
+internal class UnnamedPackageException(typeElement: TypeElement) : Exception("The package of ${typeElement.simpleName} is unnamed")
