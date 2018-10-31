@@ -45,7 +45,11 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
      * Present the overall screen, by adding Components
      */
     override fun present() {
-        view.setOnRefreshBehavior { present() }
+        view.setOnRefreshBehavior {
+            present()
+            view.finishRefresh()
+        }
+
         val screenComponents = mutableListOf<Component>()
         if (!model.headerModel.header.isEmpty()) {
             screenComponents.add(Component(model.headerModel, AppComponentRegistry.HeaderView_VIEW_TYPE))

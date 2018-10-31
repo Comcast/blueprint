@@ -29,15 +29,20 @@ class ArchitectSampleActivity : ScreenViewActivity() {
     private val componentEventManager = ComponentEventManager()
     private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
     private lateinit var resourceProvider: ResourceProvider
+
+    //If you needed to use a ScreenView subclass, you would create your own Architect to use it.  Otherwise, you can
+    // use the default architect
     override var architect: DefaultScreenViewArchitect = DefaultScreenViewArchitect(componentRegistry)
 
-    private lateinit var presenter: ArchitectSamplePresenter
+    private var presenter: ArchitectSamplePresenter? = null
 
     override fun getPresenter(): ScreenPresenter<DefaultScreenView> {
-        resourceProvider = ResourceProvider(this)
-        presenter = ArchitectSamplePresenter(componentEventManager, resourceProvider)
+        if (presenter == null) {
+            resourceProvider = ResourceProvider(this)
+            presenter = ArchitectSamplePresenter(componentEventManager, resourceProvider)
+        }
 
-        return presenter
+        return presenter!!
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -48,11 +53,11 @@ class ArchitectSampleActivity : ScreenViewActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.remove -> {
-                presenter.removeItemRequested()
+                presenter?.removeItemRequested()
                 true
             }
             R.id.refresh_data_items -> {
-                presenter.refreshDataItems()
+                presenter?.refreshDataItems()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -61,13 +66,7 @@ class ArchitectSampleActivity : ScreenViewActivity() {
 
     override fun onResume() {
         super.onResume()
-        presenter.resume()
-        presenter.present()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        presenter.pause()
+        presenter?.present()
     }
 
     companion object {
