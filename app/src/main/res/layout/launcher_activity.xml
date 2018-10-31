@@ -29,4 +29,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dynamic_screen"/>
+
+
+    <Button
+        android:id="@+id/bp_arch_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bp_arch_screen"/>
 </LinearLayout>

@@ -17,23 +17,27 @@ import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
+import com.xfinity.blueprint_architecture.DefaultScreenView
+import com.xfinity.blueprint_sample.ResourceProvider
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
-import com.xfinity.blueprint_sample.mvp.view.DefaultDynamicScreenView
-import java.util.Timer
-import java.util.TimerTask
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 
-class DynamicScreenPresenter(override val componentEventManager: ComponentEventManager) :
-        EventHandlingScreenPresenter<DefaultDynamicScreenView> {
+class ArchitectSamplePresenter(override val componentEventManager: ComponentEventManager,
+                               private val resourceProvider: ResourceProvider) :
+        EventHandlingScreenPresenter<DefaultScreenView> {
 
     var model: DynamicScreenModel = DynamicScreenModel()
-    lateinit var view: DefaultDynamicScreenView
+    lateinit var view: DefaultScreenView
     private val dataItemPresenter: DataItemPresenter = DataItemPresenter(componentEventManager)
-    var headerPosition = 0
+    private var headerPosition = 0
 
-    override fun attachView(screenView: DefaultDynamicScreenView) {
+    override fun attachView(screenView: DefaultScreenView) {
         view = screenView
     }
 
@@ -41,28 +45,27 @@ class DynamicScreenPresenter(override val componentEventManager: ComponentEventM
      * Present the overall screen, by adding Components
      */
     override fun present() {
+        view.setOnRefreshBehavior { present() }
         val screenComponents = mutableListOf<Component>()
         if (!model.headerModel.header.isEmpty()) {
             screenComponents.add(Component(model.headerModel, AppComponentRegistry.HeaderView_VIEW_TYPE))
 
             if (!model.headerModel.enabled) {
-                screenComponents.add(Component(object : ComponentModel{},
+                screenComponents.add(Component(object : ComponentModel {},
                         AppComponentRegistry.LoadingDotsView_VIEW_TYPE, DefaultComponentPresenter()))
-                val timer = Timer()
-                timer.schedule(object : TimerTask() {
-                    override fun run() {
-                        model.headerModel.enabled = true
-                        for (dataItemModel in model.dataItemModels) {
-                            dataItemModel.enabled = true
-                        }
 
-                        view.runOnUiThread (Runnable {
-                            view.setEnabled(true)
+                Observable.interval(0, 3000, TimeUnit.MILLISECONDS)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            model.headerModel.enabled = true
+                            for (dataItemModel in model.dataItemModels) {
+                                dataItemModel.enabled = true
+                            }
+                            view.setBackgroundColor(resourceProvider.colors.white)
                             present()
                             view.onComponentChanged(headerPosition)
-                        })
-                    }
-                }, 3000)
+                        }
             }
         }
 
@@ -77,17 +80,16 @@ class DynamicScreenPresenter(override val componentEventManager: ComponentEventM
 
 
         if (model.headerModel.enabled && !model.footerModel.enabled) {
-            screenComponents.add(Component(object : ComponentModel{},
+            screenComponents.add(Component(object : ComponentModel {},
                     AppComponentRegistry.LoadingDotsView_VIEW_TYPE, DefaultComponentPresenter()))
-            val timer = Timer()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
-                    model.footerModel.enabled = true
-                    view.runOnUiThread (Runnable {
+
+            Observable.interval(0, 3000, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        model.footerModel.enabled = true
                         present()
-                    })
-                }
-            }, 3000)
+                    }
         } else if (model.footerModel.enabled) {
             screenComponents.add(Component(model.footerModel, AppComponentRegistry.FooterView_VIEW_TYPE))
         }
@@ -97,7 +99,7 @@ class DynamicScreenPresenter(override val componentEventManager: ComponentEventM
 
     override fun onComponentEvent(componentEvent: ComponentEvent): Boolean {
         if (componentEvent is DataItemPresenter.DataItemClickedEvent) {
-            view.toast(componentEvent.toast)
+            view.showMessage(componentEvent.toast)
             return true  //consume
         }
 

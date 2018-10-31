@@ -22,12 +22,16 @@ class LauncherActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.launcher_activity)
 
-        (findViewById(R.id.simple_screen_button) as Button).setOnClickListener({
+        (findViewById<Button>(R.id.simple_screen_button)).setOnClickListener {
             startActivity(Intent(this, StaticScreenActivity::class.java))
-        })
+        }
 
-        (findViewById(R.id.dynamic_screen_button) as Button).setOnClickListener({
+        (findViewById<Button>(R.id.dynamic_screen_button)).setOnClickListener {
             startActivity(Intent(this, DynamicScreenActivity::class.java))
-        })
+        }
+
+        (findViewById<Button>(R.id.bp_arch_button)).setOnClickListener {
+            startActivity(Intent(this, ArchitectSampleActivity::class.java))
+        }
     }
 }

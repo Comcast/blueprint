@@ -23,6 +23,7 @@ import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.presenter.DynamicScreenPresenter
+import com.xfinity.blueprint_sample.mvp.view.DefaultDynamicScreenView
 import com.xfinity.blueprint_sample.mvp.view.DynamicScreenView
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
@@ -30,14 +31,14 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
  * The dynamic screen example documents how to compose a screen that can change based on the user's interactions with
  * the Components.  The dynamic screen handles Component events, and can respond to them by adding or removing Components
  */
-class DynamicScreenActivity : AppCompatActivity() {
+class DynamicScreenActivity : AppCompatActivity(), DynamicScreenView {
     //These would be injected
     private val componentEventManager = ComponentEventManager()
     private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
     private val presenter = DynamicScreenPresenter(componentEventManager)
 
     private val screenViewDelegate: ScreenViewDelegate = ScreenViewDelegate(componentRegistry)
-    private val mainScreenView = DynamicScreenView(screenViewDelegate, this)
+    private val mainScreenView = DefaultDynamicScreenView(screenViewDelegate, this)
 
     lateinit var content : View
 
@@ -85,11 +86,11 @@ class DynamicScreenActivity : AppCompatActivity() {
         presenter.pause()
     }
 
-    fun setEnabled(enabled: Boolean) {
+    override fun setEnabled(enabled: Boolean) {
         content.setBackgroundColor(resources.getColor(android.R.color.white))
     }
 
-    fun toast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    override fun toast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 
     companion object {
         const val defaultItemName = "DefaultDataItemName"

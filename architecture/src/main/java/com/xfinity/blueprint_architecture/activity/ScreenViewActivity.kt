@@ -8,8 +8,8 @@ import com.xfinity.blueprint_architecture.DefaultScreenViewArchitect
 
 abstract class ScreenViewActivity : AppCompatActivity() {
     @Suppress("MemberVisibilityCanBePrivate")
-    lateinit var architect: DefaultScreenViewArchitect
-    lateinit var screenViewActivityDelegate: ScreenViewActivityDelegate
+    abstract var architect: DefaultScreenViewArchitect
+    private val screenViewActivityDelegate = ScreenViewActivityDelegate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
