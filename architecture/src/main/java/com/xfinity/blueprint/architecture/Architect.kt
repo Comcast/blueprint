@@ -1,4 +1,4 @@
-package com.xfinity.blueprint_architecture
+package com.xfinity.blueprint.architecture
 
 import `in`.srain.cube.views.ptr.PtrClassicFrameLayout
 import android.support.v7.app.ActionBar

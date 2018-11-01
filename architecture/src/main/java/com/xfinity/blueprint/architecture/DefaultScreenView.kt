@@ -1,4 +1,4 @@
-package com.xfinity.blueprint_architecture
+package com.xfinity.blueprint.architecture
 
 import android.support.annotation.DrawableRes
 import android.support.v7.app.ActionBar
@@ -6,7 +6,7 @@ import com.xfinity.blueprint.view.ScreenView
 import com.xfinity.blueprint.view.ScreenViewDelegate
 
 open class ToolbarScreenView(screenViewDelegate: ScreenViewDelegate, messageView: MessageView, refreshHandler: RefreshHandler,
-                        screenManager: ScreenManager, private val actionBar: ActionBar?) :
+                             screenManager: ScreenManager, private val actionBar: ActionBar?) :
         DefaultScreenView(screenViewDelegate, messageView, refreshHandler, screenManager) {
 
     fun setTitle(title: CharSequence) {

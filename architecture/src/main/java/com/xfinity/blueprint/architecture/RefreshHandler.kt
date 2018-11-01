@@ -1,4 +1,4 @@
-package com.xfinity.blueprint_architecture
+package com.xfinity.blueprint.architecture
 
 import `in`.srain.cube.views.ptr.PtrClassicFrameLayout
 import `in`.srain.cube.views.ptr.PtrDefaultHandler

@@ -1,4 +1,4 @@
-package com.xfinity.blueprint_architecture
+package com.xfinity.blueprint.architecture
 
 import android.support.design.widget.Snackbar
 import android.view.View

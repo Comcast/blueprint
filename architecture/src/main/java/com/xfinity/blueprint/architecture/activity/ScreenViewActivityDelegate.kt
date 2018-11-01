@@ -1,4 +1,4 @@
-package com.xfinity.blueprint_architecture.activity
+package com.xfinity.blueprint.architecture.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dapp.blueprint_architecture.R
-import com.xfinity.blueprint_architecture.DefaultScreenViewArchitect
-import com.xfinity.blueprint_architecture.ToolbarScreenViewArchitect
-import com.xfinity.blueprint_architecture.fragment.ScreenViewFragment
+import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
+import com.xfinity.blueprint.architecture.ToolbarScreenViewArchitect
+import com.xfinity.blueprint.architecture.fragment.ScreenViewFragment
 
 class ScreenViewActivityDelegate {
     fun onCreate(activity: ScreenViewActivity, architect: DefaultScreenViewArchitect)  {

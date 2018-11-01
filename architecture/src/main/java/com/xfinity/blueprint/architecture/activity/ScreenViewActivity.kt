@@ -1,11 +1,11 @@
-package com.xfinity.blueprint_architecture.activity
+package com.xfinity.blueprint.architecture.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
 import com.xfinity.blueprint.presenter.ScreenPresenter
-import com.xfinity.blueprint_architecture.DefaultScreenView
-import com.xfinity.blueprint_architecture.DefaultScreenViewArchitect
+import com.xfinity.blueprint.architecture.DefaultScreenView
+import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 
 abstract class ScreenViewActivity : AppCompatActivity() {
     @Suppress("MemberVisibilityCanBePrivate")

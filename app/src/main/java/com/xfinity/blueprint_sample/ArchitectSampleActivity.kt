@@ -15,9 +15,9 @@ import android.view.Menu
 import android.view.MenuItem
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.presenter.ScreenPresenter
-import com.xfinity.blueprint_architecture.DefaultScreenView
-import com.xfinity.blueprint_architecture.DefaultScreenViewArchitect
-import com.xfinity.blueprint_architecture.activity.ScreenViewActivity
+import com.xfinity.blueprint.architecture.DefaultScreenView
+import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
+import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.presenter.ArchitectSamplePresenter
 

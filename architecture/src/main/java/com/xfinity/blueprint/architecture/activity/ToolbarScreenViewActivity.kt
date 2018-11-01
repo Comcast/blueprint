@@ -1,11 +1,11 @@
-package com.xfinity.blueprint_architecture.activity
+package com.xfinity.blueprint.architecture.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
 import com.xfinity.blueprint.presenter.ScreenPresenter
-import com.xfinity.blueprint_architecture.ToolbarScreenView
-import com.xfinity.blueprint_architecture.ToolbarScreenViewArchitect
+import com.xfinity.blueprint.architecture.ToolbarScreenView
+import com.xfinity.blueprint.architecture.ToolbarScreenViewArchitect
 
 abstract class ToolbarScreenViewActivity : AppCompatActivity() {
     @Suppress("MemberVisibilityCanBePrivate")

@@ -17,7 +17,7 @@ import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
-import com.xfinity.blueprint_architecture.DefaultScreenView
+import com.xfinity.blueprint.architecture.DefaultScreenView
 import com.xfinity.blueprint_sample.ResourceProvider
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
