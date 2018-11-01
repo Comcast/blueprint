@@ -9,17 +9,17 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample
+package com.xfinity.blueprint.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.xfinity.blueprint.blueprint.AppComponentRegistry
 import com.xfinity.blueprint.event.ComponentEventManager
+import com.xfinity.blueprint.sample.mvp.presenter.StaticScreenPresenter
 import com.xfinity.blueprint.view.ScreenViewDelegate
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.presenter.StaticScreenPresenter
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 /**

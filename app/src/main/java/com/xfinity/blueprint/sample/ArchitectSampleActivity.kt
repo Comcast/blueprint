@@ -9,15 +9,15 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample
+package com.xfinity.blueprint.sample
 
 import android.view.Menu
 import android.view.MenuItem
-import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.presenter.ArchitectSamplePresenter
+import com.xfinity.blueprint.blueprint.AppComponentRegistry
+import com.xfinity.blueprint.event.ComponentEventManager
+import com.xfinity.blueprint.sample.mvp.presenter.ArchitectSamplePresenter
 
 /**
  * Sample activity that demonstrates using the Blueprint Architecture Components

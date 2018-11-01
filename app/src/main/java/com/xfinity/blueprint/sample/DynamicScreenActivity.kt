@@ -9,7 +9,7 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample
+package com.xfinity.blueprint.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -19,12 +19,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.xfinity.blueprint.blueprint.AppComponentRegistry
 import com.xfinity.blueprint.event.ComponentEventManager
+import com.xfinity.blueprint.sample.mvp.presenter.DynamicScreenPresenter
+import com.xfinity.blueprint.sample.mvp.view.DefaultDynamicScreenView
+import com.xfinity.blueprint.sample.mvp.view.DynamicScreenView
 import com.xfinity.blueprint.view.ScreenViewDelegate
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.presenter.DynamicScreenPresenter
-import com.xfinity.blueprint_sample.mvp.view.DefaultDynamicScreenView
-import com.xfinity.blueprint_sample.mvp.view.DynamicScreenView
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 /**

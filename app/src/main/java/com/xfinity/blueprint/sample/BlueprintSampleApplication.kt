@@ -1,4 +1,4 @@
-package com.xfinity.blueprint_sample
+package com.xfinity.blueprint.sample
 
 import android.app.Application
 import com.xfinity.resourceprovider.RpApplication

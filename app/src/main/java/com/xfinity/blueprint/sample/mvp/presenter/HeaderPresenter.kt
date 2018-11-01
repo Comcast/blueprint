@@ -9,12 +9,12 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.presenter
+package com.xfinity.blueprint.sample.mvp.presenter
 
 import com.xfinity.blueprint.presenter.ComponentPresenter
+import com.xfinity.blueprint.sample.mvp.model.HeaderModel
+import com.xfinity.blueprint.sample.mvp.view.HeaderView
 import com.xfinity.blueprint_annotations.DefaultPresenter
-import com.xfinity.blueprint_sample.mvp.model.HeaderModel
-import com.xfinity.blueprint_sample.mvp.view.HeaderView
 
 @DefaultPresenter(viewClass = HeaderView::class)
 class HeaderPresenter : ComponentPresenter<HeaderView, HeaderModel> {

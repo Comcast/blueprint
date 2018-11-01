@@ -9,10 +9,11 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.view
+package com.xfinity.blueprint.sample.mvp.model
 
-import com.xfinity.blueprint.view.ScreenView
-import com.xfinity.blueprint.view.ScreenViewDelegate
+import com.xfinity.blueprint.model.ComponentModel
 
-class StaticScreenView(val screenViewDelegate: ScreenViewDelegate) :
-        ScreenView by screenViewDelegate
+class FooterModel : ComponentModel {
+    val footer : String = "This is the footer"
+    var enabled = false
+}

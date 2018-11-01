@@ -9,16 +9,11 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.presenter
+package com.xfinity.blueprint.sample.mvp.model
 
-import com.xfinity.blueprint.presenter.ComponentPresenter
-import com.xfinity.blueprint_annotations.DefaultPresenter
-import com.xfinity.blueprint_sample.mvp.model.FooterModel
-import com.xfinity.blueprint_sample.mvp.view.FooterView
+import com.xfinity.blueprint.model.ComponentModel
 
-@DefaultPresenter(viewClass = FooterView::class)
-class FooterPresenter : ComponentPresenter<FooterView, FooterModel> {
-    override fun present(view: FooterView, model: FooterModel) {
-        view.setFooterText(model.footer)
-    }
+open class HeaderModel : ComponentModel {
+    open var header : String = "this is a header"
+    open var enabled : Boolean = false
 }

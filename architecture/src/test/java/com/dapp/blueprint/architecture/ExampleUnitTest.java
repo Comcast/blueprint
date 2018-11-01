@@ -1,4 +1,4 @@
-package com.dapp.blueprint_architecture;
+package com.dapp.blueprint.architecture;
 
 import org.junit.Test;
 

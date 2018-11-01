@@ -9,18 +9,18 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.view
+package com.xfinity.blueprint.sample.mvp.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.ComponentPresenter
+import com.xfinity.blueprint.sample.R
 import com.xfinity.blueprint.view.ComponentView
 import com.xfinity.blueprint.view.ComponentViewBinder
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_annotations.ComponentViewHolderBinder
-import com.xfinity.blueprint_sample.R
 
 @ComponentViewClass(viewHolderClass = LoadingDotsViewHolder::class)
 class LoadingDotsView : LoadingDotsViewBase()

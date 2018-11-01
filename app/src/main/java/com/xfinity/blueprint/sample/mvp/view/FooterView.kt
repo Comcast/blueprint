@@ -9,19 +9,19 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.model
+package com.xfinity.blueprint.sample.mvp.view
 
-open class StaticScreenModel {
-    val headerModel: HeaderModel = HeaderModel()
-    val footerModel: FooterModel = FooterModel()
-    val dataItemModels: List<DataItemModel> = listOf(DataItemModel(), DataItemModel(), DataItemModel(),
-            DataItemModel(), DataItemModel(), DataItemModel())
+import android.support.v7.widget.RecyclerView
+import android.widget.TextView
+import com.xfinity.blueprint.sample.R
+import com.xfinity.blueprint_annotations.ComponentViewClass
+import com.xfinity.blueprint_annotations.ComponentViewHolder
 
-    init {
-        headerModel.enabled = true
-        footerModel.enabled = true
-        dataItemModels.forEach({
-            it.enabled = true
-        })
-    }
+@ComponentViewClass(viewHolderClass = FooterViewHolder::class)
+class FooterView : FooterViewBase()
+
+@ComponentViewHolder(viewType = R.layout.footer_view)
+class FooterViewHolder(itemView: android.view.View) : RecyclerView.ViewHolder(itemView) {
+    val footer : TextView = itemView.findViewById(R.id.footer) as TextView
 }
+

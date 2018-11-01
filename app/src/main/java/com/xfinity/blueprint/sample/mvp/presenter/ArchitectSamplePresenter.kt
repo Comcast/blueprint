@@ -9,19 +9,19 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.presenter
+package com.xfinity.blueprint.sample.mvp.presenter
 
+import com.xfinity.blueprint.architecture.DefaultScreenView
+import com.xfinity.blueprint.blueprint.AppComponentRegistry
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
-import com.xfinity.blueprint.architecture.DefaultScreenView
-import com.xfinity.blueprint_sample.ResourceProvider
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.model.DataItemModel
-import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
+import com.xfinity.blueprint.sample.ResourceProvider
+import com.xfinity.blueprint.sample.mvp.model.DataItemModel
+import com.xfinity.blueprint.sample.mvp.model.DynamicScreenModel
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

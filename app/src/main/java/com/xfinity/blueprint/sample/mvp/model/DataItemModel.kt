@@ -9,11 +9,21 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.model
+package com.xfinity.blueprint.sample.mvp.model
 
 import com.xfinity.blueprint.model.ComponentModel
 
-open class HeaderModel : ComponentModel {
-    open var header : String = "this is a header"
-    open var enabled : Boolean = false
+class DataItemModel : ComponentModel {
+    val data : String = "This is some data"
+    var enabled = false
+
+    override fun equals(other: Any?): Boolean {
+        return other is DataItemModel && other.enabled == enabled
+    }
+
+    override fun hashCode(): Int {
+        var result = data.hashCode()
+        result = 31 * result + enabled.hashCode()
+        return result
+    }
 }

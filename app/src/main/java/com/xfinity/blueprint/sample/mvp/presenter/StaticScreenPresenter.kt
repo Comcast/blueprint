@@ -9,13 +9,13 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.presenter
+package com.xfinity.blueprint.sample.mvp.presenter
 
+import com.xfinity.blueprint.blueprint.AppComponentRegistry
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.presenter.ScreenPresenter
+import com.xfinity.blueprint.sample.mvp.model.StaticScreenModel
 import com.xfinity.blueprint.view.ScreenView
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.model.StaticScreenModel
 
 class StaticScreenPresenter : ScreenPresenter<ScreenView> {
     var model: StaticScreenModel = StaticScreenModel()

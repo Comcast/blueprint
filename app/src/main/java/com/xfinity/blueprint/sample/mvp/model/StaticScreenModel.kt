@@ -9,21 +9,19 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.model
+package com.xfinity.blueprint.sample.mvp.model
 
-import com.xfinity.blueprint.model.ComponentModel
+open class StaticScreenModel {
+    val headerModel: HeaderModel = HeaderModel()
+    val footerModel: FooterModel = FooterModel()
+    val dataItemModels: List<DataItemModel> = listOf(DataItemModel(), DataItemModel(), DataItemModel(),
+            DataItemModel(), DataItemModel(), DataItemModel())
 
-class DataItemModel : ComponentModel {
-    val data : String = "This is some data"
-    var enabled = false
-
-    override fun equals(other: Any?): Boolean {
-        return other is DataItemModel && other.enabled == enabled
-    }
-
-    override fun hashCode(): Int {
-        var result = data.hashCode()
-        result = 31 * result + enabled.hashCode()
-        return result
+    init {
+        headerModel.enabled = true
+        footerModel.enabled = true
+        dataItemModels.forEach({
+            it.enabled = true
+        })
     }
 }

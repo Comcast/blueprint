@@ -9,7 +9,7 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.view
+package com.xfinity.blueprint.sample.mvp.view
 
 import com.xfinity.blueprint.view.ScreenView
 import com.xfinity.blueprint.view.ScreenViewDelegate

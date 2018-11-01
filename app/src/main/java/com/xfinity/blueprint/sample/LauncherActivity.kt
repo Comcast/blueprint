@@ -9,7 +9,7 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample
+package com.xfinity.blueprint.sample
 
 import android.content.Intent
 import android.os.Bundle

@@ -9,11 +9,16 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.model
+package com.xfinity.blueprint.sample.mvp.presenter
 
-open class DynamicScreenModel {
-    open var headerModel: HeaderModel = HeaderModel()
-    var footerModel: FooterModel = FooterModel()
-    open var dataItemModels: MutableList<DataItemModel> = mutableListOf(DataItemModel(), DataItemModel(), DataItemModel(),
-            DataItemModel(), DataItemModel(), DataItemModel())
+import com.xfinity.blueprint.presenter.ComponentPresenter
+import com.xfinity.blueprint.sample.mvp.model.FooterModel
+import com.xfinity.blueprint.sample.mvp.view.FooterView
+import com.xfinity.blueprint_annotations.DefaultPresenter
+
+@DefaultPresenter(viewClass = FooterView::class)
+class FooterPresenter : ComponentPresenter<FooterView, FooterModel> {
+    override fun present(view: FooterView, model: FooterModel) {
+        view.setFooterText(model.footer)
+    }
 }

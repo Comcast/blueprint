@@ -9,23 +9,23 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.view
+package com.xfinity.blueprint.sample.mvp.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
+import com.xfinity.blueprint.sample.R
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
-import com.xfinity.blueprint_sample.R
 
-@ComponentViewClass(viewHolderClass = HeaderViewHolder::class)
-class HeaderView : HeaderViewBase() {
-    fun setEnabled(enabled: Boolean) {
-        viewHolder.itemView.isEnabled = enabled
+@ComponentViewClass(viewHolderClass = DataItemViewHolder::class)
+class DataItemView : DataItemViewBase() {
+    fun setBehavior(behavior: (position: Int) -> Unit) {
+        viewHolder.itemView.setOnClickListener { behavior.invoke(viewHolder.adapterPosition) }
     }
 }
 
-@ComponentViewHolder(viewType = R.layout.header_view)
-class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val header : TextView = itemView.findViewById(R.id.header) as TextView
+@ComponentViewHolder(viewType = R.layout.data_item_view)
+class DataItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val data : TextView = itemView.findViewById(R.id.data) as TextView
 }
