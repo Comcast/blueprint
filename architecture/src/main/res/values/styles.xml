@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Clients should override in order to style the toolbar -->
+    <style name="AppTheme"/>
+    <style name="ToolbarTitleText"/>
+</resources>

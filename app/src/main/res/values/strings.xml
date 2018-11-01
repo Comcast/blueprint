@@ -13,4 +13,5 @@
     <string name="app_name">Blueprint Sample</string>
     <string name="static_screen">Static Screen Example</string>
     <string name="dynamic_screen">Dynamic Screen Example</string>
+    <string name="bp_arch_screen">Blueprint Architecture Lib Example</string>
 </resources>
