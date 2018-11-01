@@ -21,19 +21,17 @@ abstract class ScreenViewFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val presenter = getPresenter()
         if (presenter is EventHandlingScreenPresenter) {
-            presenter.resume()
+            (presenter as EventHandlingScreenPresenter).resume()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        val presenter = getPresenter()
         if (presenter is EventHandlingScreenPresenter) {
-            presenter.pause()
+            (presenter as EventHandlingScreenPresenter).pause()
         }
     }
 
-    abstract fun getPresenter(): ScreenPresenter<DefaultScreenView>
+    abstract val presenter: ScreenPresenter<DefaultScreenView>
 }

@@ -15,12 +15,12 @@ import com.xfinity.blueprint_architecture.fragment.ScreenViewFragment
 class ScreenViewActivityDelegate {
     fun onCreate(activity: ScreenViewActivity, architect: DefaultScreenViewArchitect)  {
         setupViews(activity)
-        architect.initBlueprint(activity.findViewById(android.R.id.content), activity.getPresenter())
+        architect.initBlueprint(activity.findViewById(android.R.id.content), activity.presenter)
     }
 
     fun onCreate(activity: ToolbarScreenViewActivity, architect: ToolbarScreenViewArchitect)  {
         setupViews(activity)
-        architect.initBlueprint(activity.findViewById(android.R.id.content), activity.getPresenter())
+        architect.initBlueprint(activity.findViewById(android.R.id.content), activity.presenter)
     }
 
     fun setupViews(activity: AppCompatActivity) {
@@ -31,15 +31,16 @@ class ScreenViewActivityDelegate {
 
         val recyclerView = activity.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-
     }
 }
 
 class ScreenViewFragmentDelegate {
     fun onCreateView(fragment: ScreenViewFragment, inflater: LayoutInflater, container: ViewGroup?, architect: DefaultScreenViewArchitect) : View {
         val view = inflater.inflate(R.layout.screen_view_fragment, container, false)
-        architect.initBlueprint(view.findViewById(R.id.container), fragment.getPresenter())
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
 
+        architect.initBlueprint(view.findViewById(R.id.container), fragment.presenter)
         return view
     }
 }
