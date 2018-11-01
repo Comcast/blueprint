@@ -14,8 +14,6 @@ package com.xfinity.blueprint_sample
 import android.view.Menu
 import android.view.MenuItem
 import com.xfinity.blueprint.event.ComponentEventManager
-import com.xfinity.blueprint.presenter.ScreenPresenter
-import com.xfinity.blueprint.architecture.DefaultScreenView
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
@@ -28,21 +26,14 @@ class ArchitectSampleActivity : ScreenViewActivity() {
     //Dependencies.  These would normally be injected
     private val componentEventManager = ComponentEventManager()
     private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
-    private lateinit var resourceProvider: ResourceProvider
+    private val resourceProvider: ResourceProvider by lazy { ResourceProvider(this) }
 
     //If you needed to use a ScreenView subclass, you would create your own Architect to use it.  Otherwise, you can
     // use the default architect
     override var architect: DefaultScreenViewArchitect = DefaultScreenViewArchitect(componentRegistry)
 
-    private var presenter: ArchitectSamplePresenter? = null
-
-    override fun getPresenter(): ScreenPresenter<DefaultScreenView> {
-        if (presenter == null) {
-            resourceProvider = ResourceProvider(this)
-            presenter = ArchitectSamplePresenter(componentEventManager, resourceProvider)
-        }
-
-        return presenter!!
+    override val presenter: ArchitectSamplePresenter by lazy {
+        ArchitectSamplePresenter(componentEventManager, resourceProvider)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -53,11 +44,11 @@ class ArchitectSampleActivity : ScreenViewActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.remove -> {
-                presenter?.removeItemRequested()
+                presenter.removeItemRequested()
                 true
             }
             R.id.refresh_data_items -> {
-                presenter?.refreshDataItems()
+                presenter.refreshDataItems()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -66,7 +57,7 @@ class ArchitectSampleActivity : ScreenViewActivity() {
 
     override fun onResume() {
         super.onResume()
-        presenter?.present()
+        presenter.present()
     }
 
     companion object {
