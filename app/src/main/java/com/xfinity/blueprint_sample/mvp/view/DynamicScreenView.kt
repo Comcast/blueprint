@@ -13,21 +13,26 @@ package com.xfinity.blueprint_sample.mvp.view
 
 import com.xfinity.blueprint.view.ScreenView
 import com.xfinity.blueprint.view.ScreenViewDelegate
-import com.xfinity.blueprint_sample.DynamicScreenActivity
 
-class DynamicScreenView(private val screenViewDelegate: ScreenViewDelegate,
-                        private val activity: DynamicScreenActivity)
-    : ScreenView by screenViewDelegate {
+interface DynamicScreenView {
+    fun setEnabled(enabled: Boolean)
+    fun runOnUiThread(runnable: Runnable)
+    fun toast(msg: String)
+}
 
-    fun setEnabled(enabled: Boolean) {
-        activity.setEnabled(enabled)
+class DefaultDynamicScreenView(private val screenViewDelegate: ScreenViewDelegate,
+                               private val delegate: DynamicScreenView)
+    : ScreenView by screenViewDelegate, DynamicScreenView {
+
+    override fun setEnabled(enabled: Boolean) {
+        delegate.setEnabled(enabled)
     }
 
-    fun runOnUiThread(runnable: Runnable) {
-        activity.runOnUiThread(runnable)
+    override fun runOnUiThread(runnable: Runnable) {
+        delegate.runOnUiThread(runnable)
     }
 
-    fun toast(msg: String) {
-        activity.toast(msg)
+    override fun toast(msg: String) {
+        delegate.toast(msg)
     }
 }

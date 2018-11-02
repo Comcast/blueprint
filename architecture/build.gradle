@@ -1,0 +1,108 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 28
+        versionCode 1
+        versionName rootProject.publishVersion
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        project.archivesBaseName = "$rootProject.artifactPrefix-architecture-$versionName"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    def ANDROID_SUPPORT_LIB_VERSION = "28.0.0"
+
+    implementation fileTree(dir: 'libs', include: ['*.jar']),
+                   project(':library'),
+                   "com.android.support:appcompat-v7:$ANDROID_SUPPORT_LIB_VERSION",
+                   "com.android.support:design:$ANDROID_SUPPORT_LIB_VERSION",
+                   'com.android.support.constraint:constraint-layout:1.1.2',
+                   'in.srain.cube:ultra-ptr:1.0.11',
+                   "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "source"
+}
+
+//Creating sources with comments
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+//    archives javadocJar
+    archives androidSourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                groupId rootProject.groupId
+                name "$rootProject.projectName Architecture"
+                version rootProject.publishVersion
+                packaging 'aar'
+                description 'A collection of architectural components for accelerating Android development with the Blueprint Framework'
+                artifactId "$rootProject.artifactPrefix-architecture"
+                url 'https://github.com/Comcast/blueprint'
+
+                scm {
+                    url 'scm:git@github.com:Comcast/blueprint.git'
+                    connection 'scm:git@github.com:Comcast/blueprint.git'
+                    developerConnection 'scm:git@github.com:Comcast/blueprint.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'dapp'
+                        name 'Mark Dappollone'
+                    }
+                }
+            }
+        }
+    }
+}
