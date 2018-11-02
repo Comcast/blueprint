@@ -25,7 +25,7 @@ import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
 import com.xfinity.blueprint_sample.mvp.model.FooterModel
 import com.xfinity.blueprint_sample.mvp.model.HeaderModel
 import com.xfinity.blueprint_sample.mvp.presenter.DynamicScreenPresenter
-import com.xfinity.blueprint_sample.mvp.view.DynamicScreenView
+import com.xfinity.blueprint_sample.mvp.view.DefaultDynamicScreenView
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -37,7 +37,7 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class DynamicScreenPresenterTest {
     @Mock private lateinit var dynamicScreenModel: DynamicScreenModel
-    @Mock private lateinit var mainView: DynamicScreenView
+    @Mock private lateinit var mainView: DefaultDynamicScreenView
     @Mock private lateinit var emptyHeaderModel: HeaderModel
     @Mock private lateinit var footerModel: FooterModel
 
