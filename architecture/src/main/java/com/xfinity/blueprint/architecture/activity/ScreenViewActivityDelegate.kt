@@ -7,8 +7,8 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dapp.blueprint_architecture.R
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
+import com.xfinity.blueprint.architecture.R
 import com.xfinity.blueprint.architecture.ToolbarScreenViewArchitect
 import com.xfinity.blueprint.architecture.fragment.ScreenViewFragment
 

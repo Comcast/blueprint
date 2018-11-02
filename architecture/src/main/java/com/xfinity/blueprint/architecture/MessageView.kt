@@ -12,9 +12,9 @@ class SnackbarMessageView(private val anchorView: View) : MessageView {
                              actionLabelClickedBehavior: (() -> Unit)?,
                              duration: MessageDuration) {
 
-        snackbar = Snackbar.make(anchorView, msg, duration.length)
+        snackbar = Snackbar.make(anchorView, msg, duration.length())
         if (actionLabel != null && actionLabelClickedBehavior != null) {
-            snackbar?.setAction(actionLabel, { actionLabelClickedBehavior.invoke() })
+            snackbar?.setAction(actionLabel) { actionLabelClickedBehavior.invoke() }
         }
         snackbar?.view?.announceForAccessibility(msg)
         snackbar?.show()
@@ -25,10 +25,18 @@ class SnackbarMessageView(private val anchorView: View) : MessageView {
     }
 }
 
-enum class MessageDuration(val length: Int) {
-    SHORT(Snackbar.LENGTH_SHORT),
-    LONG(Snackbar.LENGTH_LONG),
-    INDEFINITE(Snackbar.LENGTH_INDEFINITE)
+fun MessageDuration.length(): Int {
+    return when (this) {
+        MessageDuration.SHORT -> Snackbar.LENGTH_SHORT
+        MessageDuration.LONG -> Snackbar.LENGTH_LONG
+        MessageDuration.INDEFINITE -> Snackbar.LENGTH_INDEFINITE
+    }
+}
+
+enum class MessageDuration {
+    SHORT,
+    LONG,
+    INDEFINITE
 }
 
 interface MessageView {

@@ -10,6 +10,8 @@ import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 abstract class ScreenViewActivity : AppCompatActivity() {
     @Suppress("MemberVisibilityCanBePrivate")
     abstract var architect: DefaultScreenViewArchitect
+    abstract val presenter: ScreenPresenter<DefaultScreenView>
+
     private val screenViewActivityDelegate = ScreenViewActivityDelegate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +32,4 @@ abstract class ScreenViewActivity : AppCompatActivity() {
             (presenter as EventHandlingScreenPresenter).pause()
         }
     }
-
-    abstract val presenter: ScreenPresenter<DefaultScreenView>
 }

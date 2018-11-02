@@ -4,7 +4,6 @@ import `in`.srain.cube.views.ptr.PtrClassicFrameLayout
 import android.support.v7.app.ActionBar
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.dapp.blueprint_architecture.R
 import com.xfinity.blueprint.ComponentRegistry
 import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint.view.ScreenViewDelegate

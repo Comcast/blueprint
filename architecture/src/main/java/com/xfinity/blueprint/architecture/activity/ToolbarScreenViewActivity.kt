@@ -10,6 +10,8 @@ import com.xfinity.blueprint.architecture.ToolbarScreenViewArchitect
 abstract class ToolbarScreenViewActivity : AppCompatActivity() {
     @Suppress("MemberVisibilityCanBePrivate")
     abstract var architect: ToolbarScreenViewArchitect
+    abstract val presenter: ScreenPresenter<ToolbarScreenView>
+
     private val screenViewActivityDelegate = ScreenViewActivityDelegate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +32,4 @@ abstract class ToolbarScreenViewActivity : AppCompatActivity() {
             (presenter as EventHandlingScreenPresenter).pause()
         }
     }
-
-    abstract val presenter: ScreenPresenter<ToolbarScreenView>
 }

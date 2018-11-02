@@ -22,6 +22,7 @@ import com.xfinity.blueprint_sample.ResourceProvider
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -55,10 +56,9 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
             screenComponents.add(Component(model.headerModel, AppComponentRegistry.HeaderView_VIEW_TYPE))
 
             if (!model.headerModel.enabled) {
-                screenComponents.add(Component(object : ComponentModel {},
-                        AppComponentRegistry.LoadingDotsView_VIEW_TYPE, DefaultComponentPresenter()))
+                screenComponents.add(Component(AppComponentRegistry.LoadingDotsView_VIEW_TYPE))
 
-                Observable.interval(0, 3000, TimeUnit.MILLISECONDS)
+                Completable.complete().delay(3000, TimeUnit.MILLISECONDS)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
@@ -84,10 +84,9 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
 
 
         if (model.headerModel.enabled && !model.footerModel.enabled) {
-            screenComponents.add(Component(object : ComponentModel {},
-                    AppComponentRegistry.LoadingDotsView_VIEW_TYPE, DefaultComponentPresenter()))
+            screenComponents.add(Component(AppComponentRegistry.LoadingDotsView_VIEW_TYPE))
 
-            Observable.interval(0, 3000, TimeUnit.MILLISECONDS)
+            Completable.complete().delay(3000, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
