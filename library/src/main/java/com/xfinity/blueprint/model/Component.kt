@@ -16,6 +16,14 @@ import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 
 interface ComponentModel
 
+/**
+ * StaticComponent are Components that have no Model or Presentation, just a layout that needs to be inflated and added.
+ * Having a Model with no data will cause the DiffUtil Callback to always flag a Component as "new" and re-add it whenever
+ * the screen is presented, which can cause blinking and other UI artifacts.  We'll use StaticComponent to add a default
+ * Model that contains the viewType so that these types of Components are ignored in the Diff calculation.
+ */
+data class StaticComponentModel(val viewType: Int) : ComponentModel
+
 data class Component(val model: ComponentModel,
                      val viewType: Int,
                      val presenter: ComponentPresenter<*, *>? = null) {
@@ -24,5 +32,5 @@ data class Component(val model: ComponentModel,
      *  Alternate constructor for creating components that are just a static view, with no presentation necessary.
      *  Meant for things like dividers, headers, footers, etc.
      */
-    constructor(viewType: Int) : this(object: ComponentModel {}, viewType, DefaultComponentPresenter())
+    constructor(viewType: Int) : this(StaticComponentModel(viewType), viewType, DefaultComponentPresenter())
 }
