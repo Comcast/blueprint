@@ -117,7 +117,8 @@ open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
 
 }
 
-class DefaultComponentDiffCallback(val oldComponents: List<Component>, val newComponents: List<Component>) : DiffUtil.Callback() {
+open class DefaultComponentDiffCallback(protected val oldComponents: List<Component>,
+                                        protected val newComponents: List<Component>) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return (oldComponents[oldItemPosition].viewType == newComponents[newItemPosition].viewType)
                 && areContentsTheSame(oldItemPosition, newItemPosition)
