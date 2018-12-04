@@ -20,7 +20,7 @@ class ScreenViewActivityDelegate {
 
     fun onCreate(activity: ToolbarScreenViewActivity, architect: ToolbarScreenViewArchitect)  {
         setupViews(activity)
-        architect.initBlueprint(activity.findViewById(android.R.id.content), activity.presenter)
+        architect.initBlueprint(activity.findViewById(android.R.id.content), activity.presenter, activity.supportActionBar)
     }
 
     fun setupViews(activity: AppCompatActivity) {
