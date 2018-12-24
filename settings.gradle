@@ -1,1 +1,1 @@
-include ':app', ':library', ':compiler', ':blueprint-annotations', ':architecture'
+include ':app', ':bootstrap', ':library', ':compiler', ':blueprint-annotations', ':architecture'

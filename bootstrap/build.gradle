@@ -1,0 +1,89 @@
+/*
+ *
+ *  * Copyright 2018 Mark Dappollone
+ *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *
+ *
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+kapt {
+    correctErrorTypes = true
+}
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.xfinity.blueprint.bootstrap"
+        minSdkVersion 17
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    final MOSHI_VERSION = "1.6.0"
+    final DAGGER_VERSION = "2.16"
+    final BLUEPRINT_VERSION = "1.2.3"
+
+    implementation fileTree(dir: 'libs', include: ['*.jar']),
+                   'com.android.support:appcompat-v7:27.1.1',
+                   'com.android.support:design:27.1.1',
+                   'com.android.support.constraint:constraint-layout:1.1.2',
+                   'com.android.support:support-vector-drawable:27.1.1',
+                   'com.squareup.retrofit2:retrofit:2.4.0',
+                   'com.squareup.retrofit2:adapter-rxjava2:2.4.0',
+                   'io.reactivex.rxjava2:rxjava:2.1.16',
+                   'io.reactivex.rxjava2:rxandroid:2.0.2',
+                   'com.jakewharton.timber:timber:4.7.1',
+                   "com.google.dagger:dagger-android:$DAGGER_VERSION",
+                   "com.google.dagger:dagger-android-support:$DAGGER_VERSION",
+                   "com.xfinity:blueprint-library:$BLUEPRINT_VERSION",
+                   "com.xfinity:blueprint-annotations:$BLUEPRINT_VERSION",
+                   "com.xfinity:blueprint-architecture:$BLUEPRINT_VERSION",
+                   'com.xfinity:loadingdots:1.0.2'
+
+
+    implementation("com.squareup.moshi:moshi:$MOSHI_VERSION", {
+        exclude group: 'com.squareup.retrofit2', module: 'retrofit'
+    })
+    implementation("com.squareup.moshi:moshi-kotlin:$MOSHI_VERSION", {
+        exclude group: 'com.squareup.retrofit2', module: 'retrofit'
+    })
+    implementation('com.squareup.retrofit2:converter-moshi:2.4.0', {
+        exclude group: 'com.squareup.retrofit2', module: 'retrofit'
+    })
+
+    kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION",
+         "com.google.dagger:dagger-android-processor:$DAGGER_VERSION",
+         "com.xfinity:blueprint-compiler:$BLUEPRINT_VERSION"
+
+    testImplementation 'junit:junit:4.12',
+                       "org.mockito:mockito-core:2.+"
+    
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
+}
