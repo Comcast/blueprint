@@ -12,9 +12,9 @@
 package com.xfinity.blueprint_sample
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -47,8 +47,8 @@ class DynamicScreenActivity : AppCompatActivity(), DynamicScreenView {
         setContentView(R.layout.activity_main)
 
         content = findViewById(R.id.content)
-        val recyclerView = findViewById(R.id.recycler_view) as RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val recyclerView = findViewById(R.id.recycler_view) as androidx.recyclerview.widget.RecyclerView
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
 
         presenter.attachView(mainScreenView)
         presenter.present()

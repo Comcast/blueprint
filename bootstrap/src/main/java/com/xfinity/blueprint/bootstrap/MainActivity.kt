@@ -15,7 +15,7 @@
 package com.xfinity.blueprint.bootstrap
 
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.xfinity.blueprint.bootstrap.screen.presenter.MainPresenter
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint.architecture.activity.ScreenViewActivity

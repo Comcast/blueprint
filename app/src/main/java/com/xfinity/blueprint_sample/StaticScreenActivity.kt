@@ -12,9 +12,9 @@
 package com.xfinity.blueprint_sample
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
@@ -43,7 +43,7 @@ class StaticScreenActivity : AppCompatActivity() {
         content.setBackgroundColor(resources.getColor(android.R.color.white))
 
         val recyclerView = findViewById(R.id.recycler_view) as RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
 
         presenter.attachView(screenViewDelegate)
         presenter.present()

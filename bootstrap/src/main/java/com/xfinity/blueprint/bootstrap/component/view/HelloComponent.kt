@@ -14,7 +14,7 @@
 
 package com.xfinity.blueprint.bootstrap.component.view
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.xfinity.blueprint_annotations.ComponentViewClass

@@ -11,18 +11,18 @@
 
 package com.xfinity.blueprint.view
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.ComponentPresenter
 
-interface ComponentViewBinder<in T : RecyclerView.ViewHolder> {
+interface ComponentViewBinder<in T : androidx.recyclerview.widget.RecyclerView.ViewHolder> {
     fun bind(componentPresenter: ComponentPresenter<ComponentView<*>, ComponentModel>,
              componentView: ComponentView<out T>, viewHolder: T, position: Int)
 }
 
-class ClickableComponentViewBinder : ComponentViewBinder<RecyclerView.ViewHolder> {
+class ClickableComponentViewBinder : ComponentViewBinder<androidx.recyclerview.widget.RecyclerView.ViewHolder> {
     override fun bind(componentPresenter: ComponentPresenter<ComponentView<*>, ComponentModel>,
-                      componentView: ComponentView<out RecyclerView.ViewHolder>,
-                      viewHolder: RecyclerView.ViewHolder, position: Int) {
+                      componentView: ComponentView<out androidx.recyclerview.widget.RecyclerView.ViewHolder>,
+                      viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
     }
 }

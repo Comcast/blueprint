@@ -1,7 +1,7 @@
 package com.xfinity.blueprint.architecture.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +11,7 @@ import com.xfinity.blueprint.architecture.DefaultScreenView
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint.architecture.activity.ScreenViewFragmentDelegate
 
-abstract class ScreenViewFragment : Fragment() {
+abstract class ScreenViewFragment : androidx.fragment.app.Fragment() {
     abstract var architect: DefaultScreenViewArchitect
     private val screenViewFragmentDelegate = ScreenViewFragmentDelegate()
 

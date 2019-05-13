@@ -1,6 +1,6 @@
 package com.xfinity.blueprint.architecture
 
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.view.View
 
 class SnackbarMessageView(private val anchorView: View) : MessageView {

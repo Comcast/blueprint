@@ -1,9 +1,9 @@
 package com.xfinity.blueprint.architecture.activity
 
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,16 +29,16 @@ class ScreenViewActivityDelegate {
         activity.setSupportActionBar(toolbar)
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val recyclerView = activity.findViewById<RecyclerView>(R.id.recycler_view)
-        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val recyclerView = activity.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_view)
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
     }
 }
 
 class ScreenViewFragmentDelegate {
     fun onCreateView(fragment: ScreenViewFragment, inflater: LayoutInflater, container: ViewGroup?, architect: DefaultScreenViewArchitect) : View {
         val view = inflater.inflate(R.layout.screen_view_fragment, container, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
-        recyclerView.layoutManager = LinearLayoutManager(fragment.context, LinearLayoutManager.VERTICAL, false)
+        val recyclerView = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_view)
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(fragment.context, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
 
         architect.initBlueprint(view.findViewById(R.id.container), fragment.presenter)
         return view

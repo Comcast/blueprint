@@ -1,7 +1,7 @@
 package com.xfinity.blueprint.architecture
 
-import android.support.annotation.DrawableRes
-import android.support.v7.app.ActionBar
+import androidx.annotation.DrawableRes
+import androidx.appcompat.app.ActionBar
 import com.xfinity.blueprint.view.ScreenView
 import com.xfinity.blueprint.view.ScreenViewDelegate
 
