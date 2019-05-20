@@ -257,7 +257,7 @@ public class BlueprintProcessor extends AbstractProcessor {
     }
 
     private boolean isValidClass(TypeElement annotatedClass) {
-        TypeElement applicationTypeElement = processingEnv.getElementUtils().getTypeElement("android.support.v7.widget.RecyclerView.ViewHolder");
+        TypeElement applicationTypeElement = processingEnv.getElementUtils().getTypeElement("androidx.recyclerview.widget.RecyclerView.ViewHolder");
         return processingEnv.getTypeUtils().isAssignable(annotatedClass.asType(), applicationTypeElement.asType());
     }
 

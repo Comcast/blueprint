@@ -1,8 +1,8 @@
 package com.xfinity.blueprint.architecture
 
 import `in`.srain.cube.views.ptr.PtrClassicFrameLayout
-import android.support.v7.app.ActionBar
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.ActionBar
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.xfinity.blueprint.ComponentRegistry
 import com.xfinity.blueprint.presenter.ScreenPresenter
@@ -17,7 +17,7 @@ abstract class DefaultArchitect<out T : DefaultScreenView>(override val componen
     : Architect<ScreenPresenter<T>> {
     lateinit var container: View
     private lateinit var loadingDots: View
-    protected lateinit var recyclerView: RecyclerView
+    protected lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
     lateinit var screenViewDelegate: ScreenViewDelegate
     var ptrFrame: PtrClassicFrameLayout? = null
     var supportActionBar: ActionBar? = null
@@ -25,7 +25,7 @@ abstract class DefaultArchitect<out T : DefaultScreenView>(override val componen
     override fun initBlueprint(layout: View, presenter: ScreenPresenter<T>, actionBar: ActionBar?) {
         container = layout.findViewById(R.id.container)
         loadingDots = layout.findViewById(R.id.loading_dots)
-        recyclerView = layout.findViewById(R.id.recycler_view) as RecyclerView
+        recyclerView = layout.findViewById(R.id.recycler_view) as androidx.recyclerview.widget.RecyclerView
         ptrFrame = layout.findViewById(R.id.ptr_frame)
         supportActionBar = actionBar
 

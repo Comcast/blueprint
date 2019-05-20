@@ -249,7 +249,7 @@ final class CodeGenerator {
                                  .addAnnotation(notNullAnnotation).build();
 
             ParameterSpec viewHolderParam =
-                    ParameterSpec.builder(ClassName.get("android.support.v7.widget", "RecyclerView").nestedClass("ViewHolder"),
+                    ParameterSpec.builder(ClassName.get("androidx.recyclerview.widget", "RecyclerView").nestedClass("ViewHolder"),
                                           "viewHolder")
                                  .addAnnotation(notNullAnnotation).build();
 

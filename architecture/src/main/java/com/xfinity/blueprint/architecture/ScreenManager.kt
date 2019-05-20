@@ -1,8 +1,8 @@
 package com.xfinity.blueprint.architecture
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
-class RecyclerViewScreenManager(private val recyclerView: RecyclerView) : ScreenManager {
+class RecyclerViewScreenManager(private val recyclerView: androidx.recyclerview.widget.RecyclerView) : ScreenManager {
     override fun setBackgroundColor(color: Int) {
         recyclerView.setBackgroundColor(color)
     }

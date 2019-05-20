@@ -1,7 +1,7 @@
 package com.xfinity.blueprint.architecture.activity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
 import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint.architecture.ToolbarScreenView

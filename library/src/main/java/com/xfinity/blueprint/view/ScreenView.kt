@@ -11,7 +11,7 @@
 
 package com.xfinity.blueprint.view
 
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.DiffUtil
 import com.xfinity.blueprint.model.Component
 
 /**
