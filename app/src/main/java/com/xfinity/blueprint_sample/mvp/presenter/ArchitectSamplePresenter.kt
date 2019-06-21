@@ -46,6 +46,17 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
      * Present the overall screen, by adding Components
      */
     override fun present() {
+        view.enableSwipeToDelete(
+            resourceProvider.drawables.icDelete,
+            resourceProvider.colors.disabledBg,
+            AppComponentRegistry.DataItemView_VIEW_TYPE,
+            AppComponentRegistry.FooterView_VIEW_TYPE
+        )
+
+        view.setOnSwipeToDeleteBehavior { position ->
+            view.showMessage("Position: $position removed!")
+        }
+
         view.setOnRefreshBehavior {
             present()
             view.finishRefresh()
