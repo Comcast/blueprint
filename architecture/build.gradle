@@ -25,11 +25,11 @@ android {
 }
 
 dependencies {
-    def ANDROID_SUPPORT_LIB_VERSION = "28.0.0"
+    def ANDROID_SUPPORT_LIB_VERSION = "1.0.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar']),
                    project(':library'),
-            'androidx.appcompat:appcompat:1.0.0',
+            "androidx.appcompat:appcompat:$ANDROID_SUPPORT_LIB_VERSION",
             'com.google.android.material:material:1.0.0',
             'androidx.constraintlayout:constraintlayout:1.1.3',
                    'in.srain.cube:ultra-ptr:1.0.11',
