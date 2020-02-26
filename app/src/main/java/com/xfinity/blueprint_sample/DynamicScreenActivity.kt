@@ -12,13 +12,12 @@
 package com.xfinity.blueprint_sample
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
@@ -37,8 +36,8 @@ class DynamicScreenActivity : AppCompatActivity(), DynamicScreenView {
     private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
     private val presenter = DynamicScreenPresenter(componentEventManager)
 
-    private val screenViewDelegate: ScreenViewDelegate = ScreenViewDelegate(componentRegistry)
-    private val mainScreenView = DefaultDynamicScreenView(screenViewDelegate, this)
+    private lateinit var screenViewDelegate: ScreenViewDelegate
+    private lateinit var mainScreenView: DefaultDynamicScreenView
 
     lateinit var content : View
 
@@ -50,6 +49,8 @@ class DynamicScreenActivity : AppCompatActivity(), DynamicScreenView {
         val recyclerView = findViewById(R.id.recycler_view) as androidx.recyclerview.widget.RecyclerView
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
 
+        screenViewDelegate = ScreenViewDelegate(componentRegistry, null, recyclerView)
+        mainScreenView = DefaultDynamicScreenView(screenViewDelegate, this)
         presenter.attachView(mainScreenView)
         presenter.present()
 

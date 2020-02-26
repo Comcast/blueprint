@@ -12,10 +12,10 @@
 package com.xfinity.blueprint_sample
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
@@ -32,7 +32,7 @@ class StaticScreenActivity : AppCompatActivity() {
     private val componentRegistry = AppComponentRegistry(componentEventManager, 0, "defaultDataItem")
     private val presenter = StaticScreenPresenter()
 
-    private val screenViewDelegate: ScreenViewDelegate = ScreenViewDelegate(componentRegistry)
+    private lateinit var screenViewDelegate: ScreenViewDelegate
     lateinit var content : View
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +44,8 @@ class StaticScreenActivity : AppCompatActivity() {
 
         val recyclerView = findViewById(R.id.recycler_view) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+
+        screenViewDelegate = ScreenViewDelegate(componentRegistry, null, recyclerView)
 
         presenter.attachView(screenViewDelegate)
         presenter.present()
