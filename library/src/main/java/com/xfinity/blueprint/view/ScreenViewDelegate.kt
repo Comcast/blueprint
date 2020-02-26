@@ -11,14 +11,17 @@
 
 package com.xfinity.blueprint.view
 
-import androidx.recyclerview.widget.DiffUtil
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.xfinity.blueprint.ComponentAdapter
 import com.xfinity.blueprint.ComponentRegistry
 import com.xfinity.blueprint.model.Component
 
 open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
-                              private var loadingView: View? = null) : ScreenView {
+                              private var loadingView: View? = null,
+                              private val recyclerView: RecyclerView) : ScreenView {
     val componentAdapter = ComponentAdapter(componentRegistry)
 
     override fun refresh() {
@@ -92,7 +95,14 @@ open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
      * @param newComponents A List of the components the screen should be updated to display
      */
     override fun updateComponents(newComponents: List<Component>) {
-        updateComponents(newComponents, { oldComponents -> DefaultComponentDiffCallback(oldComponents, newComponents) })
+        val behavior = {
+            updateComponents(newComponents) { oldComponents -> DefaultComponentDiffCallback(oldComponents, newComponents) }
+        }
+        if (!recyclerView.isComputingLayout) {
+            behavior.invoke()
+            return
+        }
+        recyclerView.addOnScrollListener(RecyclerViewScrollHandler(behavior))
     }
 
     /**
@@ -115,6 +125,14 @@ open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
         diff.dispatchUpdatesTo(componentAdapter)
     }
 
+    private inner class RecyclerViewScrollHandler(private val behavior: () -> Unit) : RecyclerView.OnScrollListener() {
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == SCROLL_STATE_IDLE && !recyclerView.isComputingLayout) {
+                behavior.invoke()
+            }
+        }
+    }
 }
 
 open class DefaultComponentDiffCallback(protected val oldComponents: List<Component>,
