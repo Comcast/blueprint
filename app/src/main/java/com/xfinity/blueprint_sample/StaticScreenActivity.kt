@@ -16,6 +16,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.xfinity.blueprint.ViewAdapter
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
@@ -45,7 +46,7 @@ class StaticScreenActivity : AppCompatActivity() {
         val recyclerView = findViewById(R.id.recycler_view) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
 
-        screenViewDelegate = ScreenViewDelegate(componentRegistry, null, recyclerView)
+        screenViewDelegate = ScreenViewDelegate(componentRegistry, ViewAdapter(recyclerView, null))
 
         presenter.attachView(screenViewDelegate)
         presenter.present()
