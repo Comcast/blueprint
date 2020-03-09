@@ -12,9 +12,14 @@ class RecyclerViewScreenManager(private val recyclerView: androidx.recyclerview.
             recyclerView.smoothScrollToPosition(it.itemCount - 1)
         }
     }
+
+    override fun scrollToTop() {
+        recyclerView.smoothScrollToPosition(0)
+    }
 }
 
 interface ScreenManager {
     fun setBackgroundColor(color: Int)
     fun scrollToBottom()
+    fun scrollToTop()
 }
