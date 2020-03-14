@@ -16,6 +16,6 @@ import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.view.ComponentView
 
 
-interface EventEmittingComponentPresenter<in V : ComponentView<*>, in M : ComponentModel> : ComponentPresenter<V, M> {
+interface EventEmittingComponentPresenter<V : ComponentView<*>, M : ComponentModel> : ComponentPresenter<V, M> {
     val componentEventManager: ComponentEventManager
 }

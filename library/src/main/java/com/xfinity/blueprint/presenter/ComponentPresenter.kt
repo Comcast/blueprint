@@ -14,6 +14,6 @@ package com.xfinity.blueprint.presenter
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.view.ComponentView
 
-interface ComponentPresenter<in V : ComponentView<*>, in M : ComponentModel> {
+interface ComponentPresenter<V : ComponentView<*>, M : ComponentModel> {
     fun present(view: V, model: M)
 }
