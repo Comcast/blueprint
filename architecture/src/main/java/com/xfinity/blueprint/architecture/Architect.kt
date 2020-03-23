@@ -4,7 +4,6 @@ import `in`.srain.cube.views.ptr.PtrClassicFrameLayout
 import android.view.View
 import androidx.appcompat.app.ActionBar
 import com.xfinity.blueprint.ComponentRegistry
-import com.xfinity.blueprint.ViewAdapter
 import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint.view.ScreenViewDelegate
 
@@ -29,7 +28,7 @@ abstract class DefaultArchitect<out T : DefaultScreenView>(override val componen
         ptrFrame = layout.findViewById(R.id.ptr_frame)
         supportActionBar = actionBar
 
-        screenViewDelegate = ScreenViewDelegate(componentRegistry, ViewAdapter(recyclerView, loadingDots))
+        screenViewDelegate = ScreenViewDelegate(componentRegistry, loadingDots, recyclerView)
 
         val screenView = getScreenView()
         presenter.attachView(screenView)

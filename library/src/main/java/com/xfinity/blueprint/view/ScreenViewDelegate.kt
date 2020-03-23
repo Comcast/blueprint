@@ -11,14 +11,16 @@
 
 package com.xfinity.blueprint.view
 
+import android.view.View
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.xfinity.blueprint.ComponentAdapter
 import com.xfinity.blueprint.ComponentRegistry
-import com.xfinity.blueprint.ViewRegistry
 import com.xfinity.blueprint.model.Component
 
 open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
-                              private val viewRegistry: ViewRegistry) : ScreenView {
+                              private var loadingView: View? = null,
+                              private val recyclerView: RecyclerView) : ScreenView {
     val componentAdapter = ComponentAdapter(componentRegistry)
 
     override fun refresh() {
@@ -76,11 +78,11 @@ open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
     }
 
     override fun showLoading() {
-        viewRegistry.showLoading()
+        loadingView?.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        viewRegistry.hideLoading()
+        loadingView?.visibility = View.GONE
     }
 
     /**
@@ -92,8 +94,13 @@ open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
      * @param newComponents A List of the components the screen should be updated to display
      */
     override fun updateComponents(newComponents: List<Component>) {
-        viewRegistry.updateComponents(newComponents) {
+        val updateBehavior = {
             updateComponents(newComponents) { oldComponents -> DefaultComponentDiffCallback(oldComponents, newComponents) }
+        }
+        if (!recyclerView.isComputingLayout) {
+            updateBehavior.invoke()
+        } else {
+            recyclerView.addOnScrollListener(ComponentUpdateScheduler(updateBehavior))
         }
     }
 
@@ -115,6 +122,16 @@ open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
         componentAdapter.clear(false)
         componentAdapter.addComponents(newComponents, false)
         diff.dispatchUpdatesTo(componentAdapter)
+    }
+
+    private inner class ComponentUpdateScheduler(private val updateBehavior: () -> Unit) : RecyclerView.OnScrollListener() {
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && !recyclerView.isComputingLayout) {
+                updateBehavior.invoke()
+                recyclerView.removeOnScrollListener(this)
+            }
+        }
     }
 }
 
