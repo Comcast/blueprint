@@ -11,12 +11,11 @@
 
 package com.xfinity.blueprint_sample.mvp.view
 
-import androidx.recyclerview.widget.RecyclerView
-import android.view.View
 import android.widget.TextView
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_sample.R
+import com.xfinity.blueprint_sample.databinding.DataItemViewBinding
 
 @ComponentViewClass(viewHolderClass = DataItemViewHolder::class)
 class DataItemView : DataItemViewBase() {
@@ -26,6 +25,6 @@ class DataItemView : DataItemViewBase() {
 }
 
 @ComponentViewHolder(viewType = R.layout.data_item_view)
-class DataItemViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-    val data : TextView = itemView.findViewById(R.id.data) as TextView
+class DataItemViewHolder(itemView: DataItemViewBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView.root) {
+    val data: TextView = itemView.data
 }

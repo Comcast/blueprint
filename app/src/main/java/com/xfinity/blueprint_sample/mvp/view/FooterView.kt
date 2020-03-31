@@ -11,17 +11,17 @@
 
 package com.xfinity.blueprint_sample.mvp.view
 
-import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_sample.R
+import com.xfinity.blueprint_sample.databinding.FooterViewBinding
 
 @ComponentViewClass(viewHolderClass = FooterViewHolder::class)
 class FooterView : FooterViewBase()
 
 @ComponentViewHolder(viewType = R.layout.footer_view)
-class FooterViewHolder(itemView: android.view.View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-    val footer : TextView = itemView.findViewById(R.id.footer) as TextView
+class FooterViewHolder(itemView: FooterViewBinding) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView.root) {
+    val footer: TextView = itemView.footer
 }
 

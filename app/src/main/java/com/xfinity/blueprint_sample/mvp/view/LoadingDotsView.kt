@@ -12,7 +12,6 @@
 package com.xfinity.blueprint_sample.mvp.view
 
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.ComponentPresenter
 import com.xfinity.blueprint.view.ComponentView
@@ -21,12 +20,13 @@ import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_annotations.ComponentViewHolderBinder
 import com.xfinity.blueprint_sample.R
+import com.xfinity.blueprint_sample.databinding.LoadingDotsViewBinding
 
 @ComponentViewClass(viewHolderClass = LoadingDotsViewHolder::class)
 class LoadingDotsView : LoadingDotsViewBase()
 
 @ComponentViewHolder(viewType = R.layout.loading_dots_view)
-class LoadingDotsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+class LoadingDotsViewHolder(itemView: LoadingDotsViewBinding) : RecyclerView.ViewHolder(itemView.root)
 
 @ComponentViewHolderBinder
 class LoadingDotsViewBinder : ComponentViewBinder<LoadingDotsViewHolder> {

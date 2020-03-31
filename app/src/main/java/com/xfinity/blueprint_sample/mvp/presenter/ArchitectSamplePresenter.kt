@@ -66,7 +66,8 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
                             for (dataItemModel in model.dataItemModels) {
                                 dataItemModel.enabled = true
                             }
-                            view.setBackgroundColor(resourceProvider.colors.white)
+//                            view.setBackgroundColor(resourceProvider.colors.white)
+                            // TODO RP doesn't seem to be compatible with latest gradle
                             present()
                             view.onComponentChanged(headerPosition)
                         }

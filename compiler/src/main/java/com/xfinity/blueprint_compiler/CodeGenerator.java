@@ -231,13 +231,15 @@ final class CodeGenerator {
             ParameterSpec viewGroupParam = ParameterSpec.builder(ClassName.get("android.view", "ViewGroup"), "parent")
                                                         .addAnnotation(notNullAnnotation).build();
 
+            String binding = "com.xfinity.blueprint_sample.databinding." + componentViewInfo.viewTypeName + "Binding"; // for test purposes
+            // TODO should client annotate their application with the package info?
             MethodSpec onCreateViewHolderMethod =
                     MethodSpec.methodBuilder("onCreateViewHolder")
                               .addModifiers(PUBLIC)
                               .addAnnotation(notNullAnnotation)
                               .addAnnotation(Override.class)
                               .addParameter(viewGroupParam)
-                              .addStatement("android.view.View view = android.view.LayoutInflater.from(parent.getContext()).inflate(getViewType(), parent, false)")
+                              .addStatement(binding + " view = " + binding + ".inflate(android.view.LayoutInflater.from(parent.getContext()), parent, false)")
                               .addStatement("return new " + componentViewInfo.viewHolder + "(view)")
                               .returns(viewHolderTypeName)
                               .build();
