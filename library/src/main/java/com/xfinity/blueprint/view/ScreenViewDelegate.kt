@@ -11,14 +11,16 @@
 
 package com.xfinity.blueprint.view
 
-import androidx.recyclerview.widget.DiffUtil
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.xfinity.blueprint.ComponentAdapter
 import com.xfinity.blueprint.ComponentRegistry
 import com.xfinity.blueprint.model.Component
 
 open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
-                              private var loadingView: View? = null) : ScreenView {
+                              private var loadingView: View? = null,
+                              private val recyclerView: RecyclerView) : ScreenView {
     val componentAdapter = ComponentAdapter(componentRegistry)
 
     override fun refresh() {
@@ -92,7 +94,7 @@ open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
      * @param newComponents A List of the components the screen should be updated to display
      */
     override fun updateComponents(newComponents: List<Component>) {
-        updateComponents(newComponents, { oldComponents -> DefaultComponentDiffCallback(oldComponents, newComponents) })
+        updateComponents(newComponents) { oldComponents -> DefaultComponentDiffCallback(oldComponents, newComponents) }
     }
 
     /**
@@ -112,9 +114,28 @@ open class ScreenViewDelegate(componentRegistry: ComponentRegistry,
 
         componentAdapter.clear(false)
         componentAdapter.addComponents(newComponents, false)
-        diff.dispatchUpdatesTo(componentAdapter)
+
+        val updateBehavior = {
+            diff.dispatchUpdatesTo(componentAdapter)
+        }
+
+        if (!recyclerView.isComputingLayout) {
+            updateBehavior.invoke()
+        } else {
+            //If we dipatch updates while the recyclerview is computing, the app will crash
+            recyclerView.addOnScrollListener(OnIdleScrollListener(updateBehavior))
+        }
     }
 
+    private inner class OnIdleScrollListener(private val behavior: () -> Unit) : RecyclerView.OnScrollListener() {
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && !recyclerView.isComputingLayout) {
+                behavior.invoke()
+                recyclerView.removeOnScrollListener(this)
+            }
+        }
+    }
 }
 
 open class DefaultComponentDiffCallback(protected val oldComponents: List<Component>,
