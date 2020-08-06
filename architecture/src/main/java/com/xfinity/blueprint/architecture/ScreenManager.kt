@@ -1,12 +1,17 @@
 package com.xfinity.blueprint.architecture
 
 import androidx.recyclerview.widget.RecyclerView
+import android.graphics.drawable.Drawable
 
-class RecyclerViewScreenManager(private val recyclerView: androidx.recyclerview.widget.RecyclerView) : ScreenManager {
+class RecyclerViewScreenManager(private val recyclerView: RecyclerView) : ScreenManager {
     override fun setBackgroundColor(color: Int) {
         recyclerView.setBackgroundColor(color)
     }
 
+    override fun setBackgroundImage(drawable: Drawable) {
+        recyclerView.background = drawable
+    }
+    
     override fun scrollToBottom() {
         recyclerView.adapter?.let {
             recyclerView.smoothScrollToPosition(it.itemCount - 1)
@@ -20,6 +25,7 @@ class RecyclerViewScreenManager(private val recyclerView: androidx.recyclerview.
 
 interface ScreenManager {
     fun setBackgroundColor(color: Int)
+    fun setBackgroundImage(drawable: Drawable)
     fun scrollToBottom()
     fun scrollToTop()
 }
