@@ -20,6 +20,14 @@ open class ToolbarScreenView(screenViewDelegate: ScreenViewDelegate, messageView
     fun setIcon(@DrawableRes resId: Int) {
         actionBar?.setIcon(resId)
     }
+          
+    fun showToolBar() {
+        actionBar?.show()
+    }
+
+    fun hideToolBar() {
+        actionBar?.hide()
+    }
 }
 
 interface MessageHandlingScreenView : ScreenView, MessageView, RefreshHandler
