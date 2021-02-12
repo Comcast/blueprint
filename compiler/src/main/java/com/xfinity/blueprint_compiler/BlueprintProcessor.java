@@ -12,9 +12,9 @@
 package com.xfinity.blueprint_compiler;
 
 import com.google.auto.service.AutoService;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.kotlinpoet.ClassName;
+import com.squareup.kotlinpoet.TypeName;
+import com.squareup.kotlinpoet.FileSpec;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Type;
 import com.sun.tools.javac.util.Pair;
@@ -31,7 +31,6 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.MirroredTypeException;
@@ -219,7 +218,8 @@ public class BlueprintProcessor extends AbstractProcessor {
 
             List<Pair<TypeName, String>> ctorParams = annotatedCtor.params
                     .stream()
-                    .map(param -> new Pair<>(TypeName.get(param.type), param.name.toString())).collect(Collectors.toList());
+                    .map(param -> new Pair<TypeName, String>(new ClassName(param.packge().name.toString(), param.name.toString()), param.name.toString())).collect(Collectors.toList());
+//                    .map(param -> new Pair<TypeName, String>(TypeName.get(param.type), param.name.toString())).collect(Collectors.toList());
 
             Symbol.ClassSymbol presenterClass = (Symbol.ClassSymbol) annotatedCtor.owner;
             defaultPresenterConstructorMap.put(presenterClass.fullname.toString(), ctorParams);
@@ -264,22 +264,25 @@ public class BlueprintProcessor extends AbstractProcessor {
     private void generateCode(String packageName, List<ComponentViewInfo> componentInfoList,
                               Map<String, List<Pair<TypeName, String>>> defaultPresenterContructorMap)
             throws IOException {
-        CodeGenerator codeGenerator =
-                new CodeGenerator(componentInfoList, defaultPresenterContructorMap);
-        TypeSpec generatedClass = codeGenerator.generateComponentRegistry();
+        CodeGeneratorKt codeGenerator =
+                new CodeGeneratorKt(componentInfoList, defaultPresenterContructorMap);
+        com.squareup.kotlinpoet.TypeSpec generatedClass = codeGenerator.generateComponentRegistry();
 
-        JavaFile javaFile = builder(packageName, generatedClass).build();
-        javaFile.writeTo(processingEnv.getFiler());
+        FileSpec kotlinFile = FileSpec.builder(packageName, generatedClass.getName()).addType(generatedClass).build();
+//        JavaFile javaFile = builder(packageName, generatedClass).build();
+        kotlinFile.writeTo(processingEnv.getFiler());
 
 
-        List<Pair<String, TypeSpec>> viewDelegates = codeGenerator.generateViewBaseClasses();
-        for (Pair<String, TypeSpec> viewDelegate : viewDelegates) {
-            JavaFile file = builder(viewDelegate.fst, viewDelegate.snd).build();
-            file.writeTo(processingEnv.getFiler());
+        List<Pair<String, com.squareup.kotlinpoet.TypeSpec>> viewDelegates = codeGenerator.generateViewBaseClasses();
+        for (Pair<String, com.squareup.kotlinpoet.TypeSpec> viewDelegate : viewDelegates) {
+            FileSpec viewDelegateKotlinnFile = FileSpec.builder(viewDelegate.fst, viewDelegate.snd.getName()).addType(viewDelegate.snd).build();
+
+//            JavaFile file = builder(viewDelegate.fst, viewDelegate.snd).build();
+            viewDelegateKotlinnFile.writeTo(processingEnv.getFiler());
         }
     }
 
-    class ComponentViewInfo {
+    public class ComponentViewInfo {
         final int viewType;
         final String viewHolder;
         String viewTypeName;
