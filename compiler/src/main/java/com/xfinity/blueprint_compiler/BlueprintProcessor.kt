@@ -220,7 +220,7 @@ class BlueprintProcessor : AbstractProcessor() {
 
     @Throws(IOException::class) private fun generateCode(packageName: String, componentInfoList: List<ComponentViewInfo>,
                                                          defaultPresenterContructorMap: Map<String, List<Pair<TypeName, String>>>) {
-        val codeGenerator = CodeGeneratorKt(componentInfoList, defaultPresenterContructorMap)
+        val codeGenerator = CodeGenerator(componentInfoList, defaultPresenterContructorMap)
         val generatedClass = codeGenerator.generateComponentRegistry()
 
         val kotlinFile = generatedClass.name?.let {

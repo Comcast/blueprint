@@ -14,8 +14,8 @@ import java.util.ArrayList
 import java.util.Arrays
 import java.util.Locale
 
-class CodeGeneratorKt(private val componentViewInfoList: List<BlueprintProcessor.ComponentViewInfo>? = null,
-                      private val defaultPresenterConstructorMap: Map<String, List<Pair<TypeName, String>>>? = null) {
+class CodeGenerator(private val componentViewInfoList: List<BlueprintProcessor.ComponentViewInfo>? = null,
+                    private val defaultPresenterConstructorMap: Map<String, List<Pair<TypeName, String>>>? = null) {
 
     fun generateComponentRegistry(): TypeSpec {
         val properties: MutableList<PropertySpec> = ArrayList()
@@ -44,7 +44,7 @@ class CodeGeneratorKt(private val componentViewInfoList: List<BlueprintProcessor
                     KModifier.FINAL).initializer(componentViewInfo.viewType.toString()).build()
             companionProperties.add(propertySpec)
 
-            componentViewWhenStatements.add("$viewTypeFieldName -> ${componentViewInfo.componentView}()\n")
+            componentViewWhenStatements.add("$viewTypeFieldName -> ${componentViewInfo.componentView}\n")
 
             if (componentViewInfo.defaultPresenter != null) {
                 getDefaultPresenterMethodbuilder1.addCode("""
