@@ -37,6 +37,7 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
 import javax.lang.model.type.MirroredTypeException
+import javax.tools.Diagnostic
 
 @AutoService(Processor::class)
 class BlueprintProcessor : AbstractProcessor() {
@@ -227,10 +228,13 @@ class BlueprintProcessor : AbstractProcessor() {
             FileSpec.builder(packageName, it).addType(generatedClass).build()
         }
 
+        processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "\n\n\n component registry code \n\n" +
+                "$generatedClass")
+
         try {
             kotlinFile?.writeTo(processingEnv.filer)
         } catch (e: Exception) {
-            e.printStackTrace()
+            processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, e.toString())
         }
 
         val viewDelegates = codeGenerator.generateViewBaseClasses()
@@ -246,14 +250,14 @@ class BlueprintProcessor : AbstractProcessor() {
         var componentView: String? = null
         var viewBinder: String? = null
         var children: Map<String, String>? = null
-        override fun equals(o: Any?): Boolean {
-            if (this === o) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
                 return true
             }
-            if (o == null || javaClass != o.javaClass) {
+            if (other == null || javaClass != other.javaClass) {
                 return false
             }
-            val that = o as ComponentViewInfo
+            val that = other as ComponentViewInfo
             return viewType == that.viewType
         }
 
