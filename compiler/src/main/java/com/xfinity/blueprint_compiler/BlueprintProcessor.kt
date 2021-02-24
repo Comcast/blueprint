@@ -14,6 +14,7 @@ import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeName
+import com.squareup.kotlinpoet.asTypeName
 import com.sun.tools.javac.code.Symbol.ClassSymbol
 import com.sun.tools.javac.code.Symbol.MethodSymbol
 import com.sun.tools.javac.code.Symbol.VarSymbol
@@ -179,7 +180,7 @@ class BlueprintProcessor : AbstractProcessor() {
             val annotatedCtor = annotatedElement as MethodSymbol
             val ctorParams: List<Pair<TypeName, String>> = annotatedCtor.params
                     .map { param: VarSymbol ->
-                        Pair<TypeName, String>(ClassName(param.packge().name.toString(), param.name.toString()), param.name.toString())
+                        Pair<TypeName, String>(param.type.asTypeName(), param.name.toString())
                     }
             val presenterClass = annotatedCtor.owner as ClassSymbol
             defaultPresenterConstructorMap[presenterClass.fullname.toString()] = ctorParams

@@ -102,23 +102,22 @@ class CodeGenerator(private val componentViewInfoList: List<BlueprintProcessor.C
         getDefaultPresenterMethodbuilder2.addCode("}\n")
 
         val componentRegistryConstructorBuilder = FunSpec.constructorBuilder()
-                .addModifiers(KModifier.PUBLIC)
         contructorArgs.sortWith(Comparator() { pair: Pair<TypeName, String>, pair1: Pair<TypeName, String> ->
             pair.fst.toString().compareTo(pair1.fst.toString(), ignoreCase = true)
         })
         for (argPair in contructorArgs) {
-            properties.add(PropertySpec.builder(argPair.snd, argPair.fst, KModifier.PRIVATE, KModifier.FINAL).build())
+            properties.add(PropertySpec.builder(argPair.snd, argPair.fst, KModifier.PRIVATE).initializer(argPair.snd).build())
             componentRegistryConstructorBuilder.addParameter(ParameterSpec.builder(argPair.snd, argPair.fst).build())
-            componentRegistryConstructorBuilder.addStatement("this." + argPair.snd + " = " + argPair.snd)
         }
         val classBuilder = TypeSpec.classBuilder("AppComponentRegistry")
                 .addModifiers(KModifier.PUBLIC)
                 .addSuperinterface(ClassName("com.xfinity.blueprint", "ComponentRegistry"))
                 .addProperties(properties)
-                .addFunction(componentRegistryConstructorBuilder.build())
+                .primaryConstructor(componentRegistryConstructorBuilder.build())
                 .addFunction(getComponentViewMethodbuilder.build())
                 .addFunction(getDefaultPresenterMethodbuilder1.build())
                 .addFunction(getDefaultPresenterMethodbuilder2.build())
+
         return classBuilder.build()
     }
 
