@@ -11,7 +11,6 @@
 package com.xfinity.blueprint_compiler
 
 import com.google.auto.service.AutoService
-import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
@@ -63,7 +62,11 @@ class BlueprintProcessor : AbstractProcessor() {
     }
 
     override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
-        var packageName: StringBuilder? = null
+        var viewHolderPackageName: String? = null
+
+        lateinit var outputPackageName: String
+        lateinit var appPackageName: String
+
         val componentViewInfoList: MutableList<ComponentViewInfo> = ArrayList()
         for (annotatedElement in roundEnv.getElementsAnnotatedWith(ComponentViewHolder::class.java)) {
             // annotation is only allowed on classes, so we can safely cast here
@@ -71,22 +74,26 @@ class BlueprintProcessor : AbstractProcessor() {
             if (!isValidClass(annotatedClass)) {
                 continue
             }
-            if (packageName == null) {
+            if (viewHolderPackageName == null) {
                 try {
-                    packageName = StringBuilder(processingEnv.elementUtils.getPackageName(annotatedClass))
+                    viewHolderPackageName = processingEnv.elementUtils.getPackageName(annotatedClass)
                 } catch (e: UnnamedPackageException) {
                     e.printStackTrace()
                 }
 
                 //Epic hackery
-                if (packageName != null) {
-                    val packageNameTokens = packageName.toString().split("\\.").toTypedArray()
+                if (viewHolderPackageName != null) {
+                    val packageNameTokens = viewHolderPackageName.split(".")
                     if (packageNameTokens.size >= 3) {
-                        packageName = StringBuilder(packageNameTokens[0] + "." + packageNameTokens[1] + "." + packageNameTokens[2])
+                        appPackageName = "${packageNameTokens[0]}.${packageNameTokens[1]}.${packageNameTokens[2]}"
+                    } else {
+                        appPackageName = viewHolderPackageName
                     }
-                    packageName.append(".blueprint")
+
+                    outputPackageName = "$appPackageName.blueprint"
                 }
             }
+
             val viewType = annotatedElement.getAnnotation(ComponentViewHolder::class.java).viewType
             val viewHolderClassName = (annotatedClass as ClassSymbol).fullname.toString()
             val children: MutableMap<String, String> = HashMap()
@@ -126,7 +133,7 @@ class BlueprintProcessor : AbstractProcessor() {
                     }
                 }
             }
-            val componentViewInfo: ComponentViewInfo = ComponentViewInfo(viewType, viewHolderClassName)
+            val componentViewInfo = ComponentViewInfo(viewType, viewHolderClassName)
             componentViewInfo.children = children
             componentViewInfoList.add(componentViewInfo)
         }
@@ -185,9 +192,10 @@ class BlueprintProcessor : AbstractProcessor() {
             val presenterClass = annotatedCtor.owner as ClassSymbol
             defaultPresenterConstructorMap[presenterClass.fullname.toString()] = ctorParams
         }
-        if (packageName != null) {
+
+        if (outputPackageName != null) {
             try {
-                generateCode(packageName.toString(), componentViewInfoList, defaultPresenterConstructorMap)
+                generateCode(appPackageName, outputPackageName, componentViewInfoList, defaultPresenterConstructorMap)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -220,13 +228,15 @@ class BlueprintProcessor : AbstractProcessor() {
         return processingEnv.typeUtils.isAssignable(annotatedClass.asType(), applicationTypeElement.asType())
     }
 
-    @Throws(IOException::class) private fun generateCode(packageName: String, componentInfoList: List<ComponentViewInfo>,
+    @Throws(IOException::class) private fun generateCode(appPackageName: String, outputPackageName: String, componentInfoList: List<ComponentViewInfo>,
                                                          defaultPresenterContructorMap: Map<String, List<Pair<TypeName, String>>>) {
-        val codeGenerator = CodeGenerator(componentInfoList, defaultPresenterContructorMap)
+        val codeGenerator = CodeGenerator(appPackageName, componentInfoList, defaultPresenterContructorMap)
         val generatedClass = codeGenerator.generateComponentRegistry()
 
         val kotlinFile = generatedClass.name?.let {
-            FileSpec.builder(packageName, it).addType(generatedClass).build()
+            FileSpec.builder(outputPackageName, it).addType(generatedClass)
+                    .addImport("androidx.recyclerview.widget", "RecyclerView")
+                    .build()
         }
 
         processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "\n\n\n component registry code \n\n" +
@@ -245,26 +255,12 @@ class BlueprintProcessor : AbstractProcessor() {
         }
     }
 
-    inner class ComponentViewInfo internal constructor(val viewType: Int, val viewHolder: String) {
+    data class ComponentViewInfo internal constructor(val viewType: String, val viewHolder: String) {
         var viewTypeName: String? = null
         var defaultPresenter: String? = null
         var componentView: String? = null
         var viewBinder: String? = null
         var children: Map<String, String>? = null
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-            if (other == null || javaClass != other.javaClass) {
-                return false
-            }
-            val that = other as ComponentViewInfo
-            return viewType == that.viewType
-        }
-
-        override fun hashCode(): Int {
-            return viewType
-        }
     }
 
     companion object {

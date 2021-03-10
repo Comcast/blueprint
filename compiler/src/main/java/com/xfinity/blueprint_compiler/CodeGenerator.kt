@@ -1,10 +1,12 @@
 package com.xfinity.blueprint_compiler
 
+import com.squareup.javapoet.WildcardTypeName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
@@ -14,7 +16,8 @@ import java.util.ArrayList
 import java.util.Arrays
 import java.util.Locale
 
-class CodeGenerator(private val componentViewInfoList: List<BlueprintProcessor.ComponentViewInfo>? = null,
+class CodeGenerator(private val appPackageName: String,
+                    private val componentViewInfoList: List<BlueprintProcessor.ComponentViewInfo>? = null,
                     private val defaultPresenterConstructorMap: Map<String, List<Pair<TypeName, String>>>? = null) {
 
     fun generateComponentRegistry(): TypeSpec {
@@ -25,75 +28,103 @@ class CodeGenerator(private val componentViewInfoList: List<BlueprintProcessor.C
         componentViewWhenStatements.add("return when(viewType) {\n")
         defaultPresenterWhenStatements.add("return when(viewType) {\n")
 
+        val componentViewType = ClassName("com.xfinity.blueprint.view", "ComponentView").parameterizedBy(
+                ClassName("kotlin","Nothing")).copy(true)
+
+        val nullableComponentPresenterType =
+                ClassName("com.xfinity.blueprint.presenter", "ComponentPresenter")
+                        .parameterizedBy(componentViewType, ClassName("com.xfinity.blueprint.model","ComponentModel"))
+                        .copy(true)
+
         val getDefaultPresenterMethodbuilder1 = FunSpec.builder("getDefaultPresenter")
                 .addModifiers(KModifier.PUBLIC)
+                .addModifiers(KModifier.OVERRIDE)
                 .addParameter("componentView", ClassName("com.xfinity.blueprint.view", "ComponentView"))
                 .addParameter("args", Object::class, KModifier.VARARG)
-                .returns(ClassName("com.xfinity.blueprint.presenter", "ComponentPresenter").copy(true))
+                .returns(nullableComponentPresenterType)
 
         val getDefaultPresenterMethodbuilder2 = FunSpec.builder("getDefaultPresenter")
                 .addModifiers(KModifier.PUBLIC)
+                .addModifiers(KModifier.OVERRIDE)
                 .addParameter("viewType", INT)
                 .addParameter("args", Object::class, KModifier.VARARG)
-                .returns(ClassName("com.xfinity.blueprint.presenter", "ComponentPresenter").copy(true)  )
+                .returns(nullableComponentPresenterType)
+
+        getDefaultPresenterMethodbuilder1.addCode("return when {\n")
 
         val contructorArgs: MutableList<Pair<TypeName, String>> = ArrayList()
-        for (componentViewInfo in componentViewInfoList!!) {
-            val viewTypeFieldName = componentViewInfo.viewTypeName + "_VIEW_TYPE"
-            val propertySpec = PropertySpec.builder(viewTypeFieldName, INT, KModifier.PUBLIC,
-                    KModifier.FINAL).initializer(componentViewInfo.viewType.toString()).build()
-            companionProperties.add(propertySpec)
+        componentViewInfoList?.let {
+            for (componentViewInfo in it) {
+                val viewTypeFieldName = componentViewInfo.viewTypeName + "_VIEW_TYPE"
+                val propertySpec = PropertySpec.builder(viewTypeFieldName, INT, KModifier.CONST)
+                        .initializer("$appPackageName.R.layout.${componentViewInfo.viewType}").build()
+                companionProperties.add(propertySpec)
 
-            componentViewWhenStatements.add("$viewTypeFieldName -> ${componentViewInfo.componentView}()\n")
+                componentViewWhenStatements.add("$viewTypeFieldName -> ${componentViewInfo.componentView}()\n")
+                if (componentViewInfo.defaultPresenter != null) {
+                    getDefaultPresenterMethodbuilder1.addCode("componentView is ${componentViewInfo.componentView} ->".trimIndent())
+                    var returnStatement: String
+                    val defaultPresenterConstructorArgs =
+                            if (defaultPresenterConstructorMap != null && componentViewInfo.defaultPresenter != null) {
+                                defaultPresenterConstructorMap[componentViewInfo.defaultPresenter!!]
+                            } else {
+                                null
+                            }
 
-            getDefaultPresenterMethodbuilder1.addCode("return when {\n")
-            if (componentViewInfo.defaultPresenter != null) {
-                getDefaultPresenterMethodbuilder1.addCode("componentView is ${componentViewInfo.componentView} ->".trimIndent())
-                var returnStatement: String
-                val defaultPresenterConstructorArgs =
-                        if (defaultPresenterConstructorMap != null && componentViewInfo.defaultPresenter != null) {
-                            defaultPresenterConstructorMap[componentViewInfo.defaultPresenter!!]
-                        } else { null }
+                    returnStatement = if (defaultPresenterConstructorArgs == null) {
+                        "${componentViewInfo.defaultPresenter}()"
+                    } else {
+                        val statementBuilder = StringBuilder("${componentViewInfo.defaultPresenter}(")
+                        for (j in defaultPresenterConstructorArgs.indices) {
+                            val argPair = defaultPresenterConstructorArgs[j]
+                            val argName = argPair.snd //arg name
+                            statementBuilder.append(argName)
+                            if (j < defaultPresenterConstructorArgs.size - 1) {
+                                statementBuilder.append(", ")
+                            } else {
+                                statementBuilder.append(")")
+                            }
 
-                returnStatement = if (defaultPresenterConstructorArgs == null) {
-                    "${componentViewInfo.defaultPresenter}()"
-                } else {
-                    val statementBuilder = StringBuilder("${componentViewInfo.defaultPresenter}(")
-                    for (j in defaultPresenterConstructorArgs.indices) {
-                        val argPair = defaultPresenterConstructorArgs[j]
-                        val argName = argPair.snd //arg name
-                        statementBuilder.append(argName)
-                        if (j < defaultPresenterConstructorArgs.size - 1) {
-                            statementBuilder.append(", ")
-                        } else {
-                            statementBuilder.append(")")
+                            //check if an arg with this name and type was already added to the ComponentRegistry's ctor, if
+                            // not, add it
+                            if (!contructorArgs.contains(argPair)) {
+                                contructorArgs.add(argPair)
+                            }
                         }
-
-                        //check if an arg with this name and type was already added to the ComponentRegistry's ctor, if
-                        // not, add it
-                        if (!contructorArgs.contains(argPair)) {
-                            contructorArgs.add(argPair)
-                        }
+                        statementBuilder.toString()
                     }
-                    statementBuilder.toString()
+                    getDefaultPresenterMethodbuilder1.addStatement(returnStatement)
+//                    getDefaultPresenterMethodbuilder1.addCode("}\n")
+                    defaultPresenterWhenStatements.add("$viewTypeFieldName -> \n")
+                    defaultPresenterWhenStatements.add("$returnStatement\n")
                 }
-                getDefaultPresenterMethodbuilder1.addStatement(returnStatement)
-                getDefaultPresenterMethodbuilder1.addCode("}\n")
-                defaultPresenterWhenStatements.add("$viewTypeFieldName -> \n")
-                defaultPresenterWhenStatements.add("$returnStatement\n")
-                defaultPresenterWhenStatements.add("else -> null")
             }
+
+            defaultPresenterWhenStatements.add("else -> null")
+
         }
+
+        val companion = TypeSpec.companionObjectBuilder()
+                .addProperties(companionProperties)
+                .build()
+
+        val nullableComponentViewType = ClassName("com.xfinity.blueprint.view", "ComponentView").parameterizedBy(
+        ClassName("androidx.recyclerview.widget", "RecyclerView.ViewHolder")).copy(true)
+
         val getComponentViewMethodbuilder = FunSpec.builder("getComponentView")
                 .addModifiers(KModifier.PUBLIC)
+                .addModifiers(KModifier.OVERRIDE)
                 .addParameter("viewType", INT)
-                .returns(ClassName("com.xfinity.blueprint.view", "ComponentView").copy(true))
+                .returns(nullableComponentViewType)
 
         for (statement in componentViewWhenStatements) {
             getComponentViewMethodbuilder.addCode(statement)
         }
         getComponentViewMethodbuilder.addCode("else -> null\n")
         getComponentViewMethodbuilder.addCode("}\n")
+
+        getDefaultPresenterMethodbuilder1.addCode("else -> null\n")
+        getDefaultPresenterMethodbuilder1.addCode("}\n")
 
         for (statement in defaultPresenterWhenStatements) {
             getDefaultPresenterMethodbuilder2.addCode(statement)
@@ -109,10 +140,12 @@ class CodeGenerator(private val componentViewInfoList: List<BlueprintProcessor.C
             properties.add(PropertySpec.builder(argPair.snd, argPair.fst, KModifier.PRIVATE).initializer(argPair.snd).build())
             componentRegistryConstructorBuilder.addParameter(ParameterSpec.builder(argPair.snd, argPair.fst).build())
         }
+
         val classBuilder = TypeSpec.classBuilder("AppComponentRegistry")
                 .addModifiers(KModifier.PUBLIC)
                 .addSuperinterface(ClassName("com.xfinity.blueprint", "ComponentRegistry"))
                 .addProperties(properties)
+                .addType(companion)
                 .primaryConstructor(componentRegistryConstructorBuilder.build())
                 .addFunction(getComponentViewMethodbuilder.build())
                 .addFunction(getDefaultPresenterMethodbuilder1.build())
@@ -125,7 +158,7 @@ class CodeGenerator(private val componentViewInfoList: List<BlueprintProcessor.C
         val viewDelegatePairs: MutableList<Pair<String, TypeSpec>> = ArrayList()
         componentViewInfoList?.let {
             for (componentViewInfo in componentViewInfoList) {
-                val componentViewPackageName = componentViewInfo.componentView?.let {
+                    val componentViewPackageName = componentViewInfo.componentView?.let {
                     componentViewInfo.componentView?.substring(0, it.lastIndexOf("."))
                 }
                 val viewHolderPackageName = componentViewInfo.viewHolder.substring(0, componentViewInfo.viewHolder.lastIndexOf("."))
