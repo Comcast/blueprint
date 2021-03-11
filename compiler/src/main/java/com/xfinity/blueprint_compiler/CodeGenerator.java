@@ -36,10 +36,12 @@ import static javax.lang.model.element.Modifier.PUBLIC;
 final class CodeGenerator {
     private final List<BlueprintProcessor.ComponentViewInfo> componentViewInfoList;
     private final Map<String, List<Pair<TypeName, String>>> defaultPresenterContructorMap;
+    private final String packageName;
 
 
-    CodeGenerator(List<BlueprintProcessor.ComponentViewInfo> componentViewInfoList,
+    CodeGenerator(String packageName, List<BlueprintProcessor.ComponentViewInfo> componentViewInfoList,
                   Map<String, List<Pair<TypeName, String>>> defaultPresenterContructorMap) {
+        this.packageName = packageName;
         this.componentViewInfoList = componentViewInfoList;
         this.defaultPresenterContructorMap = defaultPresenterContructorMap;
     }
@@ -75,7 +77,7 @@ final class CodeGenerator {
         for (BlueprintProcessor.ComponentViewInfo componentViewInfo : componentViewInfoList) {
             String viewTypeFieldName = componentViewInfo.viewTypeName + "_VIEW_TYPE";
             FieldSpec fieldSpec = FieldSpec.builder(INT, viewTypeFieldName, Modifier.PUBLIC, Modifier.STATIC,
-                                                    Modifier.FINAL).initializer(String.valueOf(componentViewInfo.viewType)).build();
+                                                    Modifier.FINAL).initializer(packageName + ".R.layout." + componentViewInfo.viewType).build();
             fields.add(fieldSpec);
 
             componentViewSwitchStatements.add("case " + viewTypeFieldName + ":\n");
@@ -280,7 +282,7 @@ final class CodeGenerator {
                               .addModifiers(PUBLIC)
                               .addAnnotation(Override.class)
                               .returns(INT)
-                              .addStatement("return " + componentViewInfo.viewType)
+                              .addStatement("return " + packageName + ".R.layout." + componentViewInfo.viewType)
                               .build();
 
 
