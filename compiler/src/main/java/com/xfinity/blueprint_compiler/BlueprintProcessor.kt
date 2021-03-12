@@ -29,6 +29,7 @@ import java.io.IOException
 import java.util.ArrayList
 import java.util.HashMap
 import java.util.LinkedHashSet
+import java.util.Locale
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.Processor
@@ -67,7 +68,7 @@ class BlueprintProcessor : AbstractProcessor() {
         lateinit var outputPackageName: String
         lateinit var appPackageName: String
 
-        val componentViewInfoList: MutableList<ComponentViewInfo> = ArrayList()
+        val componentViewInfoList = mutableListOf<ComponentViewInfo>()
         for (annotatedElement in roundEnv.getElementsAnnotatedWith(ComponentViewHolder::class.java)) {
             // annotation is only allowed on classes, so we can safely cast here
             val annotatedClass = annotatedElement as TypeElement
@@ -84,10 +85,10 @@ class BlueprintProcessor : AbstractProcessor() {
                 //Epic hackery
                 if (viewHolderPackageName != null) {
                     val packageNameTokens = viewHolderPackageName.split(".")
-                    if (packageNameTokens.size >= 3) {
-                        appPackageName = "${packageNameTokens[0]}.${packageNameTokens[1]}.${packageNameTokens[2]}"
+                    appPackageName = if (packageNameTokens.size >= 3) {
+                        "${packageNameTokens[0]}.${packageNameTokens[1]}.${packageNameTokens[2]}"
                     } else {
-                        appPackageName = viewHolderPackageName
+                        viewHolderPackageName
                     }
 
                     outputPackageName = "$appPackageName.blueprint"
@@ -101,7 +102,7 @@ class BlueprintProcessor : AbstractProcessor() {
             for (enclosedElement in annotatedElement.getEnclosedElements()) {
                 // We only look at fields
                 if (enclosedElement is MethodSymbol) {
-                    methodNames.add(enclosedElement.simpleName.toString().toLowerCase())
+                    methodNames.add(enclosedElement.simpleName.toString().toLowerCase(Locale.ROOT))
                 }
             }
             for (enclosedElement in annotatedElement.getEnclosedElements()) {
@@ -114,7 +115,7 @@ class BlueprintProcessor : AbstractProcessor() {
                     // a getter for the field. We'll assume a naming convention of getFieldName()
                     var hasGetter = false
                     for (methodName in methodNames) {
-                        if (methodName == "get" + variableName.toLowerCase()) {
+                        if (methodName == "get" + variableName.toLowerCase(Locale.ROOT)) {
                             hasGetter = true
                             break
                         }
@@ -122,14 +123,19 @@ class BlueprintProcessor : AbstractProcessor() {
                     if (!hasGetter) {
                         continue
                     }
-                    if (isEditText(variable)) {
-                        children[variableName] = "android.widget.EditText"
-                    } else if (isTextView(variable)) {
-                        children[variableName] = "android.widget.TextView"
-                    } else if (isImageView(variable)) {
-                        children[variableName] = "android.widget.ImageView"
-                    } else if (isAndroidView(variable)) {
-                        children[variableName] = "android.view.View"
+                    when {
+                        isEditText(variable) -> {
+                            children[variableName] = "android.widget.EditText"
+                        }
+                        isTextView(variable) -> {
+                            children[variableName] = "android.widget.TextView"
+                        }
+                        isImageView(variable) -> {
+                            children[variableName] = "android.widget.ImageView"
+                        }
+                        isAndroidView(variable) -> {
+                            children[variableName] = "android.view.View"
+                        }
                     }
                 }
             }
@@ -148,14 +154,14 @@ class BlueprintProcessor : AbstractProcessor() {
         }
         for (annotatedElement in roundEnv.getElementsAnnotatedWith(ComponentViewClass::class.java)) {
             val annotatedClass = annotatedElement as TypeElement
-            var viewHolderClassName: String? = null
+            lateinit var viewHolderClassName: String
             try {
                 annotatedElement.getAnnotation(ComponentViewClass::class.java).viewHolderClass
             } catch (exception: MirroredTypeException) {
                 val typeMirror = exception.typeMirror
                 viewHolderClassName = typeMirror.toString()
             }
-            val useDefaultBinder = annotatedClass.getAnnotationsByType(ClickableComponentBinder::class.java).size > 0
+            val useDefaultBinder = annotatedClass.getAnnotationsByType(ClickableComponentBinder::class.java).isNotEmpty()
             for (componentViewInfo in componentViewInfoList) {
                 if (viewHolderClassName == componentViewInfo.viewHolder) {
                     componentViewInfo.componentView = (annotatedClass as ClassSymbol).fullname.toString()
@@ -193,12 +199,10 @@ class BlueprintProcessor : AbstractProcessor() {
             defaultPresenterConstructorMap[presenterClass.fullname.toString()] = ctorParams
         }
 
-        if (outputPackageName != null) {
-            try {
-                generateCode(appPackageName, outputPackageName, componentViewInfoList, defaultPresenterConstructorMap)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+        try {
+            generateCode(appPackageName, outputPackageName, componentViewInfoList, defaultPresenterConstructorMap)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
         return true
     }

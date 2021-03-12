@@ -165,8 +165,7 @@ class CodeGenerator(private val appPackageName: String,
                 val viewHolderName = componentViewInfo.viewHolder.substring(componentViewInfo.viewHolder.lastIndexOf(".") + 1,
                         componentViewInfo.viewHolder.length)
                 val viewHolderTypeName: TypeName = ClassName(viewHolderPackageName, viewHolderName)
-                var viewBinderTypeName: TypeName?
-                viewBinderTypeName = if (componentViewInfo.viewBinder != null && componentViewInfo.viewBinder == BlueprintProcessor.DEFAULT_VIEW_BINDER) {
+                val viewBinderTypeName: TypeName = if (componentViewInfo.viewBinder != null && componentViewInfo.viewBinder == BlueprintProcessor.DEFAULT_VIEW_BINDER) {
                     ClassName("com.xfinity.blueprint.view", "ComponentViewBinder")
                 } else {
                     ClassName("com.xfinity.blueprint.view", "ComponentViewBinder")
@@ -242,12 +241,14 @@ class CodeGenerator(private val appPackageName: String,
                 if (viewBinderFieldSpec != null) {
                     onBindViewHolderMethodFields.add(viewBinderFieldSpec)
                 }
-                val methods: MutableList<FunSpec> = ArrayList(Arrays.asList(getViewHolderMethod,
+
+                val methods = mutableListOf(getViewHolderMethod,
                         setViewHolderMethod,
                         getComponentViewBinderMethod,
                         onCreateViewHolderMethod,
                         onBindViewHolderMethod,
-                        getViewTypeMethod))
+                        getViewTypeMethod)
+
                 componentViewInfo.children?.let {
                     for (child in it.keys) {
                         val type = it[child]
