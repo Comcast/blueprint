@@ -12,7 +12,7 @@
 package com.xfinity.blueprint.event
 
 class ComponentEventManager {
-    val listeners = mutableListOf<ComponentEventListener>()
+    private val listeners = mutableListOf<ComponentEventListener>()
 
     fun registerListener(componentEventListener: ComponentEventListener) {
         listeners.add(componentEventListener)

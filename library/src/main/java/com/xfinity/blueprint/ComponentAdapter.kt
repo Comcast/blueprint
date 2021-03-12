@@ -18,12 +18,12 @@ import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.ComponentPresenter
 import com.xfinity.blueprint.view.ComponentView
 
-open class ComponentAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder> {
+open class ComponentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private val componentRegistry: ComponentRegistry
 
     private val presenterMap = mutableMapOf<Int, ComponentPresenter<ComponentView<*>, ComponentModel>>()
-    internal val components = mutableListOf<Component>()
-    private val componentViews = mutableListOf<ComponentView<androidx.recyclerview.widget.RecyclerView.ViewHolder>>()
+    private val components = mutableListOf<Component>()
+    private val componentViews = mutableListOf<ComponentView<RecyclerView.ViewHolder>>()
 
     constructor(componentRegistry: ComponentRegistry) {
         this.componentRegistry = componentRegistry
@@ -36,14 +36,14 @@ open class ComponentAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<
         this.components.addAll(components)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val componentView = componentRegistry.getComponentView(viewType) ?:
                 throw IllegalStateException("No ComponentView registered for type " + viewType)
 
         return componentView.onCreateViewHolder(parent)
     }
 
-    override fun onBindViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val componentView = componentViews[position]
 
         val presenter: ComponentPresenter<ComponentView<*>, ComponentModel> = components[position].presenter?.let {
@@ -196,7 +196,7 @@ open class ComponentAdapter : androidx.recyclerview.widget.RecyclerView.Adapter<
             throw IllegalStateException("Presenter for " + componentView.javaClass.simpleName +
                     " is not specified and has no default")
         } else if (defaultPresenter != null && !presenterMap.containsValue(defaultPresenter)) {
-            presenterMap.put(component.viewType, defaultPresenter)
+            presenterMap[component.viewType] = defaultPresenter
         }
 
         componentViews.add(position, componentView)
