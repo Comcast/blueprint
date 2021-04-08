@@ -11,7 +11,6 @@
 
 package com.xfinity.blueprint_sample.mvp.view
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.xfinity.blueprint_annotations.ComponentViewClass
@@ -25,7 +24,7 @@ class DataItemView : DataItemViewBase() {
     }
 }
 
-@ComponentViewHolder(viewType = R.layout.data_item_view)
+@ComponentViewHolder(viewType = "data_item_view")
 class DataItemViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     val data : TextView = itemView.findViewById(R.id.data) as TextView
 }

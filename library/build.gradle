@@ -44,18 +44,18 @@ task sourceJar(type: Jar) {
     classifier "source"
 }
 
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.implementation
-    destinationDir = file("../javadoc/")
-    failOnError false
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from tasks.javadoc.destinationDir
-}
+//task javadoc(type: Javadoc) {
+//    source = android.sourceSets.main.java.srcDirs
+//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//    classpath += configurations.implementation
+//    destinationDir = file("../javadoc/")
+//    failOnError false
+//}
+//
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from tasks.javadoc.destinationDir
+//}
 
 //Creating sources with comments
 task androidSourcesJar(type: Jar) {
@@ -64,7 +64,7 @@ task androidSourcesJar(type: Jar) {
 }
 
 artifacts {
-    archives javadocJar
+//    archives javadocJar
     archives androidSourcesJar
 }
 

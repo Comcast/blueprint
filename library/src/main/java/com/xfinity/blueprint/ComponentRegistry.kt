@@ -17,7 +17,7 @@ import com.xfinity.blueprint.presenter.ComponentPresenter
 import com.xfinity.blueprint.view.ComponentView
 
 interface ComponentRegistry {
-    fun getComponentView(viewType: Int): ComponentView<androidx.recyclerview.widget.RecyclerView.ViewHolder>?
+    fun getComponentView(viewType: Int): ComponentView<RecyclerView.ViewHolder>?
     fun getDefaultPresenter(viewType: Int, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>?
-    fun getDefaultPresenter(componentView: ComponentView<androidx.recyclerview.widget.RecyclerView.ViewHolder>, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>?
+    fun getDefaultPresenter(componentView: ComponentView<RecyclerView.ViewHolder>, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>?
 }

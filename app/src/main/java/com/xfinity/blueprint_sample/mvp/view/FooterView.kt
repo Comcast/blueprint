@@ -20,7 +20,7 @@ import com.xfinity.blueprint_sample.R
 @ComponentViewClass(viewHolderClass = FooterViewHolder::class)
 class FooterView : FooterViewBase()
 
-@ComponentViewHolder(viewType = R.layout.footer_view)
+@ComponentViewHolder(viewType = "footer_view")
 class FooterViewHolder(itemView: android.view.View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
     val footer : TextView = itemView.findViewById(R.id.footer) as TextView
 }

@@ -25,7 +25,7 @@ import com.xfinity.blueprint_sample.R
 @ComponentViewClass(viewHolderClass = LoadingDotsViewHolder::class)
 class LoadingDotsView : LoadingDotsViewBase()
 
-@ComponentViewHolder(viewType = R.layout.loading_dots_view)
+@ComponentViewHolder(viewType = "loading_dots_view")
 class LoadingDotsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 @ComponentViewHolderBinder
@@ -33,7 +33,7 @@ class LoadingDotsViewBinder : ComponentViewBinder<LoadingDotsViewHolder> {
 
     override fun bind(componentPresenter: ComponentPresenter<ComponentView<*>, ComponentModel>,
                       componentView: ComponentView<out LoadingDotsViewHolder>,
-                      viewHolder: LoadingDotsViewHolder, position: Int) {
+                      viewHolder: LoadingDotsViewHolder,    position: Int) {
         //if there were any binding, it would go here
     }
 }
