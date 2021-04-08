@@ -254,8 +254,8 @@ class BlueprintProcessor : AbstractProcessor() {
 
         val viewDelegates = codeGenerator.generateViewBaseClasses()
         for (viewDelegate in viewDelegates) {
-            val viewDelegateKotlinnFile = FileSpec.builder(viewDelegate.fst, viewDelegate.snd.name!!).addType(viewDelegate.snd).build()
-            viewDelegateKotlinnFile.writeTo(processingEnv.filer)
+            val viewDelegateKotlinFile = FileSpec.builder(viewDelegate.fst, viewDelegate.snd.name!!).addType(viewDelegate.snd).build()
+            viewDelegateKotlinFile.writeTo(processingEnv.filer)
         }
     }
 

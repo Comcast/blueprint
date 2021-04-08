@@ -1,6 +1,5 @@
 package com.xfinity.blueprint_compiler
 
-import com.squareup.javapoet.WildcardTypeName
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
@@ -11,9 +10,9 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.WildcardTypeName
 import com.sun.tools.javac.util.Pair
 import java.util.ArrayList
-import java.util.Arrays
 import java.util.Locale
 
 class CodeGenerator(private val appPackageName: String,
@@ -172,79 +171,66 @@ class CodeGenerator(private val appPackageName: String,
                             .plusParameter(viewHolderTypeName)
                 }
 
-                var viewBinderFieldSpec: PropertySpec? = null
+                var viewBinderPropertySpec: PropertySpec?
                 if (componentViewInfo.viewBinder != null) {
-                    viewBinderFieldSpec = PropertySpec.builder("viewBinder", viewBinderTypeName, KModifier.PRIVATE,
-                            KModifier.FINAL).initializer("${componentViewInfo.viewBinder}()").build()
-                }
-                val viewHolderFieldSpec = PropertySpec.builder("viewHolder", viewHolderTypeName, KModifier.PRIVATE).build()
-                val getViewHolderMethod = FunSpec.builder("getViewHolder")
-                        .addModifiers(KModifier.PUBLIC)
-                        .addAnnotation(Override::class.java)
-                        .addStatement("return viewHolder")
-                        .returns(viewHolderTypeName)
-                        .build()
-                val viewHolderParameterSpec = ParameterSpec.builder("viewHolder", viewHolderTypeName).build()
-                val setViewHolderMethod = FunSpec.builder("setViewHolder")
-                        .addModifiers(KModifier.PUBLIC)
-                        .addAnnotation(Override::class.java)
-                        .addParameter(viewHolderParameterSpec)
-                        .build()
-                val getComponentViewBinderMethodBuilder = FunSpec.builder("getComponentViewBinder")
-                        .addModifiers(KModifier.PUBLIC)
-                        .addAnnotation(Override::class.java)
-                        .returns(viewBinderTypeName)
-                if (componentViewInfo.viewBinder != null) {
-                    getComponentViewBinderMethodBuilder.addStatement("return viewBinder")
+                    viewBinderPropertySpec = PropertySpec.builder("componentViewBinder", viewBinderTypeName,
+                            KModifier.OVERRIDE).initializer("${componentViewInfo.viewBinder}()").build()
                 } else {
-                    getComponentViewBinderMethodBuilder.addStatement("return null")
+                    viewBinderPropertySpec = PropertySpec.builder("componentViewBinder", viewBinderTypeName,
+                            KModifier.OVERRIDE)
+                            .initializer("com.xfinity.blueprint.view.ClickableComponentViewBinder()")
+                            .build()
                 }
-                val getComponentViewBinderMethod = getComponentViewBinderMethodBuilder.build()
+
+                val viewHolderPropertySpec = PropertySpec.builder("viewHolder", viewHolderTypeName, KModifier.LATEINIT, KModifier.OVERRIDE).mutable().build()
                 val viewGroupParam = ParameterSpec.builder("parent", ClassName("android.view", "ViewGroup")).build()
                 val onCreateViewHolderMethod = FunSpec.builder("onCreateViewHolder")
-                        .addModifiers(KModifier.PUBLIC)
-                        .addAnnotation(Override::class.java)
+                        .addModifiers(KModifier.PUBLIC, KModifier.OVERRIDE)
                         .addParameter(viewGroupParam)
-                        .addStatement("android.view.View view = android.view.LayoutInflater.from(parent.getContext()).inflate(getViewType(), parent, false)")
-                        .addStatement("return new " + componentViewInfo.viewHolder + "(view)")
+                        .addStatement("val view = android.view.LayoutInflater.from(parent.getContext()).inflate(getViewType(), parent, false)")
+                        .addStatement("return ${componentViewInfo.viewHolder}(view)")
                         .returns(viewHolderTypeName)
                         .build()
 
-                val componentPresenterParam = ParameterSpec.builder("componentPresenter", ClassName("com.xfinity.blueprint.presenter", "ComponentPresenter")).build()
+                val starProjection = WildcardTypeName.producerOf(ClassName("kotlin", "Any").copy(true))
+                val componentViewTypeName = ClassName("com.xfinity.blueprint.view", "ComponentView")
+                val wildcardComponentViewTypeName: TypeName = ClassName("com.xfinity.blueprint.view", "ComponentView").plusParameter(starProjection)
+
+                val componentPresenterParam = ParameterSpec.builder("componentPresenter",
+                        ClassName("com.xfinity.blueprint.presenter", "ComponentPresenter")
+                                .plusParameter(wildcardComponentViewTypeName)
+                                .plusParameter(ClassName("com.xfinity.blueprint.model", "ComponentModel"))).build()
+
                 val viewHolderParam = ParameterSpec.builder("viewHolder", ClassName("androidx.recyclerview.widget", "RecyclerView").nestedClass("ViewHolder")).build()
                 val positionParam = ParameterSpec.builder("position", INT).build()
-                val componentViewTypeName: TypeName = ClassName("com.xfinity.blueprint.view", "ComponentView").plusParameter(viewHolderTypeName)
+                val parameterizedComponentViewTypeName: TypeName = componentViewTypeName.plusParameter(viewHolderTypeName)
 
                 val onBindViewHolderMethodBuilder = FunSpec.builder("onBindViewHolder")
-                        .addModifiers(KModifier.PUBLIC)
-                        .addAnnotation(Override::class.java)
+                        .addModifiers(KModifier.PUBLIC, KModifier.OVERRIDE)
                         .addParameters(listOf(componentPresenterParam, viewHolderParam, positionParam))
                         .addCode("""
-    if (viewHolder instanceof ${componentViewInfo.viewHolder}) {
+    if (viewHolder is ${componentViewInfo.viewHolder}) {
     
     """.trimIndent())
-                        .addStatement("this.viewHolder = (" + componentViewInfo.viewHolder + ") viewHolder")
+                        .addStatement("this.viewHolder = viewHolder as ${componentViewInfo.viewHolder}")
                         .addCode("} else {\n")
-                        .addStatement("throw new IllegalArgumentException(\"You can only attach $viewHolderName to this view object\")")
+                        .addStatement("throw IllegalArgumentException(\"You can only attach $viewHolderName to this view object\")")
                         .addCode("}\n")
                 if (componentViewInfo.viewBinder != null) {
-                    onBindViewHolderMethodBuilder.addStatement("viewBinder.bind(componentPresenter, this, this.viewHolder, position)")
+                    onBindViewHolderMethodBuilder.addStatement("componentViewBinder.bind(componentPresenter, this, this.viewHolder, position)")
                 }
                 val onBindViewHolderMethod = onBindViewHolderMethodBuilder.build()
                 val getViewTypeMethod = FunSpec.builder("getViewType")
-                        .addModifiers(KModifier.PUBLIC)
-                        .addAnnotation(Override::class.java)
+                        .addModifiers(KModifier.PUBLIC, KModifier.OVERRIDE)
                         .returns(INT)
-                        .addStatement("return " + componentViewInfo.viewType)
+                        .addStatement("return $appPackageName.R.layout.${componentViewInfo.viewType}")
                         .build()
-                val onBindViewHolderMethodFields: MutableList<PropertySpec> = ArrayList()
-                if (viewBinderFieldSpec != null) {
-                    onBindViewHolderMethodFields.add(viewBinderFieldSpec)
+                val onBindViewHolderMethodFields = mutableListOf<PropertySpec>()
+                if (viewBinderPropertySpec != null) {
+                    onBindViewHolderMethodFields.add(viewBinderPropertySpec)
                 }
 
-                val methods = mutableListOf(getViewHolderMethod,
-                        setViewHolderMethod,
-                        getComponentViewBinderMethod,
+                val methods = mutableListOf(
                         onCreateViewHolderMethod,
                         onBindViewHolderMethod,
                         getViewTypeMethod)
@@ -253,24 +239,23 @@ class CodeGenerator(private val appPackageName: String,
                     for (child in it.keys) {
                         val type = it[child]
                         val childCapitalized = child.substring(0, 1).toUpperCase(Locale.getDefault()) + child.substring(1)
-                        val childGetter = "get$childCapitalized()"
                         if (type == "android.widget.TextView") {
-                            methods.add(getSetTextMethodSpec(childCapitalized, childGetter))
+                            methods.add(getSetTextMethodSpec(child, childCapitalized))
                         }
                         if (type == "android.widget.ImageView") {
-                            methods.add(getSetImageDrawableMethodSpec(childCapitalized, childGetter))
+                            methods.add(getSetImageDrawableMethodSpec(child, childCapitalized))
                         }
 
-                        methods.add(getMakeVisibleMethodSpec(childCapitalized, childGetter))
-                        methods.add(getMakeGoneMethodSpec(childCapitalized, childGetter))
-                        methods.add(getMakeInvisibleMethodSpec(childCapitalized, childGetter))
-                        methods.add(getSetBackgroundColorMethodSpec(childCapitalized, childGetter))
+                        methods.add(getMakeVisibleMethodSpec(child, childCapitalized))
+                        methods.add(getMakeGoneMethodSpec(child, childCapitalized))
+                        methods.add(getMakeInvisibleMethodSpec(child, childCapitalized))
+                        methods.add(getSetBackgroundColorMethodSpec(child,childCapitalized))
                     }
                 }
-                onBindViewHolderMethodFields.add(viewHolderFieldSpec)
+                onBindViewHolderMethodFields.add(viewHolderPropertySpec)
                 val classBuilder = TypeSpec.classBuilder(componentViewInfo.viewTypeName + "Base")
-                        .addModifiers(KModifier.PUBLIC)
-                        .addSuperinterface(componentViewTypeName)
+                        .addModifiers(KModifier.PUBLIC, KModifier.OPEN)
+                        .addSuperinterface(parameterizedComponentViewTypeName)
                         .addProperties(onBindViewHolderMethodFields)
                         .addFunctions(methods)
                 viewDelegatePairs.add(Pair(componentViewPackageName ?: "", classBuilder.build()))
@@ -279,53 +264,53 @@ class CodeGenerator(private val appPackageName: String,
     return viewDelegatePairs
 }
 
-private fun getSetTextMethodSpec(childNameCapitalized: String, childGetterName: String): FunSpec {
-    val textParam = ParameterSpec.builder("text", ClassName("java.lang", "CharSequence")).build()
+private fun getSetTextMethodSpec(childName: String, childNameCapitalized: String): FunSpec {
+    val textParam = ParameterSpec.builder("text", ClassName("kotlin", "CharSequence")).build()
 
     //Warning:  this code assumes that fields all have getters, and that they're named getFieldName()
     return FunSpec.builder("set" + childNameCapitalized + "Text")
             .addModifiers(KModifier.PUBLIC)
             .addParameter(textParam)
-            .addStatement("viewHolder.$childGetterName.setText(text)")
+            .addStatement("viewHolder.$childName.text = text")
             .build()
 }
 
-private fun getMakeVisibleMethodSpec(childName: String, childGetterName: String): FunSpec {
-    return FunSpec.builder("make" + childName + "Visible")
+private fun getMakeVisibleMethodSpec(childName: String, childNameCapitalized: String): FunSpec {
+    return FunSpec.builder("make" + childNameCapitalized + "Visible")
             .addModifiers(KModifier.PUBLIC)
-            .addStatement("viewHolder.$childGetterName.setVisibility(android.view.View.VISIBLE)")
+            .addStatement("viewHolder.$childName.visibility = android.view.View.VISIBLE")
             .build()
 }
 
-private fun getMakeGoneMethodSpec(childName: String, childGetterName: String): FunSpec {
-    return FunSpec.builder("make" + childName + "Gone")
+private fun getMakeGoneMethodSpec(childName: String, childNameCapitalized: String): FunSpec {
+    return FunSpec.builder("make" + childNameCapitalized + "Gone")
             .addModifiers(KModifier.PUBLIC)
-            .addStatement("viewHolder.$childGetterName.setVisibility(android.view.View.GONE)")
+            .addStatement("viewHolder.$childName.visibility = android.view.View.GONE")
             .build()
 }
 
-private fun getMakeInvisibleMethodSpec(childName: String, childGetterName: String): FunSpec {
-    return FunSpec.builder("make" + childName + "Invisible")
+private fun getMakeInvisibleMethodSpec(childName: String, childNameCapitalized: String): FunSpec {
+    return FunSpec.builder("make" + childNameCapitalized + "Invisible")
             .addModifiers(KModifier.PUBLIC)
-            .addStatement("viewHolder.$childGetterName.setVisibility(android.view.View.INVISIBLE)")
+            .addStatement("viewHolder.$childName.visibility = android.view.View.INVISIBLE")
             .build()
 }
 
-private fun getSetBackgroundColorMethodSpec(childName: String, childGetterName: String): FunSpec {
+private fun getSetBackgroundColorMethodSpec(childName: String, childNameCapitalized: String): FunSpec {
     val colorParam = ParameterSpec.builder("color", INT).build()
-    return FunSpec.builder("set" + childName + "BackgroundColor")
+    return FunSpec.builder("set" + childNameCapitalized + "BackgroundColor")
             .addModifiers(KModifier.PUBLIC)
             .addParameter(colorParam)
-            .addStatement("viewHolder.$childGetterName.setBackgroundColor(color)")
+            .addStatement("viewHolder.$childName.setBackgroundColor(color)")
             .build()
 }
 
-private fun getSetImageDrawableMethodSpec(childName: String, childGetterName: String): FunSpec {
+private fun getSetImageDrawableMethodSpec(childName: String, childNameCapitalized: String): FunSpec {
     val imageParam = ParameterSpec.builder("drawable", ClassName("android.graphics.drawable", "Drawable")).build()
-    return FunSpec.builder("set" + childName + "Image")
+    return FunSpec.builder("set" + childNameCapitalized + "Image")
             .addModifiers(KModifier.PUBLIC)
             .addParameter(imageParam)
-            .addStatement("viewHolder.$childGetterName.setImageDrawable(drawable)")
+            .addStatement("viewHolder.$childName.setImageDrawable(drawable)")
             .build()
 }
 }

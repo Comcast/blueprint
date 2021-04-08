@@ -22,7 +22,7 @@ open class ComponentAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private val componentRegistry: ComponentRegistry
 
     private val presenterMap = mutableMapOf<Int, ComponentPresenter<ComponentView<*>, ComponentModel>>()
-    private val components = mutableListOf<Component>()
+     val components = mutableListOf<Component>()
     private val componentViews = mutableListOf<ComponentView<RecyclerView.ViewHolder>>()
 
     constructor(componentRegistry: ComponentRegistry) {
