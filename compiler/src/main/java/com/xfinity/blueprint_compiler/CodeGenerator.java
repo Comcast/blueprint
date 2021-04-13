@@ -48,11 +48,8 @@ final class CodeGenerator {
 
     TypeSpec generateComponentRegistry() {
         List<FieldSpec> fields = new ArrayList<>();
-        List<String> componentViewSwitchStatements = new ArrayList<>();
-        List<String> defaultPresenterSwitchStatements = new ArrayList<>();
-
-        componentViewSwitchStatements.add("switch(viewType) {\n");
-        defaultPresenterSwitchStatements.add("switch(viewType) {\n");
+        List<String> componentViewIfStatements = new ArrayList<>();
+        List<String> defaultPresenterIfStatements = new ArrayList<>();
 
         TypeName objectVarArgsType = ArrayTypeName.get(Object[].class);
         ParameterSpec parameterSpec = ParameterSpec.builder(objectVarArgsType, "args").build();
@@ -80,8 +77,8 @@ final class CodeGenerator {
                                                     Modifier.FINAL).initializer(packageName + ".R.layout." + componentViewInfo.viewType).build();
             fields.add(fieldSpec);
 
-            componentViewSwitchStatements.add("case " + viewTypeFieldName + ":\n");
-            componentViewSwitchStatements.add("return new " + componentViewInfo.componentView + "();\n");
+            componentViewIfStatements.add("if (viewType == " + viewTypeFieldName + ") {\n");
+            componentViewIfStatements.add("return new " + componentViewInfo.componentView + "();\n}");
 
             if (componentViewInfo.defaultPresenter != null) {
                 getDefaultPresenterMethodbuilder1.addCode("if (componentView instanceof "
@@ -117,8 +114,8 @@ final class CodeGenerator {
                 getDefaultPresenterMethodbuilder1.addStatement(returnStatement);
                 getDefaultPresenterMethodbuilder1.addCode("}\n");
 
-                defaultPresenterSwitchStatements.add("case " + viewTypeFieldName + ":\n");
-                defaultPresenterSwitchStatements.add(returnStatement + ";\n");
+                defaultPresenterIfStatements.add("if (viewType == " + viewTypeFieldName + ") {\n");
+                defaultPresenterIfStatements.add(returnStatement + ";\n}");
             }
         }
 
@@ -127,20 +124,18 @@ final class CodeGenerator {
                                                                      .addParameter(INT, "viewType")
                                                                      .returns(ClassName.get("com.xfinity.blueprint.view", "ComponentView"));
 
-        for (String statement : componentViewSwitchStatements) {
+        for (String statement : componentViewIfStatements) {
             getComponentViewMethodbuilder.addCode(statement);
         }
 
-        getComponentViewMethodbuilder.addCode("}\n");
         getComponentViewMethodbuilder.addStatement("return null");
 
         getDefaultPresenterMethodbuilder1.addStatement("return null");
 
-        for (String statement : defaultPresenterSwitchStatements) {
+        for (String statement : defaultPresenterIfStatements) {
             getDefaultPresenterMethodbuilder2.addCode(statement);
         }
 
-        getDefaultPresenterMethodbuilder2.addCode("}\n");
         getDefaultPresenterMethodbuilder2.addStatement("return null");
 
 
