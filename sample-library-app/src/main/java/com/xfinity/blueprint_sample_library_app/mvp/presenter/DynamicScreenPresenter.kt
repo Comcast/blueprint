@@ -17,8 +17,9 @@ import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
+import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry.DataItemView_VIEW_TYPE
+import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample_library_app.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample_library_app.mvp.model.DynamicScreenModel
 import com.xfinity.blueprint_sample_library_app.mvp.view.DefaultDynamicScreenView
 import java.util.Timer
@@ -69,7 +70,7 @@ class DynamicScreenPresenter(override val componentEventManager: ComponentEventM
         if (model.dataItemModels[0].enabled) {
             for (dataItemModel in model.dataItemModels) {
                 if (dataItemModel.enabled) {
-                    screenComponents.add(Component(dataItemModel, AppComponentRegistry.DataItemView_VIEW_TYPE,
+                    screenComponents.add(Component(dataItemModel, DataItemView_VIEW_TYPE,
                             dataItemPresenter))
                 }
             }

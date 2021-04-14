@@ -18,14 +18,14 @@ import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_sample_library_app.R
 
-@ComponentViewClass(viewHolderClass = DataItemViewHolder::class)
-class DataItemView : DataItemViewBase() {
-    fun setBehavior(behavior: (position: Int) -> Unit) {
-        viewHolder.itemView.setOnClickListener { behavior.invoke(viewHolder.adapterPosition) }
-    }
-}
-
-@ComponentViewHolder(viewType = "data_item_view")
-class DataItemViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-    val data : TextView = itemView.findViewById(R.id.data) as TextView
-}
+//@ComponentViewClass(viewHolderClass = DataItemViewHolder::class)
+//class DataItemView : DataItemViewBase() {
+//    fun setBehavior(behavior: (position: Int) -> Unit) {
+//        viewHolder.itemView.setOnClickListener { behavior.invoke(viewHolder.adapterPosition) }
+//    }
+//}
+//
+//@ComponentViewHolder(viewType = "data_item_view")
+//class DataItemViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
+//    val data : TextView = itemView.findViewById(R.id.data) as TextView
+//}

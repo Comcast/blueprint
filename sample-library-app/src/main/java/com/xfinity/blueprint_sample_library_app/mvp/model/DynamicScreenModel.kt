@@ -11,6 +11,8 @@
 
 package com.xfinity.blueprint_sample_library_app.mvp.model
 
+import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
+
 open class DynamicScreenModel {
     open var headerModel: HeaderModel = HeaderModel()
     var footerModel: FooterModel = FooterModel()

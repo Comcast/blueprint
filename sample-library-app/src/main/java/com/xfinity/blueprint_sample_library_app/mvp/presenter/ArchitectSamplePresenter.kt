@@ -14,13 +14,12 @@ package com.xfinity.blueprint_sample_library_app.mvp.presenter
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
-import com.xfinity.blueprint.model.ComponentModel
-import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
 import com.xfinity.blueprint.architecture.DefaultScreenView
+import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry.DataItemView_VIEW_TYPE
+import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample_library_app.ResourceProvider
 import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample_library_app.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample_library_app.mvp.model.DynamicScreenModel
 import io.reactivex.Completable
 import io.reactivex.Observable
@@ -76,7 +75,7 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
         if (model.dataItemModels[0].enabled) {
             for (dataItemModel in model.dataItemModels) {
                 if (dataItemModel.enabled) {
-                    screenComponents.add(Component(dataItemModel, AppComponentRegistry.DataItemView_VIEW_TYPE,
+                    screenComponents.add(Component(dataItemModel, DataItemView_VIEW_TYPE,
                             dataItemPresenter))
                 }
             }

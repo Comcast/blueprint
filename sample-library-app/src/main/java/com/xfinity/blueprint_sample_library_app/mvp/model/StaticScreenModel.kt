@@ -11,6 +11,8 @@
 
 package com.xfinity.blueprint_sample_library_app.mvp.model
 
+import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
+
 open class StaticScreenModel {
     val headerModel: HeaderModel = HeaderModel()
     val footerModel: FooterModel = FooterModel()

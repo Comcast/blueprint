@@ -14,6 +14,7 @@ package com.xfinity.blueprint_sample_library_app.mvp.presenter
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint.view.ScreenView
+import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry.DataItemView_VIEW_TYPE
 import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample_library_app.mvp.model.StaticScreenModel
 
@@ -32,7 +33,7 @@ class StaticScreenPresenter : ScreenPresenter<ScreenView> {
         val screenComponents = mutableListOf<Component>()
         screenComponents.add(Component(model.headerModel, AppComponentRegistry.HeaderView_VIEW_TYPE))
         model.dataItemModels.forEach {
-            screenComponents.add(Component(it, AppComponentRegistry.DataItemView_VIEW_TYPE))
+            screenComponents.add(Component(it, DataItemView_VIEW_TYPE))
         }
 
         screenComponents.add(Component(model.footerModel, AppComponentRegistry.FooterView_VIEW_TYPE))

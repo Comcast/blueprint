@@ -14,8 +14,8 @@ package com.xfinity.blueprint_sample_library_app.mvp.presenter
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.presenter.EventEmittingComponentPresenter
-import com.xfinity.blueprint_sample_library_app.mvp.model.DataItemModel
-import com.xfinity.blueprint_sample_library_app.mvp.view.DataItemView
+import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
+import com.xfinity.blueprint_sample_library.mvp.view.DataItemView
 
 class DataItemPresenter(override val componentEventManager: ComponentEventManager) :
         EventEmittingComponentPresenter<DataItemView, DataItemModel> {
