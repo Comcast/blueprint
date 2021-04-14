@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    appId = 'com.xfinity.blueprint_sample'
+    appId = 'com.xfinity.blueprint_sample_library'
 }
 
 resourceprovider {
