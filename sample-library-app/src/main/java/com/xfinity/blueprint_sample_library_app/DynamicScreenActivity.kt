@@ -17,7 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.xfinity.blueprint.CompositeComponentRegistry
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
 import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
@@ -33,7 +33,9 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 class DynamicScreenActivity : AppCompatActivity(), DynamicScreenView {
     //These would be injected
     private val componentEventManager = ComponentEventManager()
-    private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
+    private val componentRegistry = CompositeComponentRegistry(listOf(AppComponentRegistry(),
+            com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry(componentEventManager, ArchitectSampleActivity.defaultItemId, ArchitectSampleActivity.defaultItemName))
+    )
     private val presenter = DynamicScreenPresenter(componentEventManager)
 
     private lateinit var screenViewDelegate: ScreenViewDelegate

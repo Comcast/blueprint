@@ -18,24 +18,24 @@ import com.xfinity.blueprint_annotations.DefaultPresenterConstructor
 import com.xfinity.blueprint_sample_library_app.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample_library_app.mvp.view.DataItemView
 
-@DefaultPresenter(viewClass = DataItemView::class)
-class DefaultDataItemPresenter
-@DefaultPresenterConstructor constructor(override val componentEventManager: ComponentEventManager,
-                                         private val defaultDataItemName: String,
-                                         private val defaultDataItemId: Int) :
-        EventEmittingComponentPresenter<DataItemView, DataItemModel> {
-
-    override fun present(view: DataItemView, model: DataItemModel) {
-
-        if (model.data.isEmpty()) {
-            view.setDataText(defaultDataItemName + defaultDataItemId)
-        } else {
-            view.setDataText(model.data)
-        }
-
-        view.setBehavior { position ->
-            view.setDataText("Component $position was clicked")
-            componentEventManager.postEvent(DataItemPresenter.DataItemClickedEvent("default data item clicked"))
-        }
-    }
-}
+//@DefaultPresenter(viewClass = DataItemView::class)
+//class DefaultDataItemPresenter
+//@DefaultPresenterConstructor constructor(override val componentEventManager: ComponentEventManager,
+//                                         private val defaultDataItemName: String,
+//                                         private val defaultDataItemId: Int) :
+//        EventEmittingComponentPresenter<DataItemView, DataItemModel> {
+//
+//    override fun present(view: DataItemView, model: DataItemModel) {
+//
+//        if (model.data.isEmpty()) {
+//            view.setDataText(defaultDataItemName + defaultDataItemId)
+//        } else {
+//            view.setDataText(model.data)
+//        }
+//
+//        view.setBehavior { position ->
+//            view.setDataText("Component $position was clicked")
+//            componentEventManager.postEvent(DataItemPresenter.DataItemClickedEvent("default data item clicked"))
+//        }
+//    }
+//}

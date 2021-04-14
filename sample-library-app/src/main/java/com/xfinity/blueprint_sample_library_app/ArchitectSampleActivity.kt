@@ -13,6 +13,7 @@ package com.xfinity.blueprint_sample_library_app
 
 import android.view.Menu
 import android.view.MenuItem
+import com.xfinity.blueprint.CompositeComponentRegistry
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
@@ -25,7 +26,9 @@ import com.xfinity.blueprint_sample_library_app.mvp.presenter.ArchitectSamplePre
 class ArchitectSampleActivity : ScreenViewActivity() {
     //Dependencies.  These would normally be injected
     private val componentEventManager = ComponentEventManager()
-    private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
+    private val componentRegistry = CompositeComponentRegistry(listOf(AppComponentRegistry(),
+            com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName))
+    )
     private val resourceProvider: ResourceProvider by lazy { ResourceProvider(this) }
 
     //If you needed to use a ScreenView subclass, you would create your own Architect to use it.  Otherwise, you can

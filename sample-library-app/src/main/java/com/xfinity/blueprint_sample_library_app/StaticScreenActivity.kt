@@ -16,6 +16,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.xfinity.blueprint.CompositeComponentRegistry
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
 import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
@@ -29,7 +30,8 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 class StaticScreenActivity : AppCompatActivity() {
     //These would be injected
     private val componentEventManager = ComponentEventManager()
-    private val componentRegistry = AppComponentRegistry(componentEventManager, 0, "defaultDataItem")
+    private val componentRegistry = CompositeComponentRegistry(listOf(AppComponentRegistry(),
+            com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry(componentEventManager, 0, "defaultDataItem")))
     private val presenter = StaticScreenPresenter()
 
     private lateinit var screenViewDelegate: ScreenViewDelegate
