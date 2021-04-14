@@ -16,7 +16,7 @@ import android.view.View
 import android.widget.TextView
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
-import com.xfinity.blueprint_sample.R
+import com.xfinity.blueprint_sample_library_app.R
 
 @ComponentViewClass(viewHolderClass = DataItemViewHolder::class)
 class DataItemView : DataItemViewBase() {

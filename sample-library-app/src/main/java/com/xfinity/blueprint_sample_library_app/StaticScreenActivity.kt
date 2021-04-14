@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.presenter.StaticScreenPresenter
+import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
+import com.xfinity.blueprint_sample_library_app.mvp.presenter.StaticScreenPresenter
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 /**

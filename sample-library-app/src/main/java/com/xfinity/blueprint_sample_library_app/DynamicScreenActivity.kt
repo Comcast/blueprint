@@ -20,10 +20,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.presenter.DynamicScreenPresenter
-import com.xfinity.blueprint_sample.mvp.view.DefaultDynamicScreenView
-import com.xfinity.blueprint_sample.mvp.view.DynamicScreenView
+import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
+import com.xfinity.blueprint_sample_library_app.mvp.presenter.DynamicScreenPresenter
+import com.xfinity.blueprint_sample_library_app.mvp.view.DefaultDynamicScreenView
+import com.xfinity.blueprint_sample_library_app.mvp.view.DynamicScreenView
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 /**

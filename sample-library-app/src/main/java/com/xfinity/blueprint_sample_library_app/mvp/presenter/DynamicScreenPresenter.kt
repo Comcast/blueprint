@@ -17,10 +17,10 @@ import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.model.DataItemModel
-import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
-import com.xfinity.blueprint_sample.mvp.view.DefaultDynamicScreenView
+import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
+import com.xfinity.blueprint_sample_library_app.mvp.model.DataItemModel
+import com.xfinity.blueprint_sample_library_app.mvp.model.DynamicScreenModel
+import com.xfinity.blueprint_sample_library_app.mvp.view.DefaultDynamicScreenView
 import java.util.Timer
 import java.util.TimerTask
 

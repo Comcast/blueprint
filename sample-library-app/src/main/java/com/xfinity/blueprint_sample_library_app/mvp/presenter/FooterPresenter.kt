@@ -13,8 +13,8 @@ package com.xfinity.blueprint_sample_library_app.mvp.presenter
 
 import com.xfinity.blueprint.presenter.ComponentPresenter
 import com.xfinity.blueprint_annotations.DefaultPresenter
-import com.xfinity.blueprint_sample.mvp.model.FooterModel
-import com.xfinity.blueprint_sample.mvp.view.FooterView
+import com.xfinity.blueprint_sample_library_app.mvp.model.FooterModel
+import com.xfinity.blueprint_sample_library_app.mvp.view.FooterView
 
 @DefaultPresenter(viewClass = FooterView::class)
 class FooterPresenter : ComponentPresenter<FooterView, FooterModel> {

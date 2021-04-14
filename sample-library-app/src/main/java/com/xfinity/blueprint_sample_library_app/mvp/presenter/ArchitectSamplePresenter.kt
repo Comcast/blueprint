@@ -18,10 +18,10 @@ import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
 import com.xfinity.blueprint.architecture.DefaultScreenView
-import com.xfinity.blueprint_sample.ResourceProvider
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.model.DataItemModel
-import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
+import com.xfinity.blueprint_sample_library_app.ResourceProvider
+import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
+import com.xfinity.blueprint_sample_library_app.mvp.model.DataItemModel
+import com.xfinity.blueprint_sample_library_app.mvp.model.DynamicScreenModel
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

@@ -31,7 +31,7 @@ class LauncherActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.bp_arch_button).setOnClickListener {
-            startActivity(Intent(this, _root_ide_package_.com.xfinity.blueprint_sample_library.ArchitectSampleActivity::class.java))
+            startActivity(Intent(this, ArchitectSampleActivity::class.java))
         }
     }
 }

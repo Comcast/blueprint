@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
-import com.xfinity.blueprint_sample.R
+import com.xfinity.blueprint_sample_library_app.R
 
 @ComponentViewClass(viewHolderClass = FooterViewHolder::class)
 class FooterView : FooterViewBase()

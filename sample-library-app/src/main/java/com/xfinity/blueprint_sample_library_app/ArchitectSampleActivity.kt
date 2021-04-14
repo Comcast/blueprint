@@ -16,8 +16,8 @@ import android.view.MenuItem
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.presenter.ArchitectSamplePresenter
+import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
+import com.xfinity.blueprint_sample_library_app.mvp.presenter.ArchitectSamplePresenter
 
 /**
  * Sample activity that demonstrates using the Blueprint Architecture Components
@@ -25,8 +25,8 @@ import com.xfinity.blueprint_sample.mvp.presenter.ArchitectSamplePresenter
 class ArchitectSampleActivity : ScreenViewActivity() {
     //Dependencies.  These would normally be injected
     private val componentEventManager = ComponentEventManager()
-    private val componentRegistry = AppComponentRegistry(componentEventManager, _root_ide_package_.com.xfinity.blueprint_sample_library_app.ArchitectSampleActivity.Companion.defaultItemId, _root_ide_package_.com.xfinity.blueprint_sample_library_app.ArchitectSampleActivity.Companion.defaultItemName)
-    private val resourceProvider: _root_ide_package_.com.xfinity.blueprint_sample.ResourceProvider by lazy { _root_ide_package_.com.xfinity.blueprint_sample.ResourceProvider(this) }
+    private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
+    private val resourceProvider: ResourceProvider by lazy { ResourceProvider(this) }
 
     //If you needed to use a ScreenView subclass, you would create your own Architect to use it.  Otherwise, you can
     // use the default architect
@@ -37,17 +37,17 @@ class ArchitectSampleActivity : ScreenViewActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(_root_ide_package_.com.xfinity.blueprint_sample.R.menu.main_menu, menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            _root_ide_package_.com.xfinity.blueprint_sample.R.id.remove -> {
+            R.id.remove -> {
                 presenter.removeItemRequested()
                 true
             }
-            _root_ide_package_.com.xfinity.blueprint_sample.R.id.refresh_data_items -> {
+            R.id.refresh_data_items -> {
                 presenter.refreshDataItems()
                 true
             }

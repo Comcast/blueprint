@@ -14,8 +14,8 @@ package com.xfinity.blueprint_sample_library_app.mvp.presenter
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint.view.ScreenView
-import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.model.StaticScreenModel
+import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
+import com.xfinity.blueprint_sample_library_app.mvp.model.StaticScreenModel
 
 class StaticScreenPresenter : ScreenPresenter<ScreenView> {
     var model: StaticScreenModel = StaticScreenModel()

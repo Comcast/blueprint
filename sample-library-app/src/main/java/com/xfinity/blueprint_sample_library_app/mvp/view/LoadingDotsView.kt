@@ -20,7 +20,7 @@ import com.xfinity.blueprint.view.ComponentViewBinder
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_annotations.ComponentViewHolderBinder
-import com.xfinity.blueprint_sample.R
+import com.xfinity.blueprint_sample_library_app.R
 
 @ComponentViewClass(viewHolderClass = LoadingDotsViewHolder::class)
 class LoadingDotsView : LoadingDotsViewBase()
