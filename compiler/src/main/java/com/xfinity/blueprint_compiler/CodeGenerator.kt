@@ -1,5 +1,6 @@
 package com.xfinity.blueprint_compiler
 
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.INT
@@ -39,6 +40,9 @@ class CodeGenerator(private val appPackageName: String,
                 .addModifiers(KModifier.OVERRIDE)
                 .addParameter("componentView", componentViewType)
                 .addParameter("args", Object::class, KModifier.VARARG)
+                .addAnnotation(AnnotationSpec.builder(Suppress::class)
+                    .addMember("%S", "UNCHECKED_CAST")
+                    .build())
                 .returns(nullableComponentPresenterType)
 
         val getDefaultPresenterMethodbuilder2 = FunSpec.builder("getDefaultPresenter")
@@ -46,6 +50,9 @@ class CodeGenerator(private val appPackageName: String,
                 .addModifiers(KModifier.OVERRIDE)
                 .addParameter("viewType", INT)
                 .addParameter("args", Object::class, KModifier.VARARG)
+                .addAnnotation(AnnotationSpec.builder(Suppress::class)
+                    .addMember("%S", "UNCHECKED_CAST")
+                    .build())
                 .returns(nullableComponentPresenterType)
 
         getDefaultPresenterMethodbuilder1.addCode("return when(componentView) {\n")
@@ -58,7 +65,7 @@ class CodeGenerator(private val appPackageName: String,
                         .initializer("$appPackageName.R.layout.${componentViewInfo.viewType}").build()
                 companionProperties.add(propertySpec)
 
-                componentViewWhenStatements.add("$viewTypeFieldName -> ${componentViewInfo.componentView}()\n")
+                componentViewWhenStatements.add("$viewTypeFieldName -> ${componentViewInfo.componentView}() \n as? ComponentView<RecyclerView.ViewHolder>\n")
                 if (componentViewInfo.defaultPresenter != null) {
                     getDefaultPresenterMethodbuilder1.addCode("is ${componentViewInfo.componentView} ->".trimIndent())
                     var returnStatement: String
@@ -113,6 +120,9 @@ class CodeGenerator(private val appPackageName: String,
                 .addModifiers(KModifier.PUBLIC)
                 .addModifiers(KModifier.OVERRIDE)
                 .addParameter("viewType", INT)
+                .addAnnotation(AnnotationSpec.builder(Suppress::class)
+                    .addMember("%S", "UNCHECKED_CAST")
+                    .build())
                 .returns(nullableComponentViewType)
 
         for (statement in componentViewWhenStatements) {
