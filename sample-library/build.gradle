@@ -1,5 +1,5 @@
 plugins {
-    id 'com.xfinity.resourceprovider' version "1.4.0"
+    id 'com.xfinity.resourceprovider' version "1.4.1"
 }
 
 apply plugin: 'com.android.library'
