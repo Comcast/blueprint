@@ -24,7 +24,7 @@ kapt {
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.xfinity.blueprint.bootstrap"
+        applicationId "com.xfinity.blueprint_bootstrap"
         minSdkVersion 17
         targetSdkVersion 28
         versionCode 1
@@ -42,9 +42,11 @@ android {
 dependencies {
     final MOSHI_VERSION = "1.6.0"
     final DAGGER_VERSION = "2.16"
-    final BLUEPRINT_VERSION = "1.6.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar']),
+                   project(':library'),
+                   project(':blueprint-annotations'),
+                   project(':architecture'),
                    'androidx.appcompat:appcompat:1.0.0',
                    'com.google.android.material:material:1.0.0',
                    'androidx.constraintlayout:constraintlayout:1.1.3',
@@ -57,9 +59,6 @@ dependencies {
                    'com.jakewharton.timber:timber:4.7.1',
                    "com.google.dagger:dagger-android:$DAGGER_VERSION",
                    "com.google.dagger:dagger-android-support:$DAGGER_VERSION",
-                   "com.xfinity:blueprint-library:$BLUEPRINT_VERSION",
-                   "com.xfinity:blueprint-annotations:$BLUEPRINT_VERSION",
-                   "com.xfinity:blueprint-architecture:$BLUEPRINT_VERSION",
                    'com.xfinity:loadingdots:1.0.2'
 
 
@@ -75,7 +74,7 @@ dependencies {
 
     kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION",
          "com.google.dagger:dagger-android-processor:$DAGGER_VERSION",
-         "com.xfinity:blueprint-compiler:$BLUEPRINT_VERSION"
+            project(':compiler')
 
     testImplementation 'junit:junit:4.12',
                        "org.mockito:mockito-core:2.+"

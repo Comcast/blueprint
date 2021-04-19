@@ -12,7 +12,22 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.model.api
+package com.xfinity.blueprint_bootstrap.dagger
 
-data class CurrentWeather(val weather: List<Weather>)
-data class Weather(val main: String, val description: String)
+import javax.inject.Qualifier
+import javax.inject.Scope
+
+@Retention
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
+@Scope
+annotation class PerActivity
+
+@Qualifier
+@MustBeDocumented
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Authenticating
+
+@Qualifier
+@MustBeDocumented
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Default

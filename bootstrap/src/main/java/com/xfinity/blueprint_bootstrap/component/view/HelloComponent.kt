@@ -12,17 +12,19 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.utils
+package com.xfinity.blueprint_bootstrap.component.view
 
-import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
+import androidx.recyclerview.widget.RecyclerView
+import android.view.View
+import android.widget.TextView
+import com.xfinity.blueprint_annotations.ComponentViewClass
+import com.xfinity.blueprint_annotations.ComponentViewHolder
+import com.xfinity.blueprint_bootstrap.R
 
-interface Schedulers {
-    val ioThread: Scheduler
-    val mainThread: Scheduler
-}
+@ComponentViewClass(viewHolderClass = HelloComponentViewHolder::class)
+class HelloComponent : HelloComponentBase()
 
-class MySchedulers : Schedulers {
-    override val ioThread = io.reactivex.schedulers.Schedulers.io()
-    override val mainThread: Scheduler = AndroidSchedulers.mainThread()
+@ComponentViewHolder(viewType = "hello_component")
+class HelloComponentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val hello : TextView = itemView.findViewById(R.id.hello) as TextView
 }

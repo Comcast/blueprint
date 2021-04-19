@@ -12,13 +12,16 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap
+package com.xfinity.blueprint_bootstrap.webservices
 
-import com.xfinity.blueprint.bootstrap.model.api.CurrentWeather
-import com.xfinity.blueprint.bootstrap.webservices.OpenApiWeatherMapService
-import io.reactivex.Observable
+import okhttp3.Interceptor
+import okhttp3.Response
 
-class ApiClient(private val openApiWeatherMapService: OpenApiWeatherMapService) {
-    fun getCurrentWeatherByCity(city: String) : Observable<CurrentWeather> =
-            openApiWeatherMapService.currentWeatherByCity(city)
+class ApiKeyInterceptor(private val apiKey: String) : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        var request = chain.request()
+        val url = request.url().newBuilder().addQueryParameter("appid", apiKey).build()
+        request = request.newBuilder().url(url).build()
+        return chain.proceed(request)
+    }
 }

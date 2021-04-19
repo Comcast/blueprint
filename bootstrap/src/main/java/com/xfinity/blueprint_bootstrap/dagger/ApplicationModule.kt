@@ -12,7 +12,7 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.dagger
+package com.xfinity.blueprint_bootstrap.dagger
 
 import android.app.Application
 import android.content.Context
@@ -20,14 +20,14 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.xfinity.blueprint.ComponentRegistry
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
-import com.xfinity.blueprint.blueprint.AppComponentRegistry
-import com.xfinity.blueprint.bootstrap.ApiClient
-import com.xfinity.blueprint.bootstrap.MainActivity
-import com.xfinity.blueprint.bootstrap.utils.MySchedulers
-import com.xfinity.blueprint.bootstrap.utils.Schedulers
-import com.xfinity.blueprint.bootstrap.webservices.ApiKeyInterceptor
-import com.xfinity.blueprint.bootstrap.webservices.OpenApiWeatherMapService
-import com.xfinity.bootstrap.R
+import com.xfinity.blueprint_bootstrap.blueprint.AppComponentRegistry
+import com.xfinity.blueprint_bootstrap.ApiClient
+import com.xfinity.blueprint_bootstrap.MainActivity
+import com.xfinity.blueprint_bootstrap.R
+import com.xfinity.blueprint_bootstrap.utils.MySchedulers
+import com.xfinity.blueprint_bootstrap.utils.Schedulers
+import com.xfinity.blueprint_bootstrap.webservices.ApiKeyInterceptor
+import com.xfinity.blueprint_bootstrap.webservices.OpenApiWeatherMapService
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

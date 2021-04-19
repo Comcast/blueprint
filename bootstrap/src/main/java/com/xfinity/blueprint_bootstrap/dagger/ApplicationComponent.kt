@@ -12,8 +12,17 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.component.model
+package com.xfinity.blueprint_bootstrap.dagger
 
-import com.xfinity.blueprint.model.ComponentModel
+import com.xfinity.blueprint_bootstrap.BootstrapApplication
+import dagger.Component
+import dagger.android.AndroidInjectionModule
+import javax.inject.Singleton
 
-data class SimpleTextModel(val text: CharSequence) : ComponentModel
+@Singleton
+@Component(modules = [(AndroidInjectionModule::class),
+    (ApplicationModule::class),
+    (InjectorsModule::class)])
+interface ApplicationComponent {
+    fun inject(target: BootstrapApplication)
+}

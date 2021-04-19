@@ -12,14 +12,13 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap
+package com.xfinity.blueprint_bootstrap
 
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.xfinity.blueprint.bootstrap.screen.presenter.MainPresenter
+import com.xfinity.blueprint_bootstrap.screen.presenter.MainPresenter
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
-import com.xfinity.bootstrap.R
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 

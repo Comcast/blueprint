@@ -12,16 +12,13 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.dagger
+package com.xfinity.blueprint_bootstrap.screen.model
 
-import android.content.Context
-import com.xfinity.blueprint.bootstrap.MainActivity
-import dagger.Binds
-import dagger.Module
+import com.xfinity.blueprint_bootstrap.ApiClient
+import com.xfinity.blueprint_bootstrap.model.api.CurrentWeather
+import io.reactivex.Observable
+import javax.inject.Inject
 
-@Module
-abstract class MainActivityModule {
-    @ActivityContext
-    @Binds
-    abstract fun provideContext(activity: MainActivity): Context
+class MainScreenModel @Inject constructor(private val apiClient: ApiClient) {
+    fun loadData(city: String) : Observable<CurrentWeather> = apiClient.getCurrentWeatherByCity(city)
 }

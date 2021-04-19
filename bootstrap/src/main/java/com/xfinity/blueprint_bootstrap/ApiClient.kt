@@ -12,13 +12,13 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.screen.model
+package com.xfinity.blueprint_bootstrap
 
-import com.xfinity.blueprint.bootstrap.ApiClient
-import com.xfinity.blueprint.bootstrap.model.api.CurrentWeather
+import com.xfinity.blueprint_bootstrap.model.api.CurrentWeather
+import com.xfinity.blueprint_bootstrap.webservices.OpenApiWeatherMapService
 import io.reactivex.Observable
-import javax.inject.Inject
 
-class MainScreenModel @Inject constructor(private val apiClient: ApiClient) {
-    fun loadData(city: String) : Observable<CurrentWeather> = apiClient.getCurrentWeatherByCity(city)
+class ApiClient(private val openApiWeatherMapService: OpenApiWeatherMapService) {
+    fun getCurrentWeatherByCity(city: String) : Observable<CurrentWeather> =
+            openApiWeatherMapService.currentWeatherByCity(city)
 }

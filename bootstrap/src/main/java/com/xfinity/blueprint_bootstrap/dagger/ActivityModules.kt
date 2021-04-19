@@ -12,16 +12,16 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.dagger
+package com.xfinity.blueprint_bootstrap.dagger
 
-import javax.inject.Qualifier
+import android.content.Context
+import com.xfinity.blueprint_bootstrap.MainActivity
+import dagger.Binds
+import dagger.Module
 
-@Qualifier
-@MustBeDocumented
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ActivityContext
-
-@Qualifier
-@MustBeDocumented
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ApplicationContext
+@Module
+abstract class MainActivityModule {
+    @ActivityContext
+    @Binds
+    abstract fun provideContext(activity: MainActivity): Context
+}

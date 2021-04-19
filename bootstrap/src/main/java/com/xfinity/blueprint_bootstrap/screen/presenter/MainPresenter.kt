@@ -12,16 +12,16 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.screen.presenter
+package com.xfinity.blueprint_bootstrap.screen.presenter
 
 import com.xfinity.blueprint.architecture.DefaultScreenView
-import com.xfinity.blueprint.blueprint.AppComponentRegistry
-import com.xfinity.blueprint.bootstrap.component.model.SimpleTextModel
-import com.xfinity.blueprint.bootstrap.screen.model.MainScreenModel
-import com.xfinity.blueprint.bootstrap.model.api.CurrentWeather
-import com.xfinity.blueprint.bootstrap.utils.Schedulers
+import com.xfinity.blueprint_bootstrap.component.model.SimpleTextModel
+import com.xfinity.blueprint_bootstrap.screen.model.MainScreenModel
+import com.xfinity.blueprint_bootstrap.model.api.CurrentWeather
+import com.xfinity.blueprint_bootstrap.utils.Schedulers
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.presenter.ScreenPresenter
+import com.xfinity.blueprint_bootstrap.blueprint.AppComponentRegistry
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import timber.log.Timber

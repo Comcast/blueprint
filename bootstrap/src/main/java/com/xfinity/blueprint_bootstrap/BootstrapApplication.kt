@@ -12,13 +12,12 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap
+package com.xfinity.blueprint_bootstrap
 
 import android.app.Activity
 import android.app.Application
-import com.xfinity.blueprint.bootstrap.dagger.ApplicationModule
-import com.xfinity.blueprint.bootstrap.dagger.DaggerApplicationComponent
-import com.xfinity.bootstrap.BuildConfig
+import com.xfinity.blueprint_bootstrap.dagger.ApplicationModule
+import com.xfinity.blueprint_bootstrap.dagger.DaggerApplicationComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector

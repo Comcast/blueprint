@@ -12,9 +12,9 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.webservices
+package com.xfinity.blueprint_bootstrap.webservices
 
-import com.xfinity.blueprint.bootstrap.model.api.CurrentWeather
+import com.xfinity.blueprint_bootstrap.model.api.CurrentWeather
 import com.squareup.moshi.Moshi
 import io.reactivex.Observable
 import okhttp3.OkHttpClient

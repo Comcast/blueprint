@@ -12,19 +12,16 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.component.view
+package com.xfinity.blueprint_bootstrap.component.presenter
 
-import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import android.widget.TextView
-import com.xfinity.blueprint_annotations.ComponentViewClass
-import com.xfinity.blueprint_annotations.ComponentViewHolder
-import com.xfinity.bootstrap.R
+import com.xfinity.blueprint_bootstrap.component.model.SimpleTextModel
+import com.xfinity.blueprint_bootstrap.component.view.HelloComponent
+import com.xfinity.blueprint.presenter.ComponentPresenter
+import com.xfinity.blueprint_annotations.DefaultPresenter
 
-@ComponentViewClass(viewHolderClass = HelloComponentViewHolder::class)
-class HelloComponent : HelloComponentBase()
-
-@ComponentViewHolder(viewType = "hello_component")
-class HelloComponentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val hello : TextView = itemView.findViewById(R.id.hello) as TextView
+@DefaultPresenter(viewClass = HelloComponent::class)
+class HelloComponentPresenter : ComponentPresenter<HelloComponent, SimpleTextModel> {
+    override fun present(view: HelloComponent, model: SimpleTextModel) {
+        view.setHelloText(model.text)
+    }
 }

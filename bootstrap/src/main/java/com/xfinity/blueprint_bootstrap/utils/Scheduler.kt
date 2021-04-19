@@ -12,22 +12,17 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.dagger
+package com.xfinity.blueprint_bootstrap.utils
 
-import javax.inject.Qualifier
-import javax.inject.Scope
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 
-@Retention
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
-@Scope
-annotation class PerActivity
+interface Schedulers {
+    val ioThread: Scheduler
+    val mainThread: Scheduler
+}
 
-@Qualifier
-@MustBeDocumented
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Authenticating
-
-@Qualifier
-@MustBeDocumented
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Default
+class MySchedulers : Schedulers {
+    override val ioThread = io.reactivex.schedulers.Schedulers.io()
+    override val mainThread: Scheduler = AndroidSchedulers.mainThread()
+}

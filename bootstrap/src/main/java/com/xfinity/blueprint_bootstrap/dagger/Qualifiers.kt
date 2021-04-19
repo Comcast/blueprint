@@ -12,17 +12,16 @@
  *
  */
 
-package com.xfinity.blueprint.bootstrap.dagger
+package com.xfinity.blueprint_bootstrap.dagger
 
-import com.xfinity.blueprint.bootstrap.BootstrapApplication
-import dagger.Component
-import dagger.android.AndroidInjectionModule
-import javax.inject.Singleton
+import javax.inject.Qualifier
 
-@Singleton
-@Component(modules = [(AndroidInjectionModule::class),
-    (ApplicationModule::class),
-    (InjectorsModule::class)])
-interface ApplicationComponent {
-    fun inject(target: BootstrapApplication)
-}
+@Qualifier
+@MustBeDocumented
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ActivityContext
+
+@Qualifier
+@MustBeDocumented
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ApplicationContext
