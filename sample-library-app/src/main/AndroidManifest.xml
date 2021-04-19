@@ -31,7 +31,7 @@
         </activity>
         <activity android:name="com.xfinity.blueprint_sample_library_app.StaticScreenActivity" android:label="@string/static_screen"/>
         <activity android:name="com.xfinity.blueprint_sample_library_app.DynamicScreenActivity" android:label="@string/dynamic_screen"/>
-        <activity android:name="com.xfinity.blueprint_sample_library.ArchitectSampleActivity" android:label="@string/bp_arch_screen"/>
+        <activity android:name="com.xfinity.blueprint_sample_library_app.ArchitectSampleActivity" android:label="@string/bp_arch_screen"/>
     </application>
 
 </manifest>
