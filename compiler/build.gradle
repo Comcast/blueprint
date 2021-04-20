@@ -44,9 +44,6 @@ uploadArchives {
         authentication(userName: sonatypeUsername, password: sonatypePassword)
       }
 
-      repository(url: "file:///Users/mdappo200/.m2/repository/")
-
-
       pom.project {
         groupId rootProject.groupId
         name "$rootProject.projectName Compiler"

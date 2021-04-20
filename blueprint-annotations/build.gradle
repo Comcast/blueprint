@@ -41,7 +41,6 @@ uploadArchives {
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
                 authentication(userName: sonatypeUsername, password: sonatypePassword)
             }
-            repository(url: "file:///Users/mdappo200/.m2/repository/")
 
             pom.project {
                 groupId rootProject.groupId

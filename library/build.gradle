@@ -52,10 +52,10 @@ task javadoc(type: Javadoc) {
     failOnError false
 }
 
-//task javadocJar(type: Jar, dependsOn: javadoc) {
-//    classifier = 'javadoc'
-//    from tasks.javadoc.destinationDir
-//}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from tasks.javadoc.destinationDir
+}
 
 //Creating sources with comments
 task androidSourcesJar(type: Jar) {
@@ -80,8 +80,6 @@ uploadArchives {
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
                 authentication(userName: sonatypeUsername, password: sonatypePassword)
             }
-
-            repository(url: "file:///Users/mdappo200/.m2/repository/")
 
             pom.project {
                 groupId rootProject.groupId
