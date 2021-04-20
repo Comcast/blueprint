@@ -81,6 +81,7 @@ public class BlueprintProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         StringBuilder packageName = null;
+        String appPackageName = null;
         List<ComponentViewInfo> componentViewInfoList = new ArrayList<>();
 
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(ComponentViewHolder.class)) {
@@ -92,7 +93,8 @@ public class BlueprintProcessor extends AbstractProcessor {
 
             if (packageName == null) {
                 try {
-                    packageName = new StringBuilder(Utils.getPackageName(processingEnv.getElementUtils(), annotatedClass));
+                    appPackageName = Utils.getPackageName(processingEnv.getElementUtils(), annotatedClass);
+                    packageName = new StringBuilder(appPackageName);
                 } catch (UnnamedPackageException e) {
                     e.printStackTrace();
                 }
@@ -101,14 +103,15 @@ public class BlueprintProcessor extends AbstractProcessor {
                 if (packageName != null) {
                     String[] packageNameTokens = packageName.toString().split("\\.");
                     if (packageNameTokens.length >= 3) {
-                        packageName = new StringBuilder(packageNameTokens[0] + "." + packageNameTokens[1] + "." + packageNameTokens[2]);
+                        appPackageName = packageNameTokens[0] + "." + packageNameTokens[1] + "." + packageNameTokens[2];
+                        packageName = new StringBuilder(appPackageName);
                     }
 
                     packageName.append(".blueprint");
                 }
             }
 
-            int viewType = annotatedElement.getAnnotation(ComponentViewHolder.class).viewType();
+            String viewType = annotatedElement.getAnnotation(ComponentViewHolder.class).viewType();
 
             String viewHolderClassName = ((Symbol.ClassSymbol) annotatedClass).fullname.toString();
 
@@ -227,7 +230,7 @@ public class BlueprintProcessor extends AbstractProcessor {
 
         if (packageName != null) {
             try {
-                generateCode(packageName.toString(), componentViewInfoList, defaultPresenterConstructorMap);
+                generateCode(appPackageName, packageName.toString(), componentViewInfoList, defaultPresenterConstructorMap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -261,11 +264,11 @@ public class BlueprintProcessor extends AbstractProcessor {
         return processingEnv.getTypeUtils().isAssignable(annotatedClass.asType(), applicationTypeElement.asType());
     }
 
-    private void generateCode(String packageName, List<ComponentViewInfo> componentInfoList,
+    private void generateCode(String appPackageName, String packageName, List<ComponentViewInfo> componentInfoList,
                               Map<String, List<Pair<TypeName, String>>> defaultPresenterContructorMap)
             throws IOException {
         CodeGenerator codeGenerator =
-                new CodeGenerator(componentInfoList, defaultPresenterContructorMap);
+                new CodeGenerator(appPackageName, componentInfoList, defaultPresenterContructorMap);
         TypeSpec generatedClass = codeGenerator.generateComponentRegistry();
 
         JavaFile javaFile = builder(packageName, generatedClass).build();
@@ -280,7 +283,7 @@ public class BlueprintProcessor extends AbstractProcessor {
     }
 
     class ComponentViewInfo {
-        final int viewType;
+        final String viewType;
         final String viewHolder;
         String viewTypeName;
         String defaultPresenter;
@@ -288,7 +291,7 @@ public class BlueprintProcessor extends AbstractProcessor {
         String viewBinder;
         Map<String, String> children;
 
-        ComponentViewInfo(int viewType, String viewHolder) {
+        ComponentViewInfo(String viewType, String viewHolder) {
             this.viewType = viewType;
             this.viewHolder = viewHolder;
         }
@@ -304,12 +307,12 @@ public class BlueprintProcessor extends AbstractProcessor {
 
             ComponentViewInfo that = (ComponentViewInfo) o;
 
-            return viewType == that.viewType;
+            return viewType.equals(that.viewType);
         }
 
         @Override
         public int hashCode() {
-            return viewType;
+            return viewType.hashCode();
         }
     }
 }

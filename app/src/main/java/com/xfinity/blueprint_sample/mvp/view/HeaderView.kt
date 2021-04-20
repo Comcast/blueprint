@@ -25,7 +25,7 @@ class HeaderView : HeaderViewBase() {
     }
 }
 
-@ComponentViewHolder(viewType = R.layout.header_view)
+@ComponentViewHolder(viewType = "header_view")
 class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val header : TextView = itemView.findViewById(R.id.header) as TextView
 }

@@ -21,3 +21,39 @@ interface ComponentRegistry {
     fun getDefaultPresenter(viewType: Int, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>?
     fun getDefaultPresenter(componentView: ComponentView<androidx.recyclerview.widget.RecyclerView.ViewHolder>, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>?
 }
+
+open class CompositeComponentRegistry(val componentRegistries: List<ComponentRegistry> = listOf()) : ComponentRegistry {
+    override fun getComponentView(viewType: Int): ComponentView<RecyclerView.ViewHolder>? {
+        componentRegistries.forEach {
+            val componentView = it.getComponentView(viewType)
+            if (componentView != null) {
+                return componentView
+            }
+        }
+
+        return null
+    }
+
+    override fun getDefaultPresenter(viewType: Int, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>? {
+        componentRegistries.forEach {
+            val componentPresenter = it.getDefaultPresenter(viewType, args)
+            if (componentPresenter != null) {
+                return componentPresenter
+            }
+        }
+
+        return null
+    }
+
+    override fun getDefaultPresenter(componentView: ComponentView<RecyclerView.ViewHolder>, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>? {
+        componentRegistries.forEach {
+            val componentPresenter = it.getDefaultPresenter(componentView, args)
+            if (componentPresenter != null) {
+                return componentPresenter
+            }
+        }
+
+        return null
+    }
+
+}
