@@ -2,10 +2,9 @@ package com.xfinity.blueprint.architecture.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
-import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint.architecture.DefaultScreenView
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
+import com.xfinity.blueprint.presenter.ScreenPresenter
 
 abstract class ScreenViewActivity : AppCompatActivity() {
     @Suppress("MemberVisibilityCanBePrivate")
@@ -21,15 +20,11 @@ abstract class ScreenViewActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (presenter is EventHandlingScreenPresenter) {
-            (presenter as EventHandlingScreenPresenter).resume()
-        }
+        presenter.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        if (presenter is EventHandlingScreenPresenter) {
-            (presenter as EventHandlingScreenPresenter).pause()
-        }
+        presenter.pause()
     }
 }

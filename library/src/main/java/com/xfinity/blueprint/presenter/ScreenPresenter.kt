@@ -11,9 +11,30 @@
 
 package com.xfinity.blueprint.presenter
 
+import com.xfinity.blueprint.event.ComponentEvent
+import com.xfinity.blueprint.event.ComponentEventListener
+import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenView
 
-interface ScreenPresenter<in T : ScreenView> {
+interface ScreenPresenter<in T : ScreenView> : ComponentEventListener {
+    val componentEventManager : ComponentEventManager
+
     fun attachView(screenView: T)
     fun present()
+
+    fun resume() {
+        componentEventManager.registerListener(this)
+    }
+
+    fun pause() {
+        componentEventManager.unregisterListener(this)
+    }
+
+    override fun onComponentEvent(componentEvent: ComponentEvent): Boolean {
+        return false
+    }
+}
+
+abstract class DefaultScreenPresenter<in T : ScreenView> : ScreenPresenter<T>  {
+    override val componentEventManager : ComponentEventManager = ComponentEventManager()
 }

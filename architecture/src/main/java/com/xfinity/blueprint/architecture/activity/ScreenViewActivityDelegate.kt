@@ -1,8 +1,6 @@
 package com.xfinity.blueprint.architecture.activity
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -23,8 +21,8 @@ class ScreenViewActivityDelegate {
         architect.initBlueprint(activity.findViewById(android.R.id.content), activity.presenter, activity.supportActionBar)
     }
 
-    fun setupViews(activity: AppCompatActivity) {
-        activity.setContentView(R.layout.screen_view_activity)
+    private fun setupViews(activity: AppCompatActivity) {
+        activity.setContentView(R.layout.toolbar_screen_view)
         val toolbar: Toolbar = activity.findViewById(R.id.toolbar)
         activity.setSupportActionBar(toolbar)
         activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -36,7 +34,7 @@ class ScreenViewActivityDelegate {
 
 class ScreenViewFragmentDelegate {
     fun onCreateView(fragment: ScreenViewFragment, inflater: LayoutInflater, container: ViewGroup?, architect: DefaultScreenViewArchitect) : View {
-        val view = inflater.inflate(R.layout.screen_view_fragment, container, false)
+        val view = inflater.inflate(R.layout.screen_view, container, false)
         val recyclerView = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(fragment.context, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
 
