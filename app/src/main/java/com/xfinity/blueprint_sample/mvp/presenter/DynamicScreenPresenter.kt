@@ -15,6 +15,7 @@ import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.model.ComponentModel
+import com.xfinity.blueprint.presenter.ComponentEventHandler
 import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
@@ -26,7 +27,7 @@ import java.util.TimerTask
 
 
 class DynamicScreenPresenter(override val componentEventManager: ComponentEventManager) :
-    ScreenPresenter<DefaultDynamicScreenView> {
+    ScreenPresenter<DefaultDynamicScreenView>, ComponentEventHandler {
 
     var model: DynamicScreenModel = DynamicScreenModel()
     lateinit var view: DefaultDynamicScreenView

@@ -11,11 +11,19 @@
 
 package com.xfinity.blueprint.presenter
 
+import com.xfinity.blueprint.event.ComponentEventListener
 import com.xfinity.blueprint.event.ComponentEventManager
-import com.xfinity.blueprint.model.ComponentModel
-import com.xfinity.blueprint.view.ComponentView
+import com.xfinity.blueprint.view.ScreenView
 
-@Deprecated("Any Component that has access to the ComponentEventManager can send events. Don't use a subclass for this.")
-interface EventEmittingComponentPresenter<V : ComponentView<*>, M : ComponentModel> : ComponentPresenter<V, M> {
-    val componentEventManager: ComponentEventManager
+@Deprecated("To avoid collisions, have presenters implement ComponentEventHandler instead of inheriting from this class.")
+interface EventHandlingScreenPresenter<in T : ScreenView> : ScreenPresenter<T>, ComponentEventListener {
+    val componentEventManager : ComponentEventManager
+
+    fun resume() {
+        componentEventManager.registerListener(this)
+    }
+
+    fun pause() {
+        componentEventManager.unregisterListener(this)
+    }
 }

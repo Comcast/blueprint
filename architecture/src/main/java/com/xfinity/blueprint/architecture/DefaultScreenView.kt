@@ -12,9 +12,14 @@ open class ToolbarScreenView(screenViewDelegate: ScreenViewDelegate, messageView
     var menu: Menu? = null
 
     override var onActionItemSelectedBehavior: (Int) -> Boolean = { false }
+    override var onToolbarBackButtonClickedBehavior: () -> Boolean = { false }
 
     override fun setToolbarActionItemIcon(itemId: Int, iconId: Int) {
         menu?.findItem(itemId)?.setIcon(iconId)
+    }
+
+    override fun setToolbarActionItemIsVisible(itemId: Int, isVisible: Boolean) {
+        menu?.findItem(itemId)?.isVisible = isVisible
     }
 
     override fun setToolbarTitle(title: CharSequence) {

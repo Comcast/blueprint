@@ -14,15 +14,15 @@ package com.xfinity.blueprint_sample_library_app.mvp.presenter
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
-import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
 import com.xfinity.blueprint.architecture.DefaultScreenView
+import com.xfinity.blueprint.presenter.ComponentEventHandler
+import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry.DataItemView_VIEW_TYPE
 import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample_library_app.ResourceProvider
 import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample_library_app.mvp.model.DynamicScreenModel
 import io.reactivex.Completable
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit
 
 class ArchitectSamplePresenter(override val componentEventManager: ComponentEventManager,
                                private val resourceProvider: ResourceProvider) :
-        EventHandlingScreenPresenter<DefaultScreenView> {
+        ScreenPresenter<DefaultScreenView>, ComponentEventHandler {
 
     var model: DynamicScreenModel = DynamicScreenModel()
     lateinit var view: DefaultScreenView

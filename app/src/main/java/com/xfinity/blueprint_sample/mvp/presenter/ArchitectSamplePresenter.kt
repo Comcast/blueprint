@@ -16,6 +16,7 @@ import com.xfinity.blueprint.architecture.*
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
+import com.xfinity.blueprint.presenter.ComponentEventHandler
 import com.xfinity.blueprint_sample.ResourceProvider
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
@@ -25,10 +26,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-
 class ArchitectSamplePresenter(override val componentEventManager: ComponentEventManager,
                                private val resourceProvider: ResourceProvider) :
-    ToolbarScreenPresenter() {
+    ToolbarScreenPresenter(), ComponentEventHandler {
 
     var model: DynamicScreenModel = DynamicScreenModel()
     lateinit var view: ToolbarScreenView

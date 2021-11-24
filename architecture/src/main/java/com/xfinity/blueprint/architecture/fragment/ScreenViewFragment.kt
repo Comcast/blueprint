@@ -8,6 +8,7 @@ import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint.architecture.DefaultScreenView
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint.architecture.activity.ScreenViewFragmentDelegate
+import com.xfinity.blueprint.presenter.ComponentEventHandler
 
 abstract class ScreenViewFragment : androidx.fragment.app.Fragment() {
     abstract var architect: DefaultScreenViewArchitect
@@ -19,12 +20,12 @@ abstract class ScreenViewFragment : androidx.fragment.app.Fragment() {
 
     override fun onResume() {
         super.onResume()
-        presenter.resume()
+        (presenter as? ComponentEventHandler)?.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        presenter.pause()
+        (presenter as? ComponentEventHandler)?.pause()
     }
 
     abstract val presenter: ScreenPresenter<DefaultScreenView>

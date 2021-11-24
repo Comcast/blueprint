@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.xfinity.blueprint.architecture.R
 import com.xfinity.blueprint.architecture.ToolbarScreenPresenter
 import com.xfinity.blueprint.architecture.ToolbarScreenViewArchitect
+import com.xfinity.blueprint.presenter.ComponentEventHandler
 
 interface TaggedFragment{
     fun getFragmentTag(): String
@@ -38,12 +39,12 @@ abstract class ToolbarScreenViewFragment : androidx.fragment.app.Fragment(), Tag
 
     override fun onResume() {
         super.onResume()
-        presenter.resume()
+        (presenter as? ComponentEventHandler)?.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        presenter.pause()
+        (presenter as? ComponentEventHandler)?.pause()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.xfinity.blueprint.architecture.ToolbarScreenPresenter
 import com.xfinity.blueprint.architecture.ToolbarScreenViewArchitect
+import com.xfinity.blueprint.presenter.ComponentEventHandler
 
 abstract class ToolbarScreenViewActivity : AppCompatActivity() {
     @Suppress("MemberVisibilityCanBePrivate")
@@ -22,12 +23,12 @@ abstract class ToolbarScreenViewActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        presenter.resume()
+        (presenter as? ComponentEventHandler)?.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        presenter.pause()
+        (presenter as? ComponentEventHandler)?.pause()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -39,6 +40,18 @@ abstract class ToolbarScreenViewActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return architect.screenView.onActionItemSelectedBehavior.invoke(item.itemId)
+        return if (architect.screenView.onActionItemSelectedBehavior.invoke(item.itemId)) {
+            true
+        } else {
+            super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return if (architect.screenView.onToolbarBackButtonClickedBehavior()) {
+            true
+        } else {
+            super.onSupportNavigateUp()
+        }
     }
 }

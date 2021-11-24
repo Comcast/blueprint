@@ -5,7 +5,9 @@ import com.xfinity.blueprint.presenter.ScreenPresenter
 
 interface ToolbarView {
     var onActionItemSelectedBehavior: (Int) -> Boolean
+    var onToolbarBackButtonClickedBehavior: () -> Boolean
     fun setToolbarActionItemIcon(itemId: Int, iconId: Int)
+    fun setToolbarActionItemIsVisible(itemId: Int, isVisible: Boolean)
     fun setToolbarTitle(title: CharSequence)
     fun hideToolbarBackButton()
     fun showToolbarBackButton()

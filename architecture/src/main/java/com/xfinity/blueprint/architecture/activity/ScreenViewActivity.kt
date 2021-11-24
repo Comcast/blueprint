@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.xfinity.blueprint.architecture.DefaultScreenView
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
+import com.xfinity.blueprint.presenter.ComponentEventHandler
 import com.xfinity.blueprint.presenter.ScreenPresenter
 
 abstract class ScreenViewActivity : AppCompatActivity() {
@@ -20,11 +21,11 @@ abstract class ScreenViewActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        presenter.resume()
+        (presenter as? ComponentEventHandler)?.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        presenter.pause()
+        (presenter as? ComponentEventHandler)?.pause()
     }
 }
