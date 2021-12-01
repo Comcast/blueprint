@@ -1,5 +1,6 @@
 package com.xfinity.blueprint.architecture
 
+import android.graphics.drawable.Drawable
 import android.view.Menu
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.ActionBar
@@ -44,6 +45,18 @@ open class ToolbarScreenView(screenViewDelegate: ScreenViewDelegate, messageView
 
     override fun hideToolBar() {
         actionBar?.hide()
+    }
+
+    override fun setShowHomeAsUp(showHomeAsUp: Boolean) {
+        actionBar?.setDisplayHomeAsUpEnabled(showHomeAsUp)
+    }
+
+    override fun setUpIndicatorIcon(upIndicatorId: Int) {
+        actionBar?.setHomeAsUpIndicator(upIndicatorId)
+    }
+
+    override fun setUpIndicatorIcon(upIndicator: Drawable) {
+        actionBar?.setHomeAsUpIndicator(upIndicator)
     }
 }
 

@@ -1,5 +1,6 @@
 package com.xfinity.blueprint.architecture
 
+import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import com.xfinity.blueprint.presenter.ScreenPresenter
 
@@ -14,6 +15,9 @@ interface ToolbarView {
     fun setToolbarIcon(@DrawableRes resId: Int)
     fun showToolBar()
     fun hideToolBar()
+    fun setShowHomeAsUp(showHomeAsUp: Boolean)
+    fun setUpIndicatorIcon(upIndicatorId: Int)
+    fun setUpIndicatorIcon(upIndicator: Drawable)
 }
 
 abstract class ToolbarScreenPresenter : ScreenPresenter<ToolbarScreenView> {
