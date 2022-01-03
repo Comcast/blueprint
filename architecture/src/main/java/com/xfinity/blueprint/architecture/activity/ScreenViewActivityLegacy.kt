@@ -7,7 +7,7 @@ import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint.presenter.ComponentEventHandler
 import com.xfinity.blueprint.presenter.ScreenPresenter
 
-abstract class ScreenViewActivity : AppCompatActivity() {
+abstract class ScreenViewActivityLegacy : AppCompatActivity() {
     @Suppress("MemberVisibilityCanBePrivate")
     abstract var architect: DefaultScreenViewArchitect
     abstract val presenter: ScreenPresenter<DefaultScreenView>

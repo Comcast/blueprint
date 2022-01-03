@@ -23,6 +23,7 @@ import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint_bootstrap.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_bootstrap.ApiClient
 import com.xfinity.blueprint_bootstrap.MainActivity
+import com.xfinity.blueprint_bootstrap.MainToolbarActivity
 import com.xfinity.blueprint_bootstrap.R
 import com.xfinity.blueprint_bootstrap.utils.MySchedulers
 import com.xfinity.blueprint_bootstrap.utils.Schedulers
@@ -41,6 +42,10 @@ abstract class InjectorsModule {
     @PerActivity
     @ContributesAndroidInjector(modules = [MainActivityModule::class])
     abstract fun contributeMainActivityInjector(): MainActivity
+
+    @PerActivity
+    @ContributesAndroidInjector(modules = [MainToolbarActivityModule::class])
+    abstract fun contributeMainToolbarActivityInjector(): MainToolbarActivity
 
     @Binds
     @ApplicationContext

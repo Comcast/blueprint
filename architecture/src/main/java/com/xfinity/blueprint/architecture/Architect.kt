@@ -45,13 +45,3 @@ class DefaultScreenViewArchitect(componentRegistry: ComponentRegistry)
             RecyclerViewScreenManager(recyclerView))
     }
 }
-
-class ToolbarScreenViewArchitect(componentRegistry: ComponentRegistry)
-    : DefaultArchitect<ToolbarScreenView>(componentRegistry) {
-    override val screenView: ToolbarScreenView by lazy {
-        ToolbarScreenView(screenViewDelegate,
-            SnackbarMessageView(container), PullToRefreshView(ptrFrame),
-            RecyclerViewScreenManager(recyclerView),
-            supportActionBar)
-    }
-}

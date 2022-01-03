@@ -22,22 +22,23 @@ import com.xfinity.blueprint_sample.ResourceProvider
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
+import com.xfinity.blueprint_sample.mvp.view.CustomScreenView
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-class ArchitectSamplePresenter(override val componentEventManager: ComponentEventManager,
-                               private val resourceProvider: ResourceProvider) :
-    ScreenPresenter<DefaultScreenView>, ToolbarPresenter, ComponentEventHandler {
+class CustomScreenViewPresenter(override val componentEventManager: ComponentEventManager,
+                                private val resourceProvider: ResourceProvider) :
+    ScreenPresenter<CustomScreenView>, ToolbarPresenter, ComponentEventHandler {
 
     var model: DynamicScreenModel = DynamicScreenModel()
-    lateinit var view: DefaultScreenView
+    lateinit var view: CustomScreenView
     private var toolbarView: ToolbarView? = null
     private val dataItemPresenter: DataItemPresenter = DataItemPresenter(componentEventManager)
     private var headerPosition = 0
 
-    override fun attachView(screenView: DefaultScreenView) {
+    override fun attachView(screenView: CustomScreenView) {
         view = screenView
     }
 
@@ -107,6 +108,10 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
             screenComponents.add(Component(model.footerModel, AppComponentRegistry.FooterView_VIEW_TYPE))
         }
 
+        view.setFabOnClickedBehavior {
+            view.showMessage(FAB_CLICKED_MESSAGE, duration = MessageDuration.LONG)
+        }
+
         view.updateComponents(screenComponents)
     }
 
@@ -155,5 +160,9 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
                 else -> false
             }
         }
+    }
+
+    companion object {
+        const val FAB_CLICKED_MESSAGE = "The FAB was clicked"
     }
 }

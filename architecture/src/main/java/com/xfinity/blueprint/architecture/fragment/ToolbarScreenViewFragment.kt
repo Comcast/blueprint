@@ -6,23 +6,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.xfinity.blueprint.architecture.R
-import com.xfinity.blueprint.architecture.ToolbarScreenPresenter
-import com.xfinity.blueprint.architecture.ToolbarScreenViewArchitect
+import com.xfinity.blueprint.architecture.*
 import com.xfinity.blueprint.presenter.ComponentEventHandler
+import com.xfinity.blueprint.presenter.ScreenPresenter
 
 interface TaggedFragment{
     fun getFragmentTag(): String
 }
 
-abstract class ToolbarScreenViewFragment : androidx.fragment.app.Fragment(), TaggedFragment {
-    abstract var architect: ToolbarScreenViewArchitect
-    abstract val presenter: ToolbarScreenPresenter
+abstract class ToolbarScreenViewFragment<T: DefaultScreenView> : androidx.fragment.app.Fragment(), TaggedFragment {
+    abstract val architect: DefaultArchitect<T>
+    abstract val presenter: ScreenPresenter<T>
+    abstract val toolbarPresenter: ToolbarPresenter
 
+    var toolbarView: ToolbarView? = null
+
+    var layoutId: Int? = null
     var menuId: Int? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(R.layout.toolbar_screen_view, container, false)
+        val view = inflater.inflate(layoutId ?: R.layout.toolbar_screen_view, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
 
@@ -32,6 +35,8 @@ abstract class ToolbarScreenViewFragment : androidx.fragment.app.Fragment(), Tag
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         architect.initBlueprint(view.findViewById(R.id.container), presenter, activity.supportActionBar)
 
+        toolbarView = ActionBarToolbarView(activity.supportActionBar)
+        toolbarPresenter.attachToolbarView(ActionBarToolbarView(activity.supportActionBar))
         setHasOptionsMenu(menuId != null)
 
         return view
@@ -48,13 +53,13 @@ abstract class ToolbarScreenViewFragment : androidx.fragment.app.Fragment(), Tag
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return architect.screenView.onActionItemSelectedBehavior.invoke(item.itemId)
+        return toolbarView?.onActionItemSelectedBehavior?.invoke(item.itemId) ?: false
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menuId?.let {
             inflater.inflate(it, menu)
-            architect.screenView.menu = menu
+            (toolbarView as? ActionBarToolbarView)?.menu = menu
         }
     }
 }

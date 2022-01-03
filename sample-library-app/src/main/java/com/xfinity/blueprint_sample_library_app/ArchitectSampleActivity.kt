@@ -16,14 +16,14 @@ import android.view.MenuItem
 import com.xfinity.blueprint.CompositeComponentRegistry
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
-import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
+import com.xfinity.blueprint.architecture.activity.ScreenViewActivityLegacy
 import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample_library_app.mvp.presenter.ArchitectSamplePresenter
 
 /**
  * Sample activity that demonstrates using the Blueprint Architecture Components
  */
-class ArchitectSampleActivity : ScreenViewActivity() {
+class ArchitectSampleActivity : ScreenViewActivityLegacy() {
     //Dependencies.  These would normally be injected
     private val componentEventManager = ComponentEventManager()
     private val componentRegistry = CompositeComponentRegistry(listOf(AppComponentRegistry(),

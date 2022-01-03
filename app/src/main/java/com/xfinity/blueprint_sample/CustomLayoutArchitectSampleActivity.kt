@@ -11,29 +11,46 @@
 
 package com.xfinity.blueprint_sample
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.xfinity.blueprint.architecture.*
 import com.xfinity.blueprint.architecture.activity.ToolbarScreenViewActivity
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample.mvp.presenter.ArchitectSamplePresenter
+import com.xfinity.blueprint_sample.mvp.presenter.CustomScreenViewPresenter
+import com.xfinity.blueprint_sample.mvp.view.CustomScreenView
 
 /**
  * Sample activity that demonstrates using the Blueprint Architecture Components
  */
-class ArchitectSampleActivity : ToolbarScreenViewActivity<DefaultScreenView>() {
+class CustomLayoutArchitectSampleActivity : ToolbarScreenViewActivity<CustomScreenView>() {
     //Dependencies.  These would normally be injected
     private val componentEventManager = ComponentEventManager()
     private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
     private val resourceProvider: ResourceProvider by lazy { ResourceProvider(this) }
 
-    //If you needed to use a ScreenView subclass, you would create your own Architect to use it.  Otherwise, you can
-    // use the default architect
-    override val architect: DefaultArchitect<DefaultScreenView> by lazy { DefaultScreenViewArchitect(componentRegistry) }
-    override val presenter: ArchitectSamplePresenter by lazy { ArchitectSamplePresenter(componentEventManager, resourceProvider)}
+    //Custom Architect to use our custom screen view
+    override val architect: DefaultArchitect<CustomScreenView> by lazy {
+        object : DefaultArchitect<CustomScreenView>(componentRegistry) {
+            override val screenView: CustomScreenView
+                get() = CustomScreenView(fab, screenViewDelegate,
+                    SnackbarMessageView(container), PullToRefreshView(ptrFrame),
+                    RecyclerViewScreenManager(recyclerView))
+        }
+    }
+
+    override val presenter: CustomScreenViewPresenter by lazy { CustomScreenViewPresenter(componentEventManager, resourceProvider)}
     override val toolbarPresenter: ToolbarPresenter by lazy { presenter }
 
+    private var fab: FloatingActionButton? = null
+
     init {
+        //set our custom layout and toolbar menu
+        layoutId = R.layout.fab_toolbar_screen_view
         menuId = R.menu.main_menu
+    }
+
+    override fun onSetupComplete() {
+        fab = findViewById(R.id.fab)
     }
 
     companion object {

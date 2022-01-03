@@ -2,7 +2,6 @@ package com.xfinity.blueprint.architecture
 
 import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
-import com.xfinity.blueprint.presenter.ScreenPresenter
 
 interface ToolbarView {
     var onActionItemSelectedBehavior: (Int) -> Boolean
@@ -20,9 +19,14 @@ interface ToolbarView {
     fun setUpIndicatorIcon(upIndicator: Drawable)
 }
 
-abstract class ToolbarScreenPresenter : ScreenPresenter<ToolbarScreenView> {
-    private var screenView: ToolbarScreenView? = null
-    override fun attachView(screenView: ToolbarScreenView) {
-        this.screenView = screenView
+interface ToolbarPresenter {
+    fun attachToolbarView(toolbarView: ToolbarView?)
+    fun presentToolbar()
+}
+
+abstract class DefaultToolbarPresenter: ToolbarPresenter {
+    abstract var toolbarView: ToolbarView?
+    override fun attachToolbarView(toolbarView: ToolbarView?) {
+        this.toolbarView = toolbarView
     }
 }

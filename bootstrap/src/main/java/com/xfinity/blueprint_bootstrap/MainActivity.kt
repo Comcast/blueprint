@@ -18,11 +18,11 @@ import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.xfinity.blueprint_bootstrap.screen.presenter.MainPresenter
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
-import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
+import com.xfinity.blueprint.architecture.activity.ScreenViewActivityLegacy
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
-class MainActivity : ScreenViewActivity() {
+class MainActivity : ScreenViewActivityLegacy() {
     @Inject override lateinit var architect: DefaultScreenViewArchitect
     @Inject override lateinit var presenter: MainPresenter
 
