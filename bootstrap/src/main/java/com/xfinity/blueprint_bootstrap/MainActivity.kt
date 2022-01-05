@@ -16,30 +16,16 @@ package com.xfinity.blueprint_bootstrap
 
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.xfinity.blueprint_bootstrap.screen.presenter.MainPresenter
+import com.xfinity.blueprint.architecture.DefaultScreenView
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
-import com.xfinity.blueprint.architecture.activity.ScreenViewActivityLegacy
+import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
+import com.xfinity.blueprint_bootstrap.screen.presenter.MainPresenter
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
-class MainActivity : ScreenViewActivityLegacy() {
+class MainActivity : ScreenViewActivity<DefaultScreenView>() {
     @Inject override lateinit var architect: DefaultScreenViewArchitect
     @Inject override lateinit var presenter: MainPresenter
-
-    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_home -> {
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_dashboard -> {
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_notifications -> {
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)

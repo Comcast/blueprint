@@ -32,7 +32,8 @@
         <activity android:name="com.xfinity.blueprint_sample.StaticScreenActivity" android:label="@string/static_screen"/>
         <activity android:name="com.xfinity.blueprint_sample.DynamicScreenActivity" android:label="@string/dynamic_screen"/>
         <activity android:name="com.xfinity.blueprint_sample.ArchitectSampleActivity" android:label="@string/bp_arch_screen"/>
-        <activity android:name="com.xfinity.blueprint_sample.CustomLayoutArchitectSampleActivity" android:label="@string/custom_screen"/>
+        <activity android:name="com.xfinity.blueprint_sample.CustomLayoutArchitectSampleActivity" android:label="@string/custom_screen_activity"/>
+        <activity android:name="com.xfinity.blueprint_sample.CustomLayoutFragmentActivity" android:label="@string/custom_screen_fragment"/>
     </application>
 
 </manifest>

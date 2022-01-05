@@ -141,7 +141,7 @@ class CustomScreenViewPresenter(override val componentEventManager: ComponentEve
     }
 
     override fun presentToolbar() {
-        toolbarView?.setToolbarTitle("My Toolbar")
+        toolbarView?.setToolbarTitle("My Fragment Toolbar")
         toolbarView?.showToolbarBackButton()
         toolbarView?.onToolbarBackButtonClickedBehavior = {
             view.showMessage("Toolbar back button clicked")

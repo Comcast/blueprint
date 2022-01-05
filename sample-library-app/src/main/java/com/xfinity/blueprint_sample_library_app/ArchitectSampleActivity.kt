@@ -11,19 +11,18 @@
 
 package com.xfinity.blueprint_sample_library_app
 
-import android.view.Menu
-import android.view.MenuItem
 import com.xfinity.blueprint.CompositeComponentRegistry
-import com.xfinity.blueprint.event.ComponentEventManager
+import com.xfinity.blueprint.architecture.DefaultScreenView
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
-import com.xfinity.blueprint.architecture.activity.ScreenViewActivityLegacy
+import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
+import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample_library_app.mvp.presenter.ArchitectSamplePresenter
 
 /**
  * Sample activity that demonstrates using the Blueprint Architecture Components
  */
-class ArchitectSampleActivity : ScreenViewActivityLegacy() {
+class ArchitectSampleActivity : ScreenViewActivity<DefaultScreenView>() {
     //Dependencies.  These would normally be injected
     private val componentEventManager = ComponentEventManager()
     private val componentRegistry = CompositeComponentRegistry(listOf(AppComponentRegistry(),
@@ -39,28 +38,8 @@ class ArchitectSampleActivity : ScreenViewActivityLegacy() {
         ArchitectSamplePresenter(componentEventManager, resourceProvider)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.remove -> {
-                presenter.removeItemRequested()
-                true
-            }
-            R.id.refresh_data_items -> {
-                presenter.refreshDataItems()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        presenter.present()
+    init {
+        menuId = R.menu.main_menu
     }
 
     companion object {

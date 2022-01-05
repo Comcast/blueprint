@@ -17,6 +17,7 @@ import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.presenter.ComponentEventHandler
+import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint_sample_library.ResourceProvider
 import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
@@ -26,23 +27,28 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-
 class ArchitectSamplePresenter(override val componentEventManager: ComponentEventManager,
                                private val resourceProvider: ResourceProvider) :
-    ToolbarScreenPresenter(), ComponentEventHandler {
+    ScreenPresenter<DefaultScreenView>, ComponentEventHandler, ToolbarPresenter {
 
     var model: DynamicScreenModel = DynamicScreenModel()
-    lateinit var view: ToolbarScreenView
+    lateinit var view: DefaultScreenView
+    private var toolbarView: ToolbarView? = null
     private val dataItemPresenter: DataItemPresenter = DataItemPresenter(componentEventManager)
     private var headerPosition = 0
 
-    override fun attachView(screenView: ToolbarScreenView) {
+    override fun attachView(screenView: DefaultScreenView) {
         view = screenView
+    }
+
+    override fun attachToolbarView(toolbarView: ToolbarView?) {
+        this.toolbarView = toolbarView
     }
 
     override fun resume() {
         super.resume()
         present()
+        presentToolbar()
     }
 
     /**
@@ -50,12 +56,6 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
      */
     @SuppressLint("CheckResult")
     override fun present() {
-        //present toolbar )
-        view.hideToolbarBackButton()
-        view.onActionItemSelectedBehavior = {
-            onToolbarMenuItemClicked(it)
-        }
-
         view.setOnRefreshBehavior {
             present()
             view.finishRefresh()
@@ -108,6 +108,13 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
         }
 
         view.updateComponents(screenComponents)
+    }
+
+    override fun presentToolbar() {
+        toolbarView?.hideToolbarBackButton()
+        toolbarView?.onActionItemSelectedBehavior = {
+            onToolbarMenuItemClicked(it)
+        }
     }
 
     override fun onComponentEvent(componentEvent: ComponentEvent): Boolean {

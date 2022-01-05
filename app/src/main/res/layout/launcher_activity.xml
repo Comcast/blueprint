@@ -38,8 +38,14 @@
         android:text="@string/bp_arch_screen"/>
 
     <Button
-        android:id="@+id/custom_screen_button"
+        android:id="@+id/custom_activity_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/custom_screen"/>
+        android:text="@string/custom_screen_activity"/>
+
+    <Button
+        android:id="@+id/custom_fragment_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/custom_screen_fragment"/>
 </LinearLayout>

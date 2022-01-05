@@ -75,8 +75,9 @@ abstract class ScreenViewActivity<T: DefaultScreenView> : AppCompatActivity() {
         }
     }
 
+    /**
+     * override to do any work that needs to happen after view inflation, but before the architect creates the screen view
+     */
     @Suppress("MemberVisibilityCanBePrivate")
-    open fun onSetupComplete() {
-        //override to set up some custom views
-    }
+    open fun onSetupComplete() { }
 }

@@ -11,7 +11,9 @@
 
 package com.xfinity.blueprint_sample_library
 
-import com.xfinity.blueprint.architecture.ToolbarScreenViewArchitect
+import com.xfinity.blueprint.architecture.DefaultArchitect
+import com.xfinity.blueprint.architecture.DefaultScreenView
+import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
 import com.xfinity.blueprint.architecture.activity.ToolbarScreenViewActivity
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry
@@ -20,7 +22,7 @@ import com.xfinity.blueprint_sample_library.mvp.presenter.ArchitectSamplePresent
 /**
  * Sample activity that demonstrates using the Blueprint Architecture Components
  */
-class ArchitectSampleActivity : ToolbarScreenViewActivity() {
+class ArchitectSampleActivity : ToolbarScreenViewActivity<DefaultScreenView>() {
     //Dependencies.  These would normally be injected
     private val componentEventManager = ComponentEventManager()
     private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
@@ -28,7 +30,7 @@ class ArchitectSampleActivity : ToolbarScreenViewActivity() {
 
     //If you needed to use a ScreenView subclass, you would create your own Architect to use it.  Otherwise, you can
     // use the default architect
-    override var architect: ToolbarScreenViewArchitect = ToolbarScreenViewArchitect(componentRegistry)
+    override var architect: DefaultArchitect<DefaultScreenView> = DefaultScreenViewArchitect(componentRegistry)
 
     override val presenter: ArchitectSamplePresenter by lazy {
         ArchitectSamplePresenter(componentEventManager, resourceProvider)
