@@ -28,8 +28,6 @@ abstract class DefaultArchitect<out T : DefaultScreenView>(override val componen
         loadingDots = layout.findViewById(R.id.loading_dots)
         recyclerView = layout.findViewById(R.id.recycler_view) as androidx.recyclerview.widget.RecyclerView
         ptrFrame = layout.findViewById(R.id.ptr_frame)
-        supportActionBar = actionBar
-
         screenViewDelegate = ScreenViewDelegate(componentRegistry, loadingDots, recyclerView)
 
         presenter.attachView(screenView)

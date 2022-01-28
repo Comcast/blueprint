@@ -31,7 +31,7 @@ abstract class ScreenViewActivity<T: DefaultScreenView> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupBlueprintViews(defaultLayoutId, layoutId)
+        setupViews(defaultLayoutId, layoutId)
         onSetupComplete()
         architect.initBlueprint(findViewById(android.R.id.content), presenter, supportActionBar)
 

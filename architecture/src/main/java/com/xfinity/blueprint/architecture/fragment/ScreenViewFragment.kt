@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import com.xfinity.blueprint.architecture.*
-import com.xfinity.blueprint.architecture.activity.setupBlueprintViews
+import com.xfinity.blueprint.architecture.activity.setupViews
 import com.xfinity.blueprint.presenter.ComponentEventHandler
 import com.xfinity.blueprint.presenter.ScreenPresenter
 
@@ -27,7 +27,7 @@ abstract class ScreenViewFragment<T: DefaultScreenView> : androidx.fragment.app.
     var menuId: Int? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = setupBlueprintViews(defaultLayoutId, inflater, container, layoutId)
+        val view = setupViews(defaultLayoutId, inflater, container, layoutId)
         onSetupComplete(view)
         architect.initBlueprint(view.findViewById(R.id.container), presenter, (activity as? AppCompatActivity)?.supportActionBar)
 
