@@ -303,7 +303,8 @@ final class CodeGenerator {
                     }
 
                     if (type.equals("android.widget.ImageView")) {
-                        methods.add(getSetImageDrawableMethodSpec(childCapitalized, childGetter));
+                        methods.add(getSetDrawableMethodSpec(childCapitalized, childGetter));
+                        methods.add(getSetImageResourceMethodSpec(childCapitalized, childGetter));
                     }
 
                     methods.add(getSetVisibilityMethodSpec(childCapitalized, childGetter));
@@ -396,17 +397,28 @@ final class CodeGenerator {
 
     }
 
-    private MethodSpec getSetImageDrawableMethodSpec(String childName, String childGetterName) {
+    private MethodSpec getSetDrawableMethodSpec(String childName, String childGetterName) {
         ParameterSpec imageParam =
                 ParameterSpec.builder(ClassName.get("android.graphics.drawable", "Drawable"),
-                                      "drawable").build();
+                        "drawable").build();
 
-        return MethodSpec.methodBuilder("set" + childName + "Image")
-                         .addModifiers(PUBLIC)
-                         .addParameter(imageParam)
-                         .returns(VOID)
-                         .addStatement("viewHolder." + childGetterName + ".setImageDrawable(drawable)")
-                         .build();
+        return MethodSpec.methodBuilder("set" + childName + "Drawable")
+                .addModifiers(PUBLIC)
+                .addParameter(imageParam)
+                .returns(VOID)
+                .addStatement("viewHolder." + childGetterName + ".setImageDrawable(drawable)")
+                .build();
+
+    }
+
+    private MethodSpec getSetImageResourceMethodSpec(String childName, String childGetterName) {
+        ParameterSpec imageParam = ParameterSpec.builder(INT, "resourceId").build();
+        return MethodSpec.methodBuilder("set" + childName + "Resource")
+                .addModifiers(PUBLIC)
+                .addParameter(imageParam)
+                .returns(VOID)
+                .addStatement("viewHolder." + childGetterName + ".setImageResource(resourceId)")
+                .build();
 
     }
 

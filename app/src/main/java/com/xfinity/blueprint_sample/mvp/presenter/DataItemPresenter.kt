@@ -26,6 +26,11 @@ class DataItemPresenter(val componentEventManager: ComponentEventManager) :
             view.setDataText("Component $position was clicked")
             componentEventManager.postEvent(DataItemClickedEvent("This is the event for position $position"))
         }
+
+        model.resourceId?.let {
+            view.makeImageVisible()
+            view.setImageResource(it)
+        } ?: run { view.makeImageGone() }
     }
 
     data class DataItemClickedEvent(val toast: String) : ComponentEvent

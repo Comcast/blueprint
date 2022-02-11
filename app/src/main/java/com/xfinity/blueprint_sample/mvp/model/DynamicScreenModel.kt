@@ -11,9 +11,11 @@
 
 package com.xfinity.blueprint_sample.mvp.model
 
+import com.xfinity.blueprint_sample.R
+
 open class DynamicScreenModel {
     open var headerModel: HeaderModel = HeaderModel()
     var footerModel: FooterModel = FooterModel()
     open var dataItemModels: MutableList<DataItemModel> = mutableListOf(DataItemModel(), DataItemModel(), DataItemModel(),
-            DataItemModel(), DataItemModel(), DataItemModel())
+            DataItemModel(), DataItemModel(resourceId = R.drawable.ic_launcher), DataItemModel())
 }
