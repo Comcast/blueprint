@@ -17,10 +17,11 @@
 
     </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 
-    <com.xfinity.loadingdots.LoadingDots
-        android:id="@+id/loading_dots"
+    <ProgressBar
+        android:id="@+id/loading_indicator"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminate="true"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
