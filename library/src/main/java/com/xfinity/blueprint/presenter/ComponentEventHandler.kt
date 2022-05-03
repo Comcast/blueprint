@@ -9,13 +9,22 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.model
+package com.xfinity.blueprint.presenter
 
-import com.xfinity.blueprint_sample.R
+import com.xfinity.blueprint.event.ComponentEventListener
+import com.xfinity.blueprint.event.ComponentEventManager
 
-open class DynamicScreenModel {
-    open var headerModel: HeaderModel = HeaderModel()
-    var footerModel: FooterModel = FooterModel()
-    open var dataItemModels: MutableList<DataItemModel> = mutableListOf(DataItemModel(), DataItemModel(), DataItemModel(),
-            DataItemModel(), DataItemModel(resourceId = R.drawable.ic_launcher), DataItemModel())
+/**
+ * A ComponentEventListener that provides APIs to register and unregister itself
+ */
+interface ComponentEventHandler: ComponentEventListener {
+    val componentEventManager : ComponentEventManager
+
+    fun resume() {
+        componentEventManager.registerListener(this)
+    }
+
+    fun pause() {
+        componentEventManager.unregisterListener(this)
+    }
 }

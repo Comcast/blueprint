@@ -13,12 +13,12 @@ package com.xfinity.blueprint_sample_library_app.mvp.presenter
 
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
-import com.xfinity.blueprint.presenter.EventEmittingComponentPresenter
+import com.xfinity.blueprint.presenter.ComponentPresenter
 import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample_library.mvp.view.DataItemView
 
-class DataItemPresenter(override val componentEventManager: ComponentEventManager) :
-        EventEmittingComponentPresenter<DataItemView, DataItemModel> {
+class DataItemPresenter(val componentEventManager: ComponentEventManager) :
+        ComponentPresenter<DataItemView, DataItemModel> {
 
     override fun present(view: DataItemView, model: DataItemModel) {
         view.setDataText(model.data)

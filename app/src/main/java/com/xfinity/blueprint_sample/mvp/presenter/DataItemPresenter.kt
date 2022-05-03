@@ -13,12 +13,12 @@ package com.xfinity.blueprint_sample.mvp.presenter
 
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
-import com.xfinity.blueprint.presenter.EventEmittingComponentPresenter
+import com.xfinity.blueprint.presenter.ComponentPresenter
 import com.xfinity.blueprint_sample.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample.mvp.view.DataItemView
 
-class DataItemPresenter(override val componentEventManager: ComponentEventManager) :
-        EventEmittingComponentPresenter<DataItemView, DataItemModel> {
+class DataItemPresenter(val componentEventManager: ComponentEventManager) :
+    ComponentPresenter<DataItemView, DataItemModel> {
 
     override fun present(view: DataItemView, model: DataItemModel) {
         view.setDataText(model.data)
@@ -26,6 +26,11 @@ class DataItemPresenter(override val componentEventManager: ComponentEventManage
             view.setDataText("Component $position was clicked")
             componentEventManager.postEvent(DataItemClickedEvent("This is the event for position $position"))
         }
+
+        model.resourceId?.let {
+            view.makeImageVisible()
+            view.setImageResource(it)
+        } ?: run { view.makeImageGone() }
     }
 
     data class DataItemClickedEvent(val toast: String) : ComponentEvent

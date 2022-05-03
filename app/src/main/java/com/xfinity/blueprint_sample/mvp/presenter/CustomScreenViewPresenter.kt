@@ -9,7 +9,7 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample_library.mvp.presenter
+package com.xfinity.blueprint_sample.mvp.presenter
 
 import android.annotation.SuppressLint
 import com.xfinity.blueprint.architecture.*
@@ -18,26 +18,27 @@ import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.presenter.ComponentEventHandler
 import com.xfinity.blueprint.presenter.ScreenPresenter
-import com.xfinity.blueprint_sample_library.ResourceProvider
-import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry
-import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
-import com.xfinity.blueprint_sample_library.mvp.model.DynamicScreenModel
+import com.xfinity.blueprint_sample.ResourceProvider
+import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
+import com.xfinity.blueprint_sample.mvp.model.DataItemModel
+import com.xfinity.blueprint_sample.mvp.model.DynamicScreenModel
+import com.xfinity.blueprint_sample.mvp.view.CustomScreenView
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-class ArchitectSamplePresenter(override val componentEventManager: ComponentEventManager,
-                               private val resourceProvider: ResourceProvider) :
-    ScreenPresenter<DefaultScreenView>, ComponentEventHandler, ToolbarPresenter {
+class CustomScreenViewPresenter(override val componentEventManager: ComponentEventManager,
+                                private val resourceProvider: ResourceProvider) :
+    ScreenPresenter<CustomScreenView>, ToolbarPresenter, ComponentEventHandler {
 
     var model: DynamicScreenModel = DynamicScreenModel()
-    lateinit var view: DefaultScreenView
+    lateinit var view: CustomScreenView
     private var toolbarView: ToolbarView? = null
     private val dataItemPresenter: DataItemPresenter = DataItemPresenter(componentEventManager)
     private var headerPosition = 0
 
-    override fun attachView(screenView: DefaultScreenView) {
+    override fun attachView(screenView: CustomScreenView) {
         view = screenView
     }
 
@@ -47,8 +48,8 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
 
     override fun resume() {
         super.resume()
-        present()
         presentToolbar()
+        present()
     }
 
     /**
@@ -69,17 +70,17 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
                 screenComponents.add(Component(AppComponentRegistry.LoadingDotsView_VIEW_TYPE))
 
                 Completable.complete().delay(3000, TimeUnit.MILLISECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        model.headerModel.enabled = true
-                        for (dataItemModel in model.dataItemModels) {
-                            dataItemModel.enabled = true
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            model.headerModel.enabled = true
+                            for (dataItemModel in model.dataItemModels) {
+                                dataItemModel.enabled = true
+                            }
+                            view.setBackgroundColor(resourceProvider.colors.white)
+                            present()
+                            view.onComponentChanged(headerPosition)
                         }
-                        view.setBackgroundColor(resourceProvider.colors.white)
-                        present()
-                        view.onComponentChanged(headerPosition)
-                    }
             }
         }
 
@@ -87,7 +88,7 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
             for (dataItemModel in model.dataItemModels) {
                 if (dataItemModel.enabled) {
                     screenComponents.add(Component(dataItemModel, AppComponentRegistry.DataItemView_VIEW_TYPE,
-                        dataItemPresenter))
+                            dataItemPresenter))
                 }
             }
         }
@@ -97,24 +98,21 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
             screenComponents.add(Component(AppComponentRegistry.LoadingDotsView_VIEW_TYPE))
 
             Completable.complete().delay(3000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    model.footerModel.enabled = true
-                    present()
-                }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        model.footerModel.enabled = true
+                        present()
+                    }
         } else if (model.footerModel.enabled) {
             screenComponents.add(Component(model.footerModel, AppComponentRegistry.FooterView_VIEW_TYPE))
         }
 
-        view.updateComponents(screenComponents)
-    }
-
-    override fun presentToolbar() {
-        toolbarView?.hideToolbarBackButton()
-        toolbarView?.onActionItemSelectedBehavior = {
-            onToolbarMenuItemClicked(it)
+        view.setFabOnClickedBehavior {
+            view.showMessage(FAB_CLICKED_MESSAGE, duration = MessageDuration.LONG)
         }
+
+        view.updateComponents(screenComponents)
     }
 
     override fun onComponentEvent(componentEvent: ComponentEvent): Boolean {
@@ -135,24 +133,36 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
 
     private fun refreshDataItems() {
         model.dataItemModels = mutableListOf(DataItemModel(), DataItemModel(), DataItemModel(),
-            DataItemModel(), DataItemModel(), DataItemModel())
+                DataItemModel(), DataItemModel(), DataItemModel())
         for (dataItemModel in model.dataItemModels) {
             dataItemModel.enabled = true
         }
         present()
     }
 
-    private fun onToolbarMenuItemClicked(itemId: Int): Boolean {
-        return when (itemId) {
-            resourceProvider.ids.removeId -> {
-                removeItemRequested()
-                true
+    override fun presentToolbar() {
+        toolbarView?.setToolbarTitle("My Fragment Toolbar")
+        toolbarView?.showToolbarBackButton()
+        toolbarView?.onToolbarBackButtonClickedBehavior = {
+            view.showMessage("Toolbar back button clicked")
+            true
+        } //custom back button
+        toolbarView?.onActionItemSelectedBehavior = { itemId ->
+            when (itemId) {
+                resourceProvider.ids.removeId -> {
+                    removeItemRequested()
+                    true
+                }
+                resourceProvider.ids.refreshDataItemsId -> {
+                    refreshDataItems()
+                    true
+                }
+                else -> false
             }
-            resourceProvider.ids.refreshDataItemsId -> {
-                refreshDataItems()
-                true
-            }
-            else -> false
         }
+    }
+
+    companion object {
+        const val FAB_CLICKED_MESSAGE = "The FAB was clicked"
     }
 }

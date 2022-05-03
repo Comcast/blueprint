@@ -15,6 +15,7 @@ import com.xfinity.blueprint.event.ComponentEventListener
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenView
 
+@Deprecated("To avoid collisions, have presenters implement ComponentEventHandler instead of inheriting from this class.")
 interface EventHandlingScreenPresenter<in T : ScreenView> : ScreenPresenter<T>, ComponentEventListener {
     val componentEventManager : ComponentEventManager
 

@@ -21,32 +21,25 @@ abstract class DefaultArchitect<out T : DefaultScreenView>(override val componen
     var ptrFrame: PtrClassicFrameLayout? = null
     var supportActionBar: ActionBar? = null
 
+    abstract val screenView : T
+
     override fun initBlueprint(layout: View, presenter: ScreenPresenter<T>, actionBar: ActionBar?) {
         container = layout.findViewById(R.id.container)
         loadingDots = layout.findViewById(R.id.loading_dots)
         recyclerView = layout.findViewById(R.id.recycler_view) as androidx.recyclerview.widget.RecyclerView
         ptrFrame = layout.findViewById(R.id.ptr_frame)
-        supportActionBar = actionBar
-
         screenViewDelegate = ScreenViewDelegate(componentRegistry, loadingDots, recyclerView)
 
-        val screenView = getScreenView()
         presenter.attachView(screenView)
         recyclerView.adapter = screenView.screenViewDelegate.componentAdapter
     }
-
-    abstract fun getScreenView(): T
 }
 
 class DefaultScreenViewArchitect(componentRegistry: ComponentRegistry)
     : DefaultArchitect<DefaultScreenView>(componentRegistry) {
-    override fun getScreenView(): DefaultScreenView = DefaultScreenView(screenViewDelegate,
-            SnackbarMessageView(container), PullToRefreshView(ptrFrame), RecyclerViewScreenManager(recyclerView))
-}
-
-class ToolbarScreenViewArchitect(componentRegistry: ComponentRegistry)
-    : DefaultArchitect<ToolbarScreenView>(componentRegistry) {
-    override fun getScreenView(): ToolbarScreenView = ToolbarScreenView(screenViewDelegate,
-            SnackbarMessageView(container), PullToRefreshView(ptrFrame), RecyclerViewScreenManager(recyclerView),
-            supportActionBar)
+    override val screenView: DefaultScreenView by lazy {
+        DefaultScreenView(screenViewDelegate,
+            SnackbarMessageView(container), PullToRefreshView(ptrFrame),
+            RecyclerViewScreenManager(recyclerView))
+    }
 }

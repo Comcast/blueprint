@@ -11,18 +11,18 @@
 
 package com.xfinity.blueprint_sample_library
 
-import android.view.Menu
-import android.view.MenuItem
-import com.xfinity.blueprint.event.ComponentEventManager
+import com.xfinity.blueprint.architecture.DefaultArchitect
+import com.xfinity.blueprint.architecture.DefaultScreenView
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
-import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
+import com.xfinity.blueprint.architecture.activity.ToolbarScreenViewActivity
+import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample_library.mvp.presenter.ArchitectSamplePresenter
 
 /**
  * Sample activity that demonstrates using the Blueprint Architecture Components
  */
-class ArchitectSampleActivity : ScreenViewActivity() {
+class ArchitectSampleActivity : ToolbarScreenViewActivity<DefaultScreenView>() {
     //Dependencies.  These would normally be injected
     private val componentEventManager = ComponentEventManager()
     private val componentRegistry = AppComponentRegistry(componentEventManager, defaultItemId, defaultItemName)
@@ -30,34 +30,14 @@ class ArchitectSampleActivity : ScreenViewActivity() {
 
     //If you needed to use a ScreenView subclass, you would create your own Architect to use it.  Otherwise, you can
     // use the default architect
-    override var architect: DefaultScreenViewArchitect = DefaultScreenViewArchitect(componentRegistry)
+    override var architect: DefaultArchitect<DefaultScreenView> = DefaultScreenViewArchitect(componentRegistry)
 
     override val presenter: ArchitectSamplePresenter by lazy {
         ArchitectSamplePresenter(componentEventManager, resourceProvider)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.remove -> {
-                presenter.removeItemRequested()
-                true
-            }
-            R.id.refresh_data_items -> {
-                presenter.refreshDataItems()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        presenter.present()
+    init {
+        menuId = R.menu.main_menu
     }
 
     companion object {

@@ -33,5 +33,13 @@ class LauncherActivity : AppCompatActivity() {
         findViewById<Button>(R.id.bp_arch_button).setOnClickListener {
             startActivity(Intent(this, ArchitectSampleActivity::class.java))
         }
+
+        findViewById<Button>(R.id.custom_activity_button).setOnClickListener {
+            startActivity(Intent(this, CustomLayoutArchitectSampleActivity::class.java))
+        }
+
+        findViewById<Button>(R.id.custom_fragment_button).setOnClickListener {
+            startActivity(Intent(this, CustomLayoutFragmentActivity::class.java))
+        }
     }
 }
