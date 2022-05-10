@@ -9,7 +9,7 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.view
+package com.xfinity.blueprint_sample_library.mvp.view
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
@@ -22,9 +22,9 @@ import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_annotations.ComponentViewHolderBinder
 
 @ComponentViewClass(viewHolderClass = LoadingIndicatorViewHolder::class)
-class LoadingIndicatorView : LoadingIndicatorViewBase()
+class LoadingIndicator : LoadingIndicatorViewBase()
 
-@ComponentViewHolder(viewType = "loading_indicator_view")
+@ComponentViewHolder(viewType = "loading_indicator")
 class LoadingIndicatorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 @ComponentViewHolderBinder

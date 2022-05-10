@@ -15,7 +15,7 @@ interface Architect<in T : ScreenPresenter<*>> {
 abstract class DefaultArchitect<out T : DefaultScreenView>(override val componentRegistry: ComponentRegistry)
     : Architect<ScreenPresenter<T>> {
     lateinit var container: View
-    private lateinit var loadingDots: View
+    private lateinit var loadingIndicator: View
     protected lateinit var recyclerView: androidx.recyclerview.widget.RecyclerView
     lateinit var screenViewDelegate: ScreenViewDelegate
     var ptrFrame: PtrClassicFrameLayout? = null
@@ -25,10 +25,10 @@ abstract class DefaultArchitect<out T : DefaultScreenView>(override val componen
 
     override fun initBlueprint(layout: View, presenter: ScreenPresenter<T>, actionBar: ActionBar?) {
         container = layout.findViewById(R.id.container)
-        loadingDots = layout.findViewById(R.id.loading_indicator)
+        loadingIndicator = layout.findViewById(R.id.loading_indicator)
         recyclerView = layout.findViewById(R.id.recycler_view) as androidx.recyclerview.widget.RecyclerView
         ptrFrame = layout.findViewById(R.id.ptr_frame)
-        screenViewDelegate = ScreenViewDelegate(componentRegistry, loadingDots, recyclerView)
+        screenViewDelegate = ScreenViewDelegate(componentRegistry, loadingIndicator, recyclerView)
 
         presenter.attachView(screenView)
         recyclerView.adapter = screenView.screenViewDelegate.componentAdapter

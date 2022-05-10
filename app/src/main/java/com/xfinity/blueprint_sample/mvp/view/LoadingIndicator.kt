@@ -9,7 +9,7 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample_library.mvp.view
+package com.xfinity.blueprint_sample.mvp.view
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
@@ -20,20 +20,19 @@ import com.xfinity.blueprint.view.ComponentViewBinder
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_annotations.ComponentViewHolderBinder
-import com.xfinity.blueprint_sample_library.R
 
-@ComponentViewClass(viewHolderClass = LoadingDotsViewHolder::class)
-class LoadingDotsView : LoadingDotsViewBase()
+@ComponentViewClass(viewHolderClass = LoadingIndicatorViewHolder::class)
+class LoadingIndicator : LoadingIndicatorBase()
 
-@ComponentViewHolder(viewType = "loading_indicator_view")
-class LoadingDotsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+@ComponentViewHolder(viewType = "loading_indicator")
+class LoadingIndicatorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 @ComponentViewHolderBinder
-class LoadingDotsViewBinder : ComponentViewBinder<LoadingDotsViewHolder> {
+class LoadingIndicatorViewBinder : ComponentViewBinder<LoadingIndicatorViewHolder> {
 
     override fun bind(componentPresenter: ComponentPresenter<ComponentView<*>, ComponentModel>,
-                      componentView: ComponentView<out LoadingDotsViewHolder>,
-                      viewHolder: LoadingDotsViewHolder, position: Int) {
+                      componentView: ComponentView<out LoadingIndicatorViewHolder>,
+                      viewHolder: LoadingIndicatorViewHolder, position: Int) {
         //if there were any binding, it would go here
     }
 }

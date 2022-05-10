@@ -20,9 +20,10 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.sun.tools.javac.util.Pair;
 
 import javax.lang.model.element.Modifier;
+import javax.lang.model.type.TypeMirror;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,14 +34,17 @@ import static com.squareup.javapoet.TypeName.VOID;
 import static com.squareup.javapoet.TypeSpec.classBuilder;
 import static javax.lang.model.element.Modifier.PUBLIC;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 final class CodeGenerator {
     private final List<BlueprintProcessor.ComponentViewInfo> componentViewInfoList;
-    private final Map<String, List<Pair<TypeName, String>>> defaultPresenterContructorMap;
+    private final Map<String, List<Pair<TypeMirror, String>>> defaultPresenterContructorMap;
     private final String packageName;
 
 
     CodeGenerator(String packageName, List<BlueprintProcessor.ComponentViewInfo> componentViewInfoList,
-                  Map<String, List<Pair<TypeName, String>>> defaultPresenterContructorMap) {
+                  Map<String, List<Pair<TypeMirror, String>>> defaultPresenterContructorMap) {
         this.packageName = packageName;
         this.componentViewInfoList = componentViewInfoList;
         this.defaultPresenterContructorMap = defaultPresenterContructorMap;
@@ -69,7 +73,7 @@ final class CodeGenerator {
                           .returns(ClassName.get("com.xfinity.blueprint.presenter", "ComponentPresenter"));
 
 
-        List<Pair<TypeName, String>> contructorArgs = new ArrayList<>();
+        List<Pair<TypeMirror, String>> contructorArgs = new ArrayList<>();
 
         for (BlueprintProcessor.ComponentViewInfo componentViewInfo : componentViewInfoList) {
             String viewTypeFieldName = componentViewInfo.viewTypeName + "_VIEW_TYPE";
@@ -85,15 +89,15 @@ final class CodeGenerator {
                                                           + componentViewInfo.componentView + ") {\n");
 
                 String returnStatement;
-                List<Pair<TypeName, String>> defaultPresenterContructorArgs =
+                List<Pair<TypeMirror, String>> defaultPresenterContructorArgs =
                         defaultPresenterContructorMap.get(componentViewInfo.defaultPresenter);
                 if (defaultPresenterContructorArgs == null) {
                     returnStatement = "return new " + componentViewInfo.defaultPresenter + "()";
                 } else {
                     StringBuilder statementBuilder = new StringBuilder("return new " + componentViewInfo.defaultPresenter + "(");
                     for (int j = 0; j < defaultPresenterContructorArgs.size(); j++) {
-                        Pair<TypeName, String> argPair = defaultPresenterContructorArgs.get(j);
-                        String argName = argPair.snd;  //arg name
+                        Pair<TypeMirror, String> argPair = defaultPresenterContructorArgs.get(j);
+                        String argName = argPair.getRight();  //arg name
                         statementBuilder.append(argName);
                         if (j < defaultPresenterContructorArgs.size() - 1) {
                             statementBuilder.append(", ");
@@ -142,14 +146,15 @@ final class CodeGenerator {
         MethodSpec.Builder componentRegistryConstructorBuilder = MethodSpec.constructorBuilder()
                                                                            .addModifiers(PUBLIC);
 
-        contructorArgs.sort((o1, o2) -> (o1.fst.toString().compareToIgnoreCase(o2.fst.toString())));
+        contructorArgs.sort((o1, o2) -> (o1.getLeft().toString().compareToIgnoreCase(o2.getLeft().toString())));
 
-        for (Pair<TypeName, String> argPair : contructorArgs) {
-            fields.add(FieldSpec.builder(argPair.fst, argPair.snd).addModifiers(Modifier.PRIVATE)
+        for (Pair<TypeMirror, String> argPair : contructorArgs) {
+            TypeName typeName = ClassName.get(argPair.getLeft());
+            fields.add(FieldSpec.builder(typeName, argPair.getRight()).addModifiers(Modifier.PRIVATE)
                                 .addModifiers(Modifier.FINAL).build());
 
-            componentRegistryConstructorBuilder.addParameter(ParameterSpec.builder(argPair.fst, argPair.snd).build());
-            componentRegistryConstructorBuilder.addStatement("this." + argPair.snd + " = " + argPair.snd);
+            componentRegistryConstructorBuilder.addParameter(ParameterSpec.builder(typeName, argPair.getRight()).build());
+            componentRegistryConstructorBuilder.addStatement("this." + argPair.getRight() + " = " + argPair.getRight());
         }
 
         TypeSpec.Builder classBuilder = classBuilder("AppComponentRegistry")
@@ -322,7 +327,7 @@ final class CodeGenerator {
                     .addFields(onBindViewHolderMethodFields)
                     .addMethods(methods);
 
-            viewDelegatePairs.add(new Pair<>(componentViewPackageName, classBuilder.build()));
+            viewDelegatePairs.add(new ImmutablePair(componentViewPackageName, classBuilder.build()));
         }
 
         return viewDelegatePairs;

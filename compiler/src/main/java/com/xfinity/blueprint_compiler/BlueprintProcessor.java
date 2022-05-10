@@ -11,34 +11,28 @@
 
 package com.xfinity.blueprint_compiler;
 
+import static com.squareup.javapoet.JavaFile.builder;
+import static javax.lang.model.SourceVersion.latestSupported;
+
 import com.google.auto.service.AutoService;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Type;
-import com.sun.tools.javac.util.Pair;
-import com.xfinity.blueprint_annotations.ComponentViewClass;
 import com.xfinity.blueprint_annotations.ClickableComponentBinder;
-import com.xfinity.blueprint_annotations.DefaultPresenter;
-import com.xfinity.blueprint_annotations.DefaultPresenterConstructor;
+import com.xfinity.blueprint_annotations.ComponentViewClass;
 import com.xfinity.blueprint_annotations.ComponentViewHolder;
 import com.xfinity.blueprint_annotations.ComponentViewHolderBinder;
+import com.xfinity.blueprint_annotations.DefaultPresenter;
+import com.xfinity.blueprint_annotations.DefaultPresenterConstructor;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.MirroredTypeException;
-import javax.lang.model.type.TypeMirror;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -46,9 +40,21 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.squareup.javapoet.JavaFile.builder;
-import static com.xfinity.blueprint_compiler.Utils.getPackageName;
-import static javax.lang.model.SourceVersion.latestSupported;
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.Processor;
+import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.MirroredTypeException;
+import javax.lang.model.type.TypeMirror;
 
 @AutoService(Processor.class)
 public class BlueprintProcessor extends AbstractProcessor {
@@ -113,13 +119,13 @@ public class BlueprintProcessor extends AbstractProcessor {
 
             String viewType = annotatedElement.getAnnotation(ComponentViewHolder.class).viewType();
 
-            String viewHolderClassName = ((Symbol.ClassSymbol) annotatedClass).fullname.toString();
+            String viewHolderClassName = getFullClassName(annotatedClass);
 
             Map<String, String> children = new HashMap<>();
             List<String> methodNames = new ArrayList<>();
             for (Element enclosedElement : annotatedElement.getEnclosedElements()) {
                 // We only look at fields
-                if (enclosedElement instanceof Symbol.MethodSymbol) {
+                if (enclosedElement.getKind() == ElementKind.METHOD) {
                     methodNames.add(enclosedElement.getSimpleName().toString().toLowerCase());
                 }
             }
@@ -161,17 +167,17 @@ public class BlueprintProcessor extends AbstractProcessor {
             componentViewInfoList.add(componentViewInfo);
         }
 
-        for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(ComponentViewHolderBinder.class)) {
-            TypeElement annotatedClass = (TypeElement) annotatedElement;
-            String viewHolderClassName = ((Type.ClassType) annotatedClass.getInterfaces().get(0))
-                    .typarams_field.get(0).toString();
-
-            for (ComponentViewInfo componentViewInfo : componentViewInfoList) {
-                if (viewHolderClassName.equals(componentViewInfo.viewHolder)) {
-                    componentViewInfo.viewBinder = ((Symbol.ClassSymbol) annotatedClass).fullname.toString();
-                }
-            }
-        }
+//        for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(ComponentViewHolderBinder.class)) {
+//            TypeElement annotatedClass = (TypeElement) annotatedElement;
+//            TypeElement param = (TypeElement) annotatedClass.getTypeParameters().get(0);
+//            String viewHolderClassName = getFullClassName(param);
+//
+//            for (ComponentViewInfo componentViewInfo : componentViewInfoList) {
+//                if (viewHolderClassName.equals(componentViewInfo.viewHolder)) {
+//                    componentViewInfo.viewBinder = getFullClassName(annotatedClass);
+//                }
+//            }
+//        }
 
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(ComponentViewClass.class)) {
             TypeElement annotatedClass = (TypeElement) annotatedElement;
@@ -187,7 +193,7 @@ public class BlueprintProcessor extends AbstractProcessor {
 
             for (ComponentViewInfo componentViewInfo : componentViewInfoList) {
                 if (viewHolderClassName.equals(componentViewInfo.viewHolder)) {
-                    componentViewInfo.componentView = ((Symbol.ClassSymbol) annotatedClass).fullname.toString();
+                    componentViewInfo.componentView = annotatedClass.asType().toString();
                     componentViewInfo.viewTypeName = annotatedClass.getSimpleName().toString();
 
                     if (componentViewInfo.viewBinder == null && useDefaultBinder) {
@@ -211,21 +217,44 @@ public class BlueprintProcessor extends AbstractProcessor {
 
             for (ComponentViewInfo componentViewInfo : componentViewInfoList) {
                 if (viewClassName.equals(componentViewInfo.componentView)) {
-                    componentViewInfo.defaultPresenter = ((Symbol.ClassSymbol) annotatedClass).fullname.toString();
+                    componentViewInfo.defaultPresenter = getFullClassName(annotatedClass);
                 }
             }
         }
 
-        Map<String, List<Pair<TypeName, String>>> defaultPresenterConstructorMap = new HashMap<>();
+        //a Map of Presenters to a List of there Constructor parameters names and classes
+        Map<String, List<Pair<TypeMirror, String>>> defaultPresenterConstructorMap = new HashMap<>();
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(DefaultPresenterConstructor.class)) {
-            Symbol.MethodSymbol annotatedCtor = (Symbol.MethodSymbol) annotatedElement;
+//            Symbol.MethodSymbol annotatedCtor = (Symbol.MethodSymbol) annotatedElement;
+            List<? extends VariableElement> parameters = ((ExecutableElement) annotatedElement).getParameters();
+            List<Pair<TypeMirror, String>> ctorParamNameAndTypeList = new ArrayList();
+            for (VariableElement parameter : parameters) {
+                String paramName = parameter.getSimpleName().toString();
+                TypeMirror paramClass = parameter.asType();
+                ctorParamNameAndTypeList.add(new ImmutablePair(paramClass, paramName));
+            }
 
-            List<Pair<TypeName, String>> ctorParams = annotatedCtor.params
-                    .stream()
-                    .map(param -> new Pair<>(TypeName.get(param.type), param.name.toString())).collect(Collectors.toList());
 
-            Symbol.ClassSymbol presenterClass = (Symbol.ClassSymbol) annotatedCtor.owner;
-            defaultPresenterConstructorMap.put(presenterClass.fullname.toString(), ctorParams);
+//            annotatedElement.getClass().getTypeParameters()[0].getName()
+//            ExecutableType executableType = (ExecutableType)annotatedElement.asType();
+
+
+//            List<? extends TypeMirror> parameters = executableType.getParameterTypes();
+//            List<Pair<TypeName, String>> ctorParams = new ArrayList();
+//            for (TypeMirror typeMirror : parameters) {
+//                TypeName typeName = ClassName.bestGuess(typeMirror.toString());
+//                String className = typeMirror.
+//                ctorParams.add(new ImmutablePair(typeName, className));
+//            }
+
+//            List<Pair<TypeName, String>> ctorParams = annotatedClass.getTypeParameters()
+//                    .stream()
+//                    .map(param -> new Pair<TypeName, String>(TypeName.get(param.asType()), param.getSimpleName().toString())).collect(Collectors.toList());
+
+            String presenterClassName = getFullClassName((TypeElement) annotatedElement.getEnclosingElement());
+//            Symbol.ClassSymbol presenterClass = (Symbol.ClassSymbol) annotatedCtor.owner;
+//            defaultPresenterConstructorMap.put(presenterClass.fullname.toString(), ctorParams);
+            defaultPresenterConstructorMap.put(presenterClassName, ctorParamNameAndTypeList);
         }
 
         if (packageName != null) {
@@ -237,6 +266,11 @@ public class BlueprintProcessor extends AbstractProcessor {
         }
 
         return true;
+    }
+
+    private String getFullClassName(TypeElement element) {
+        ClassName className = ClassName.get(element);
+        return className.packageName() + "." + className.simpleName();
     }
 
     private boolean isAndroidView(VariableElement variable) {
@@ -265,7 +299,7 @@ public class BlueprintProcessor extends AbstractProcessor {
     }
 
     private void generateCode(String appPackageName, String packageName, List<ComponentViewInfo> componentInfoList,
-                              Map<String, List<Pair<TypeName, String>>> defaultPresenterContructorMap)
+                              Map<String, List<Pair<TypeMirror, String>>> defaultPresenterContructorMap)
             throws IOException {
         CodeGenerator codeGenerator =
                 new CodeGenerator(appPackageName, componentInfoList, defaultPresenterContructorMap);
@@ -277,7 +311,7 @@ public class BlueprintProcessor extends AbstractProcessor {
 
         List<Pair<String, TypeSpec>> viewDelegates = codeGenerator.generateViewBaseClasses();
         for (Pair<String, TypeSpec> viewDelegate : viewDelegates) {
-            JavaFile file = builder(viewDelegate.fst, viewDelegate.snd).build();
+            JavaFile file = builder(viewDelegate.getLeft(), viewDelegate.getRight()).build();
             file.writeTo(processingEnv.getFiler());
         }
     }
