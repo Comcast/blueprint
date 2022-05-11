@@ -67,7 +67,7 @@ class CustomScreenViewPresenter(override val componentEventManager: ComponentEve
             screenComponents.add(Component(model.headerModel, AppComponentRegistry.HeaderView_VIEW_TYPE))
 
             if (!model.headerModel.enabled) {
-                screenComponents.add(Component(AppComponentRegistry.LoadingDotsView_VIEW_TYPE))
+                screenComponents.add(Component(AppComponentRegistry.LoadingIndicatorView_VIEW_TYPE))
 
                 Completable.complete().delay(3000, TimeUnit.MILLISECONDS)
                         .subscribeOn(Schedulers.io())
@@ -95,7 +95,7 @@ class CustomScreenViewPresenter(override val componentEventManager: ComponentEve
 
 
         if (model.headerModel.enabled && !model.footerModel.enabled) {
-            screenComponents.add(Component(AppComponentRegistry.LoadingDotsView_VIEW_TYPE))
+            screenComponents.add(Component(AppComponentRegistry.LoadingIndicatorView_VIEW_TYPE))
 
             Completable.complete().delay(3000, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
