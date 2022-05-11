@@ -25,7 +25,7 @@ import com.xfinity.blueprint_sample_library_app.R
 @ComponentViewClass(viewHolderClass = LoadingDotsViewHolder::class)
 class LoadingDotsView : LoadingDotsViewBase()
 
-@ComponentViewHolder(viewType = "loading_dots_view")
+@ComponentViewHolder(viewType = "loading_indicator_view")
 class LoadingDotsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 @ComponentViewHolderBinder

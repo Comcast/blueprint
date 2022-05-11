@@ -25,7 +25,7 @@ abstract class DefaultArchitect<out T : DefaultScreenView>(override val componen
 
     override fun initBlueprint(layout: View, presenter: ScreenPresenter<T>, actionBar: ActionBar?) {
         container = layout.findViewById(R.id.container)
-        loadingDots = layout.findViewById(R.id.loading_dots)
+        loadingDots = layout.findViewById(R.id.loading_indicator)
         recyclerView = layout.findViewById(R.id.recycler_view) as androidx.recyclerview.widget.RecyclerView
         ptrFrame = layout.findViewById(R.id.ptr_frame)
         screenViewDelegate = ScreenViewDelegate(componentRegistry, loadingDots, recyclerView)
