@@ -195,7 +195,6 @@ public class BlueprintProcessor extends AbstractProcessor {
         //a Map of Presenters to a List of there Constructor parameters names and classes
         Map<String, List<Pair<TypeMirror, String>>> defaultPresenterConstructorMap = new HashMap<>();
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(DefaultPresenterConstructor.class)) {
-//            Symbol.MethodSymbol annotatedCtor = (Symbol.MethodSymbol) annotatedElement;
             List<? extends VariableElement> parameters = ((ExecutableElement) annotatedElement).getParameters();
             List<Pair<TypeMirror, String>> ctorParamNameAndTypeList = new ArrayList();
             for (VariableElement parameter : parameters) {
@@ -204,26 +203,7 @@ public class BlueprintProcessor extends AbstractProcessor {
                 ctorParamNameAndTypeList.add(new ImmutablePair(paramClass, paramName));
             }
 
-
-//            annotatedElement.getClass().getTypeParameters()[0].getName()
-//            ExecutableType executableType = (ExecutableType)annotatedElement.asType();
-
-
-//            List<? extends TypeMirror> parameters = executableType.getParameterTypes();
-//            List<Pair<TypeName, String>> ctorParams = new ArrayList();
-//            for (TypeMirror typeMirror : parameters) {
-//                TypeName typeName = ClassName.bestGuess(typeMirror.toString());
-//                String className = typeMirror.
-//                ctorParams.add(new ImmutablePair(typeName, className));
-//            }
-
-//            List<Pair<TypeName, String>> ctorParams = annotatedClass.getTypeParameters()
-//                    .stream()
-//                    .map(param -> new Pair<TypeName, String>(TypeName.get(param.asType()), param.getSimpleName().toString())).collect(Collectors.toList());
-
             String presenterClassName = getFullClassName((TypeElement) annotatedElement.getEnclosingElement());
-//            Symbol.ClassSymbol presenterClass = (Symbol.ClassSymbol) annotatedCtor.owner;
-//            defaultPresenterConstructorMap.put(presenterClass.fullname.toString(), ctorParams);
             defaultPresenterConstructorMap.put(presenterClassName, ctorParamNameAndTypeList);
         }
 
