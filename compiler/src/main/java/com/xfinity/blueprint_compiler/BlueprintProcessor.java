@@ -251,15 +251,15 @@ public class BlueprintProcessor extends AbstractProcessor {
     private void generateCode(String appPackageName, String packageName, List<ComponentViewInfo> componentInfoList,
                               Map<String, List<Pair<TypeMirror, String>>> defaultPresenterContructorMap)
             throws IOException {
-        CodeGenerator codeGenerator =
+        CodeGenerator codeGeneratorJava =
                 new CodeGenerator(appPackageName, componentInfoList, defaultPresenterContructorMap);
-        TypeSpec generatedClass = codeGenerator.generateComponentRegistry();
+        TypeSpec generatedClass = codeGeneratorJava.generateComponentRegistry();
 
         JavaFile javaFile = builder(packageName, generatedClass).build();
         javaFile.writeTo(processingEnv.getFiler());
 
 
-        List<Pair<String, TypeSpec>> viewDelegates = codeGenerator.generateViewBaseClasses();
+        List<Pair<String, TypeSpec>> viewDelegates = codeGeneratorJava.generateViewBaseClasses();
         for (Pair<String, TypeSpec> viewDelegate : viewDelegates) {
             JavaFile file = builder(viewDelegate.getLeft(), viewDelegate.getRight()).build();
             file.writeTo(processingEnv.getFiler());
