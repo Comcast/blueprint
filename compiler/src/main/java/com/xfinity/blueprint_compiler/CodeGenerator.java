@@ -181,24 +181,8 @@ final class CodeGenerator {
 
             TypeName viewHolderTypeName = ClassName.get(viewHolderPackageName, viewHolderName);
 
-            TypeName viewBinderTypeName;
-            if (componentViewInfo.viewBinder != null && componentViewInfo.viewBinder.equals(BlueprintProcessor.DEFAULT_VIEW_BINDER)) {
-                viewBinderTypeName = ClassName.get("com.xfinity.blueprint.view", "ComponentViewBinder");
-            } else {
-                viewBinderTypeName = ParameterizedTypeName.get(ClassName.get("com.xfinity.blueprint.view", "ComponentViewBinder"),
-                                                               viewHolderTypeName);
-            }
-
-            FieldSpec viewBinderFieldSpec = null;
-            if (componentViewInfo.viewBinder != null) {
-                viewBinderFieldSpec = FieldSpec.builder(viewBinderTypeName, "viewBinder", Modifier.PRIVATE,
-                                                                  Modifier.FINAL)
-                                                         .initializer("new " + componentViewInfo.viewBinder + "()").build();
-            }
-
             FieldSpec viewHolderFieldSpec = FieldSpec.builder(viewHolderTypeName, "viewHolder", Modifier.PRIVATE).build();
-
-
+            
             ClassName notNullAnnotation = ClassName.get("org.jetbrains.annotations", "NotNull");
             MethodSpec getViewHolderMethod = MethodSpec.methodBuilder("getViewHolder")
                                                        .addModifiers(PUBLIC)
@@ -215,20 +199,6 @@ final class CodeGenerator {
                                                        .addAnnotation(Override.class)
                                                        .addParameter(viewHolderParameterSpec)
                                                        .build();
-
-            MethodSpec.Builder getComponentViewBinderMethodBuilder = MethodSpec.methodBuilder("getComponentViewBinder")
-                                                                .addModifiers(PUBLIC)
-                                                                .addAnnotation(notNullAnnotation)
-                                                                .addAnnotation(Override.class)
-                                                                .returns(viewBinderTypeName);
-
-            if (componentViewInfo.viewBinder != null) {
-                getComponentViewBinderMethodBuilder.addStatement("return viewBinder");
-            } else {
-                getComponentViewBinderMethodBuilder.addStatement("return null");
-            }
-
-            MethodSpec getComponentViewBinderMethod = getComponentViewBinderMethodBuilder.build();
 
             ParameterSpec viewGroupParam = ParameterSpec.builder(ClassName.get("android.view", "ViewGroup"), "parent")
                                                         .addAnnotation(notNullAnnotation).build();
@@ -271,10 +241,6 @@ final class CodeGenerator {
                               .addStatement("throw new IllegalArgumentException(\"You can only attach " + viewHolderName + " to this view object\")")
                               .addCode("}\n");
 
-            if (componentViewInfo.viewBinder != null) {
-                onBindViewHolderMethodBuilder.addStatement("viewBinder.bind(componentPresenter, this, this.viewHolder, position)");
-            }
-
             MethodSpec onBindViewHolderMethod = onBindViewHolderMethodBuilder.build();
 
             MethodSpec getViewTypeMethod =
@@ -287,13 +253,8 @@ final class CodeGenerator {
 
 
             List<FieldSpec> onBindViewHolderMethodFields = new ArrayList<>();
-            if (viewBinderFieldSpec != null) {
-                onBindViewHolderMethodFields.add(viewBinderFieldSpec);
-            }
-
             List<MethodSpec> methods = new ArrayList<>(Arrays.asList(getViewHolderMethod,
                                                                      setViewHolderMethod,
-                                                                     getComponentViewBinderMethod,
                                                                      onCreateViewHolderMethod,
                                                                      onBindViewHolderMethod,
                                                                      getViewTypeMethod));

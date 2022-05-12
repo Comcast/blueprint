@@ -17,12 +17,9 @@ import static javax.lang.model.SourceVersion.latestSupported;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.xfinity.blueprint_annotations.ClickableComponentBinder;
 import com.xfinity.blueprint_annotations.ComponentViewClass;
 import com.xfinity.blueprint_annotations.ComponentViewHolder;
-import com.xfinity.blueprint_annotations.ComponentViewHolderBinder;
 import com.xfinity.blueprint_annotations.DefaultPresenter;
 import com.xfinity.blueprint_annotations.DefaultPresenterConstructor;
 
@@ -30,15 +27,12 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -49,17 +43,12 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.TypeMirror;
 
 @AutoService(Processor.class)
 public class BlueprintProcessor extends AbstractProcessor {
-    public static final String DEFAULT_VIEW_BINDER = "com.xfinity.blueprint.view.ClickableComponentViewBinder";
-
     private final Messager messager = new Messager();
 
     @Override
@@ -73,7 +62,6 @@ public class BlueprintProcessor extends AbstractProcessor {
         Set<String> annotations = new LinkedHashSet<>();
         annotations.add(ComponentViewClass.class.getCanonicalName());
         annotations.add(ComponentViewHolder.class.getCanonicalName());
-        annotations.add(ComponentViewHolderBinder.class.getCanonicalName());
         annotations.add(DefaultPresenter.class.getCanonicalName());
         annotations.add(DefaultPresenterConstructor.class.getCanonicalName());
         return annotations;
@@ -167,18 +155,6 @@ public class BlueprintProcessor extends AbstractProcessor {
             componentViewInfoList.add(componentViewInfo);
         }
 
-//        for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(ComponentViewHolderBinder.class)) {
-//            TypeElement annotatedClass = (TypeElement) annotatedElement;
-//            TypeElement param = (TypeElement) annotatedClass.getTypeParameters().get(0);
-//            String viewHolderClassName = getFullClassName(param);
-//
-//            for (ComponentViewInfo componentViewInfo : componentViewInfoList) {
-//                if (viewHolderClassName.equals(componentViewInfo.viewHolder)) {
-//                    componentViewInfo.viewBinder = getFullClassName(annotatedClass);
-//                }
-//            }
-//        }
-
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWith(ComponentViewClass.class)) {
             TypeElement annotatedClass = (TypeElement) annotatedElement;
             String viewHolderClassName = null;
@@ -189,16 +165,10 @@ public class BlueprintProcessor extends AbstractProcessor {
                 viewHolderClassName = typeMirror.toString();
             }
 
-            boolean useDefaultBinder = annotatedClass.getAnnotationsByType(ClickableComponentBinder.class).length > 0;
-
             for (ComponentViewInfo componentViewInfo : componentViewInfoList) {
                 if (viewHolderClassName.equals(componentViewInfo.viewHolder)) {
                     componentViewInfo.componentView = annotatedClass.asType().toString();
                     componentViewInfo.viewTypeName = annotatedClass.getSimpleName().toString();
-
-                    if (componentViewInfo.viewBinder == null && useDefaultBinder) {
-                        componentViewInfo.viewBinder = DEFAULT_VIEW_BINDER;
-                    }
                 }
             }
         }
@@ -322,7 +292,6 @@ public class BlueprintProcessor extends AbstractProcessor {
         String viewTypeName;
         String defaultPresenter;
         String componentView;
-        String viewBinder;
         Map<String, String> children;
 
         ComponentViewInfo(String viewType, String viewHolder) {

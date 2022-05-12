@@ -11,28 +11,13 @@
 
 package com.xfinity.blueprint_sample_library.mvp.view
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.xfinity.blueprint.model.ComponentModel
-import com.xfinity.blueprint.presenter.ComponentPresenter
-import com.xfinity.blueprint.view.ComponentView
-import com.xfinity.blueprint.view.ComponentViewBinder
+import androidx.recyclerview.widget.RecyclerView
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
-import com.xfinity.blueprint_annotations.ComponentViewHolderBinder
 
 @ComponentViewClass(viewHolderClass = LoadingIndicatorViewHolder::class)
-class LoadingIndicator : LoadingIndicatorViewBase()
+class LoadingIndicator : LoadingIndicatorBase()
 
 @ComponentViewHolder(viewType = "loading_indicator")
 class LoadingIndicatorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
-@ComponentViewHolderBinder
-class LoadingIndicatorViewBinder : ComponentViewBinder<LoadingIndicatorViewHolder> {
-
-    override fun bind(componentPresenter: ComponentPresenter<ComponentView<*>, ComponentModel>,
-                      componentView: ComponentView<out LoadingIndicatorViewHolder>,
-                      viewHolder: LoadingIndicatorViewHolder, position: Int) {
-        //if there were any binding, it would go here
-    }
-}
