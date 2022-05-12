@@ -45,13 +45,13 @@ internal class CodeGenerator(private val packageName: String, private val compon
             componentViewIfStatements.add("if (viewType == $viewTypeFieldName) {\n")
             componentViewIfStatements.add("return new ${componentViewInfo.componentView}();\n}".trimIndent())
 
-            if (componentViewInfo.defaultPresenter != null) {
+            componentViewInfo.defaultPresenter?.let { defaultPresenter ->
                 getDefaultPresenterMethodBuilder1.addCode("if (componentView instanceof ${componentViewInfo.componentView}) {\n".trimIndent())
-                val defaultPresenterConstructorArgs = defaultPresenterConstructorMap[componentViewInfo.defaultPresenter]
+                val defaultPresenterConstructorArgs = defaultPresenterConstructorMap[defaultPresenter]
                 val returnStatement = if (defaultPresenterConstructorArgs == null) {
-                    "return new ${componentViewInfo.defaultPresenter}()"
+                    "return new $defaultPresenter()"
                 } else {
-                    val statementBuilder = StringBuilder("return new ${componentViewInfo.defaultPresenter}(")
+                    val statementBuilder = StringBuilder("return new $defaultPresenter(")
                     for (j in defaultPresenterConstructorArgs.indices) {
                         val argPair = defaultPresenterConstructorArgs[j]
                         val argName = argPair.right //arg name
@@ -113,7 +113,10 @@ internal class CodeGenerator(private val packageName: String, private val compon
     fun generateViewBaseClasses(): List<Pair<String?, TypeSpec?>> {
         val viewDelegatePairs = mutableListOf<Pair<String?, TypeSpec?>>()
         for (componentViewInfo in componentViewInfoList) {
-            val componentViewPackageName = componentViewInfo.componentView.substring(0, componentViewInfo.componentView.lastIndexOf("."))
+            val componentViewPackageName = componentViewInfo.componentView?.let { componentView ->
+                componentView.substring(0, componentView.lastIndexOf("."))
+            }
+
             val viewHolderPackageName = componentViewInfo.viewHolder.substring(0, componentViewInfo.viewHolder.lastIndexOf("."))
 
             val viewHolderName =
@@ -161,11 +164,12 @@ internal class CodeGenerator(private val packageName: String, private val compon
                     .addStatement("return ${packageName}.R.layout.${componentViewInfo.viewType}").build()
 
             val onBindViewHolderMethodFields = mutableListOf<FieldSpec>()
-            val methods = mutableListOf<MethodSpec>(getViewHolderMethod, setViewHolderMethod, onCreateViewHolderMethod, onBindViewHolderMethod, getViewTypeMethod)
+            val methods = mutableListOf<MethodSpec>(getViewHolderMethod, setViewHolderMethod, onCreateViewHolderMethod, onBindViewHolderMethod,
+                getViewTypeMethod)
 
-            if (componentViewInfo.children != null) {
-                for (child in componentViewInfo.children.keys) {
-                    val type = componentViewInfo.children[child]
+            componentViewInfo.children?.let { children ->
+                for (child in children.keys) {
+                    val type = children[child]
                     val childCapitalized = child.substring(0, 1).toUpperCase() + child.substring(1)
                     val childGetter = "get$childCapitalized()"
                     if (type == "android.widget.TextView") {
@@ -182,6 +186,7 @@ internal class CodeGenerator(private val packageName: String, private val compon
                     methods.add(getSetBackgroundColorMethodSpec(childCapitalized, childGetter))
                 }
             }
+
             onBindViewHolderMethodFields.add(viewHolderFieldSpec)
             val classBuilder =
                 TypeSpec.classBuilder("${componentViewInfo.viewTypeName}Base").addModifiers(Modifier.PUBLIC).addSuperinterface(componentViewTypeName)
@@ -195,49 +200,49 @@ internal class CodeGenerator(private val packageName: String, private val compon
         val textParam = ParameterSpec.builder(ClassName.get("java.lang", "CharSequence"), "text").build()
 
         //Warning:  this code assumes that fields all have getters, and that they're named getFieldName()
-        return MethodSpec.methodBuilder("set" + childNameCapitalized + "Text").addModifiers(Modifier.PUBLIC).addParameter(textParam)
+        return MethodSpec.methodBuilder("set${childNameCapitalized}Text").addModifiers(Modifier.PUBLIC).addParameter(textParam)
             .returns(TypeName.VOID).addStatement("viewHolder.$childGetterName.setText(text)").build()
     }
 
     private fun getSetVisibilityMethodSpec(childName: String, childGetterName: String): MethodSpec {
         val visibilityParam = ParameterSpec.builder(TypeName.INT, "visibility").build()
         val deprecatedAnnotation = AnnotationSpec.builder(ClassName.get("java.lang", "Deprecated")).build()
-        return MethodSpec.methodBuilder("set" + childName + "Visibility")
+        return MethodSpec.methodBuilder("set${childName}Visibility")
             .addJavadoc("@deprecated.  Use make\$LVisible(), make\$LInvisible(), or make\$LGone() instead", childName, childName, childName)
             .addAnnotation(deprecatedAnnotation).addModifiers(Modifier.PUBLIC).addParameter(visibilityParam).returns(TypeName.VOID)
             .addStatement("viewHolder.$childGetterName.setVisibility(visibility)").build()
     }
 
     private fun getMakeVisibleMethodSpec(childName: String, childGetterName: String): MethodSpec {
-        return MethodSpec.methodBuilder("make" + childName + "Visible").addModifiers(Modifier.PUBLIC).returns(TypeName.VOID)
+        return MethodSpec.methodBuilder("make${childName}Visible").addModifiers(Modifier.PUBLIC).returns(TypeName.VOID)
             .addStatement("viewHolder.$childGetterName.setVisibility(android.view.View.VISIBLE)").build()
     }
 
     private fun getMakeGoneMethodSpec(childName: String, childGetterName: String): MethodSpec {
-        return MethodSpec.methodBuilder("make" + childName + "Gone").addModifiers(Modifier.PUBLIC).returns(TypeName.VOID)
+        return MethodSpec.methodBuilder("make${childName}Gone").addModifiers(Modifier.PUBLIC).returns(TypeName.VOID)
             .addStatement("viewHolder.$childGetterName.setVisibility(android.view.View.GONE)").build()
     }
 
     private fun getMakeInvisibleMethodSpec(childName: String, childGetterName: String): MethodSpec {
-        return MethodSpec.methodBuilder("make" + childName + "Invisible").addModifiers(Modifier.PUBLIC).returns(TypeName.VOID)
+        return MethodSpec.methodBuilder("make${childName}Invisible").addModifiers(Modifier.PUBLIC).returns(TypeName.VOID)
             .addStatement("viewHolder.$childGetterName.setVisibility(android.view.View.INVISIBLE)").build()
     }
 
     private fun getSetBackgroundColorMethodSpec(childName: String, childGetterName: String): MethodSpec {
         val colorParam = ParameterSpec.builder(TypeName.INT, "color").build()
-        return MethodSpec.methodBuilder("set" + childName + "BackgroundColor").addModifiers(Modifier.PUBLIC).addParameter(colorParam)
+        return MethodSpec.methodBuilder("set${childName}BackgroundColor").addModifiers(Modifier.PUBLIC).addParameter(colorParam)
             .returns(TypeName.VOID).addStatement("viewHolder.$childGetterName.setBackgroundColor(color)").build()
     }
 
     private fun getSetDrawableMethodSpec(childName: String, childGetterName: String): MethodSpec {
         val imageParam = ParameterSpec.builder(ClassName.get("android.graphics.drawable", "Drawable"), "drawable").build()
-        return MethodSpec.methodBuilder("set" + childName + "Drawable").addModifiers(Modifier.PUBLIC).addParameter(imageParam).returns(TypeName.VOID)
+        return MethodSpec.methodBuilder("set${childName}Drawable").addModifiers(Modifier.PUBLIC).addParameter(imageParam).returns(TypeName.VOID)
             .addStatement("viewHolder.$childGetterName.setImageDrawable(drawable)").build()
     }
 
     private fun getSetImageResourceMethodSpec(childName: String, childGetterName: String): MethodSpec {
         val imageParam = ParameterSpec.builder(TypeName.INT, "resourceId").build()
-        return MethodSpec.methodBuilder("set" + childName + "Resource").addModifiers(Modifier.PUBLIC).addParameter(imageParam).returns(TypeName.VOID)
+        return MethodSpec.methodBuilder("set${childName}Resource").addModifiers(Modifier.PUBLIC).addParameter(imageParam).returns(TypeName.VOID)
             .addStatement("viewHolder.$childGetterName.setImageResource(resourceId)").build()
     }
 }
