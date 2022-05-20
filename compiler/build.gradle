@@ -14,7 +14,6 @@ dependencies {
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
   implementation 'androidx.recyclerview:recyclerview:1.0.0'
   implementation 'org.apache.commons:commons-lang3:3.0'
-  runtimeOnly files('/Library/Java/JavaVirtualMachines/jdk1.8.0_311.jdk/Contents/Home/lib/tools.jar')
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
