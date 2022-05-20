@@ -48,7 +48,7 @@ class DynamicScreenPresenter(override val componentEventManager: ComponentEventM
 
             if (!model.headerModel.enabled) {
                 screenComponents.add(Component(object : ComponentModel{},
-                        AppComponentRegistry.LoadingDotsView_VIEW_TYPE, DefaultComponentPresenter()))
+                        AppComponentRegistry.LoadingIndicator_VIEW_TYPE, DefaultComponentPresenter()))
                 val timer = Timer()
                 timer.schedule(object : TimerTask() {
                     override fun run() {
@@ -79,7 +79,7 @@ class DynamicScreenPresenter(override val componentEventManager: ComponentEventM
 
         if (model.headerModel.enabled && !model.footerModel.enabled) {
             screenComponents.add(Component(object : ComponentModel{},
-                    AppComponentRegistry.LoadingDotsView_VIEW_TYPE, DefaultComponentPresenter()))
+                    AppComponentRegistry.LoadingIndicator_VIEW_TYPE, DefaultComponentPresenter()))
             val timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {

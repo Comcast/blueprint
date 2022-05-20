@@ -9,7 +9,7 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample_library_app.mvp.view
+package com.xfinity.blueprint_sample_library.mvp.view
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

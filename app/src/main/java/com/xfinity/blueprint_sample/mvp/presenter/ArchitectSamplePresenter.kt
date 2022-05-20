@@ -66,7 +66,7 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
             screenComponents.add(Component(model.headerModel, AppComponentRegistry.HeaderView_VIEW_TYPE))
 
             if (!model.headerModel.enabled) {
-                screenComponents.add(Component(AppComponentRegistry.LoadingIndicatorView_VIEW_TYPE))
+                screenComponents.add(Component(AppComponentRegistry.LoadingIndicator_VIEW_TYPE))
 
                 Completable.complete().delay(3000, TimeUnit.MILLISECONDS)
                         .subscribeOn(Schedulers.io())
@@ -94,7 +94,7 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
 
 
         if (model.headerModel.enabled && !model.footerModel.enabled) {
-            screenComponents.add(Component(AppComponentRegistry.LoadingIndicatorView_VIEW_TYPE))
+            screenComponents.add(Component(AppComponentRegistry.LoadingIndicator_VIEW_TYPE))
 
             Completable.complete().delay(3000, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
