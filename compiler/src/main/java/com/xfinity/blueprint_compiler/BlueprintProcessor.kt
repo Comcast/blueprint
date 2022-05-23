@@ -10,15 +10,18 @@
  */
 package com.xfinity.blueprint_compiler
 
+import com.google.auto.common.MoreElements.getPackage
 import com.google.auto.service.AutoService
-import com.squareup.javapoet.ClassName
-import com.squareup.javapoet.JavaFile
+import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.metadata.KotlinPoetMetadataPreview
+import com.squareup.kotlinpoet.metadata.specs.internal.ClassInspectorUtil
+import com.squareup.kotlinpoet.metadata.toImmutableKmClass
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_annotations.DefaultPresenter
 import com.xfinity.blueprint_annotations.DefaultPresenterConstructor
-import org.apache.commons.lang3.tuple.ImmutablePair
-import org.apache.commons.lang3.tuple.Pair
+import kotlinx.metadata.KmClassifier
 import java.io.IOException
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.ProcessingEnvironment
@@ -26,15 +29,16 @@ import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.ElementKind
-import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
 import javax.lang.model.type.MirroredTypeException
-import javax.lang.model.type.TypeMirror
+import javax.tools.Diagnostic
 
 @AutoService(Processor::class)
 class BlueprintProcessor : AbstractProcessor() {
     private val messager = Messager()
+    private var outputPackageName: String? = null
+    private var appPackageName: String? = null
 
     @Synchronized
     override fun init(processingEnv: ProcessingEnvironment) {
@@ -55,33 +59,35 @@ class BlueprintProcessor : AbstractProcessor() {
         return SourceVersion.latestSupported()
     }
 
+    @KotlinPoetMetadataPreview
     override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
-        var packageName: StringBuilder? = null
-        var appPackageName: String? = null
+        var viewHolderPackageName: String? = null
+
         val componentViewInfoList: MutableList<ComponentViewInfo> = ArrayList()
-        for (annotatedElement in roundEnv.getElementsAnnotatedWith(
-            ComponentViewHolder::class.java)) { // annotation is only allowed on classes, so we can safely cast here
+        for (annotatedElement in roundEnv.getElementsAnnotatedWith(ComponentViewHolder::class.java)) { // annotation is only allowed on classes, so we can safely cast here
             val annotatedClass = annotatedElement as TypeElement
+
             if (!isValidClass(annotatedClass)) {
                 continue
             }
 
-            if (packageName == null) {
+            if (viewHolderPackageName == null && appPackageName == null && outputPackageName == null) {
                 try {
-                    appPackageName = processingEnv.elementUtils.getPackageName(annotatedClass)
-                    packageName = StringBuilder(appPackageName)
+                    viewHolderPackageName = processingEnv.elementUtils.getPackageName(annotatedClass)
                 } catch (e: UnnamedPackageException) {
                     e.printStackTrace()
                 }
 
                 //Epic hackery
-                if (packageName != null) {
-                    val packageNameTokens = packageName.toString().split(".")
-                    if (packageNameTokens.size >= 3) {
-                        appPackageName = "${packageNameTokens[0]}.${packageNameTokens[1]}.${packageNameTokens[2]}"
-                        packageName = StringBuilder(appPackageName)
+                if (viewHolderPackageName != null) {
+                    val packageNameTokens = viewHolderPackageName.split(".")
+                    appPackageName = if (packageNameTokens.size >= 3) {
+                        "${packageNameTokens[0]}.${packageNameTokens[1]}.${packageNameTokens[2]}"
+                    } else {
+                        viewHolderPackageName
                     }
-                    packageName.append(".blueprint")
+
+                    outputPackageName = "$appPackageName.blueprint"
                 }
             }
 
@@ -159,33 +165,45 @@ class BlueprintProcessor : AbstractProcessor() {
             }
         }
 
-        //a Map of Presenters to a List of there Constructor parameters names and classes
-        val defaultPresenterConstructorMap: MutableMap<String, List<Pair<TypeMirror, String>>> = HashMap()
-        for (annotatedElement in roundEnv.getElementsAnnotatedWith(DefaultPresenterConstructor::class.java)) {
-            val parameters = (annotatedElement as ExecutableElement).parameters
-            val ctorParamNameAndTypeList = mutableListOf<Pair<TypeMirror, String>>()
-            for (parameter in parameters) {
-                val paramName = parameter.simpleName.toString()
-                val paramClass = parameter.asType()
-                ctorParamNameAndTypeList.add(ImmutablePair(paramClass, paramName))
+        //a Map of Presenters to a List of their Constructor parameters names and classes
+        val defaultPresenterConstructorMap: MutableMap<String, List<Pair<ClassName, String>>> = HashMap()
+        for (annotatedElement in roundEnv.getElementsAnnotatedWith(
+            DefaultPresenterConstructor::class.java)) { //            val parameters = (annotatedElement as ExecutableElement).parameters
+            val constructors = annotatedElement.enclosingElement.getAnnotation(Metadata::class.java).toImmutableKmClass().constructors
+            if (constructors.isNotEmpty()) {
+                val parameters = constructors[0].valueParameters
+                val ctorParamNameAndTypeList = mutableListOf<Pair<ClassName, String>>()
+                for (parameter in parameters) {
+                    val paramName = parameter.name
+                    val className = (parameter.type?.classifier as? KmClassifier.Class)?.name.toString()
+                    val paramClass = ClassInspectorUtil.createClassName(className)
+                    ctorParamNameAndTypeList.add(Pair(paramClass, paramName))
+                }
+                val presenterClassName = getFullClassName(annotatedElement.enclosingElement as TypeElement)
+                defaultPresenterConstructorMap[presenterClassName] = ctorParamNameAndTypeList
             }
-            val presenterClassName = getFullClassName(annotatedElement.getEnclosingElement() as TypeElement)
-            defaultPresenterConstructorMap[presenterClassName] = ctorParamNameAndTypeList
         }
 
-        if (packageName != null && appPackageName != null) {
-            try {
-                generateCode(appPackageName, packageName.toString(), componentViewInfoList, defaultPresenterConstructorMap)
-            } catch (e: IOException) {
-                e.printStackTrace()
+        appPackageName?.let { appPackageName ->
+            outputPackageName?.let { outputPackageName ->
+                if (componentViewInfoList.isNotEmpty() || defaultPresenterConstructorMap.isNotEmpty()) {
+                    try {
+                        generateCode(appPackageName, outputPackageName, componentViewInfoList, defaultPresenterConstructorMap)
+                    } catch (e: Exception) {
+                        processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, e.stackTrace.toString())
+                    }
+                }
             }
         }
+
         return true
     }
 
+    @KotlinPoetMetadataPreview
     private fun getFullClassName(element: TypeElement): String {
-        val className = ClassName.get(element)
-        return "${className.packageName()}.${className.simpleName()}"
+        val typeMetadata = element.getAnnotation(Metadata::class.java)
+        val kmClass = typeMetadata.toImmutableKmClass()
+        return kmClass.name.replace("/", ".")
     }
 
     private fun isAndroidView(variable: VariableElement): Boolean {
@@ -213,17 +231,36 @@ class BlueprintProcessor : AbstractProcessor() {
         return processingEnv.typeUtils.isAssignable(annotatedClass.asType(), applicationTypeElement.asType())
     }
 
-    @Throws(IOException::class)
-    private fun generateCode(appPackageName: String, packageName: String, componentInfoList: List<ComponentViewInfo>,
-                             defaultPresenterConstructorMap: Map<String, List<Pair<TypeMirror, String>>>) {
-        val codeGeneratorJava = CodeGenerator(appPackageName, componentInfoList, defaultPresenterConstructorMap)
-        val generatedClass = codeGeneratorJava.generateComponentRegistry()
-        val javaFile = JavaFile.builder(packageName, generatedClass).build()
-        javaFile.writeTo(processingEnv.filer)
-        val viewDelegates = codeGeneratorJava.generateViewBaseClasses()
+    @Throws(IOException::class) private fun generateCode(appPackageName: String, outputPackageName: String, componentInfoList: List<ComponentViewInfo>,
+                                                         defaultPresenterConstructorMap: Map<String, List<Pair<ClassName, String>>>) {
+        val codeGenerator = CodeGenerator(appPackageName, componentInfoList, defaultPresenterConstructorMap)
+        val generatedClass = codeGenerator.generateComponentRegistry()
+
+        val kotlinFile = generatedClass.name?.let {
+            FileSpec.builder(outputPackageName, it).addType(generatedClass)
+                .addImport("androidx.recyclerview.widget", "RecyclerView")
+                .build()
+        }
+
+        processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "\n\n\n component registry code \n\n" +
+                "$generatedClass")
+
+        try {
+            kotlinFile?.writeTo(processingEnv.filer)
+        } catch (e: Exception) {
+            processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, e.toString())
+        }
+
+        val viewDelegates = codeGenerator.generateViewBaseClasses()
         for (viewDelegate in viewDelegates) {
-            val file = JavaFile.builder(viewDelegate.left, viewDelegate.right).build()
-            file.writeTo(processingEnv.filer)
+            viewDelegate.second.name?.let {
+                val viewDelegateKotlinFile = FileSpec.builder(viewDelegate.first, it).addType(viewDelegate.second).build()
+                try {
+                    viewDelegateKotlinFile.writeTo(processingEnv.filer)
+                } catch (e: Exception) {
+                    processingEnv.messager.printMessage(Diagnostic.Kind.ERROR, e.toString())
+                }
+            }
         }
     }
 
