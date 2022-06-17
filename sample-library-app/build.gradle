@@ -15,12 +15,12 @@ resourceprovider {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 32
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.xfinity.blueprint_sample_library_app"
         minSdkVersion 17
-        targetSdkVersion 28
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -30,6 +30,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -45,7 +49,6 @@ dependencies {
             'com.google.android.material:material:1.0.0',
             'androidx.recyclerview:recyclerview:1.0.0',
                    'com.xfinity:loadingdots:1.0.2',
-                   'jp.wasabeef:recyclerview-animators:2.2.6',
                    'io.reactivex.rxjava2:rxjava:2.0.8',
                    'io.reactivex.rxjava2:rxandroid:2.0.1'
 
