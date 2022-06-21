@@ -10,6 +10,9 @@ dependencies {
   implementation project(path: ':blueprint-annotations')
   implementation 'com.google.auto.service:auto-service:1.0-rc3'
   implementation 'com.squareup:javapoet:1.9.0'
+  implementation 'com.squareup:kotlinpoet:1.7.2'
+  implementation 'com.squareup:kotlinpoet-metadata:1.7.2'
+  implementation 'com.squareup:kotlinpoet-metadata-specs:1.7.2'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
   implementation 'androidx.recyclerview:recyclerview:1.0.0'
   implementation 'org.apache.commons:commons-lang3:3.0'
@@ -31,9 +34,9 @@ artifacts {
   archives sourcesJar
 }
 
-signing {
-  sign configurations.archives
-}
+//signing {
+//  sign configurations.archives
+//}
 
 uploadArchives {
   repositories {

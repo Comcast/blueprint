@@ -18,7 +18,7 @@ import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.presenter.ComponentEventHandler
 import com.xfinity.blueprint.presenter.DefaultComponentPresenter
 import com.xfinity.blueprint.presenter.ScreenPresenter
-import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry.DataItemView_VIEW_TYPE
+import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry.Companion.DataItemView_VIEW_TYPE
 import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample_library_app.mvp.model.DynamicScreenModel

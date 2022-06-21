@@ -17,12 +17,12 @@ import com.xfinity.blueprint.presenter.ComponentPresenter
 import com.xfinity.blueprint.view.ComponentView
 
 interface ComponentRegistry {
-    fun getComponentView(viewType: Int): ComponentView<androidx.recyclerview.widget.RecyclerView.ViewHolder>?
+    fun getComponentView(viewType: Int): ComponentView<RecyclerView.ViewHolder>?
     fun getDefaultPresenter(viewType: Int, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>?
-    fun getDefaultPresenter(componentView: ComponentView<androidx.recyclerview.widget.RecyclerView.ViewHolder>, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>?
+    fun getDefaultPresenter(componentView: ComponentView<out RecyclerView.ViewHolder>, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>?
 }
 
-open class CompositeComponentRegistry(val componentRegistries: List<ComponentRegistry> = listOf()) : ComponentRegistry {
+open class CompositeComponentRegistry(private val componentRegistries: List<ComponentRegistry> = listOf()) : ComponentRegistry {
     override fun getComponentView(viewType: Int): ComponentView<RecyclerView.ViewHolder>? {
         componentRegistries.forEach {
             val componentView = it.getComponentView(viewType)
@@ -45,7 +45,7 @@ open class CompositeComponentRegistry(val componentRegistries: List<ComponentReg
         return null
     }
 
-    override fun getDefaultPresenter(componentView: ComponentView<RecyclerView.ViewHolder>, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>? {
+    override fun getDefaultPresenter(componentView: ComponentView<out RecyclerView.ViewHolder>, vararg args: Any): ComponentPresenter<ComponentView<*>, ComponentModel>? {
         componentRegistries.forEach {
             val componentPresenter = it.getDefaultPresenter(componentView, args)
             if (componentPresenter != null) {
