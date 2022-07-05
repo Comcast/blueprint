@@ -103,7 +103,9 @@ public class BlueprintProcessor extends AbstractProcessor {
                 if (packageName != null) {
                     String[] packageNameTokens = packageName.toString().split("\\.");
                     if (packageNameTokens.length >= 3) {
-                        appPackageName = packageNameTokens[0] + "." + packageNameTokens[1] + "." + packageNameTokens[2] + "." + packageNameTokens[3];
+                        appPackageName = packageNameTokens[0] + "."
+                                + packageNameTokens[1] + "." + packageNameTokens[2] + "."
+                                + packageNameTokens[3] + "." + packageNameTokens[4];
                         packageName = new StringBuilder(appPackageName);
                     }
 
