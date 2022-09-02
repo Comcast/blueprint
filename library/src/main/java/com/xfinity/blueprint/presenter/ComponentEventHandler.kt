@@ -17,14 +17,14 @@ import com.xfinity.blueprint.event.ComponentEventManager
 /**
  * A ComponentEventListener that provides APIs to register and unregister itself
  */
-interface ComponentEventHandler: ComponentEventListener {
+interface ComponentEventHandler: ComponentEventListener, PauseResumeHandler {
     val componentEventManager : ComponentEventManager
 
-    fun resume() {
+    override fun resume() {
         componentEventManager.registerListener(this)
     }
 
-    fun pause() {
+    override fun pause() {
         componentEventManager.unregisterListener(this)
     }
 }

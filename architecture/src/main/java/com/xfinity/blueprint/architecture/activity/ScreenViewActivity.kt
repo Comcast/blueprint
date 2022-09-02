@@ -5,7 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.xfinity.blueprint.architecture.*
-import com.xfinity.blueprint.presenter.ComponentEventHandler
+import com.xfinity.blueprint.presenter.PauseResumeHandler
 import com.xfinity.blueprint.presenter.ScreenPresenter
 
 abstract class ToolbarScreenViewActivity<T: DefaultScreenView> : ScreenViewActivity<T>() {
@@ -42,12 +42,12 @@ abstract class ScreenViewActivity<T: DefaultScreenView> : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        (presenter as? ComponentEventHandler)?.resume()
+        (presenter as? PauseResumeHandler)?.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        (presenter as? ComponentEventHandler)?.pause()
+        (presenter as? PauseResumeHandler)?.pause()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

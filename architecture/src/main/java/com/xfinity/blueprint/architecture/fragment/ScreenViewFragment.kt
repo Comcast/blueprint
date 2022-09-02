@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.xfinity.blueprint.architecture.*
 import com.xfinity.blueprint.architecture.activity.setupViews
 import com.xfinity.blueprint.presenter.ComponentEventHandler
+import com.xfinity.blueprint.presenter.PauseResumeHandler
 import com.xfinity.blueprint.presenter.ScreenPresenter
 
 interface TaggedFragment{
@@ -40,12 +41,12 @@ abstract class ScreenViewFragment<T: DefaultScreenView> : androidx.fragment.app.
 
     override fun onResume() {
         super.onResume()
-        (presenter as? ComponentEventHandler)?.resume()
+        (presenter as? PauseResumeHandler)?.resume()
     }
 
     override fun onPause() {
         super.onPause()
-        (presenter as? ComponentEventHandler)?.pause()
+        (presenter as? PauseResumeHandler)?.pause()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
