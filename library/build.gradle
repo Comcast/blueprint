@@ -1,7 +1,9 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'maven'
-apply plugin: 'signing'
+plugins {
+    id 'maven-publish'
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'signing'
+}
 
 android {
     compileSdkVersion 32
@@ -73,48 +75,50 @@ artifacts {
 }
 
 signing {
-    sign configurations.archives
+    sign publishing.publications
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = rootProject.groupId
+            artifactId = "$rootProject.artifactPrefix-library"
+            version = rootProject.publishVersion
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
-
-            pom.project {
-                groupId rootProject.groupId
-                name "$rootProject.projectName Library"
-                version rootProject.publishVersion
-                packaging 'aar'
-                description 'Blueprint is a compact framework for constructing mvp architectures in Android within a scrollable, multi-view-type list UI'
-                artifactId "$rootProject.artifactPrefix-library"
-                url 'https://github.com/Comcast/blueprint'
-
-                scm {
-                    url 'scm:git@github.com:Comcast/blueprint.git'
-                    connection 'scm:git@github.com:Comcast/blueprint.git'
-                    developerConnection 'scm:git@github.com:Comcast/blueprint.git'
-                }
-
+            pom {
+                name = "$rootProject.projectName Library"
+                description = 'Blueprint is a compact framework for constructing mvp architectures in Android within a scrollable, multi-view-type list UI'
+                url = 'https://github.com/Comcast/blueprint'
                 licenses {
                     license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                     }
                 }
-
                 developers {
                     developer {
-                        id 'dapp'
-                        name 'Mark Dappollone'
+                        id = 'dapp'
+                        name = 'Mark Dappollone'
                     }
                 }
+                scm {
+                    url = 'scm:git@github.com:Comcast/blueprint.git'
+                    connection = 'scm:git@github.com:Comcast/blueprint.git'
+                    developerConnection = 'scm:git@github.com:Comcast/blueprint.git'
+                }
             }
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
+    repositories {
+        maven {
+            credentials {
+                username sonatypeUsername
+                password sonatypePassword
+            }
+            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
         }
     }
 }
