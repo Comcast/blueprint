@@ -16,6 +16,7 @@ package com.xfinity.blueprint_bootstrap.dagger
 
 import android.content.Context
 import com.xfinity.blueprint_bootstrap.MainActivity
+import com.xfinity.blueprint_bootstrap.MainToolbarActivity
 import dagger.Binds
 import dagger.Module
 
@@ -24,4 +25,11 @@ abstract class MainActivityModule {
     @ActivityContext
     @Binds
     abstract fun provideContext(activity: MainActivity): Context
+}
+
+@Module
+abstract class MainToolbarActivityModule {
+    @ActivityContext
+    @Binds
+    abstract fun provideContext(activity: MainToolbarActivity): Context
 }

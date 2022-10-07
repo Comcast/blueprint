@@ -15,19 +15,19 @@ import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
 import com.xfinity.blueprint.model.ComponentModel
+import com.xfinity.blueprint.presenter.ComponentEventHandler
 import com.xfinity.blueprint.presenter.DefaultComponentPresenter
-import com.xfinity.blueprint.presenter.EventHandlingScreenPresenter
+import com.xfinity.blueprint.presenter.ScreenPresenter
 import com.xfinity.blueprint_sample_library.blueprint.AppComponentRegistry.DataItemView_VIEW_TYPE
 import com.xfinity.blueprint_sample_library.mvp.model.DataItemModel
 import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample_library_app.mvp.model.DynamicScreenModel
 import com.xfinity.blueprint_sample_library_app.mvp.view.DefaultDynamicScreenView
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 
 
 class DynamicScreenPresenter(override val componentEventManager: ComponentEventManager) :
-        EventHandlingScreenPresenter<DefaultDynamicScreenView> {
+    ScreenPresenter<DefaultDynamicScreenView>, ComponentEventHandler {
 
     var model: DynamicScreenModel = DynamicScreenModel()
     lateinit var view: DefaultDynamicScreenView
@@ -48,7 +48,7 @@ class DynamicScreenPresenter(override val componentEventManager: ComponentEventM
 
             if (!model.headerModel.enabled) {
                 screenComponents.add(Component(object : ComponentModel{},
-                        AppComponentRegistry.LoadingDotsView_VIEW_TYPE, DefaultComponentPresenter()))
+                        AppComponentRegistry.LoadingIndicator_VIEW_TYPE, DefaultComponentPresenter()))
                 val timer = Timer()
                 timer.schedule(object : TimerTask() {
                     override fun run() {
@@ -79,7 +79,7 @@ class DynamicScreenPresenter(override val componentEventManager: ComponentEventM
 
         if (model.headerModel.enabled && !model.footerModel.enabled) {
             screenComponents.add(Component(object : ComponentModel{},
-                    AppComponentRegistry.LoadingDotsView_VIEW_TYPE, DefaultComponentPresenter()))
+                    AppComponentRegistry.LoadingIndicator_VIEW_TYPE, DefaultComponentPresenter()))
             val timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {

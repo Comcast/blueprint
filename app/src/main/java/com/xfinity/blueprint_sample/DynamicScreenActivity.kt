@@ -17,14 +17,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.presenter.DynamicScreenPresenter
 import com.xfinity.blueprint_sample.mvp.view.DefaultDynamicScreenView
 import com.xfinity.blueprint_sample.mvp.view.DynamicScreenView
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 /**
  * The dynamic screen example documents how to compose a screen that can change based on the user's interactions with
@@ -54,7 +52,6 @@ class DynamicScreenActivity : AppCompatActivity(), DynamicScreenView {
         presenter.attachView(mainScreenView)
         presenter.present()
 
-        recyclerView.itemAnimator = SlideInUpAnimator()
         recyclerView.adapter = screenViewDelegate.componentAdapter
     }
 

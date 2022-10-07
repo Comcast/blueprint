@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ /*
   ~  * Copyright 2018 Comcast Cable Communications Management, LLC
@@ -12,13 +13,16 @@
   ~
   -->
 
-<resources>
-    <string name="app_name">Blueprint Bootstrap</string>
-    <string name="title_today">Today</string>
-    <string name="title_this_week">This Week</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="open_weather_map_api_url">http://api.openweathermap.org/data/2.5/</string>
-    <string name="open_weather_map_api_key">5aa5db6d067f913346a3d430e1f3f4b5</string>
-    <string name="action_web_google">Launch Google</string>
-    <string name="action_web_amazon">Launch Amazon</string>
-</resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_launch_google"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/action_web_google"/>
+
+    <item
+        android:id="@+id/action_launch_amazon"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/action_web_amazon"/>
+
+</menu>

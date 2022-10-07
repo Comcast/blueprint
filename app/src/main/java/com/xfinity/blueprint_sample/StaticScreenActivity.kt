@@ -20,7 +20,6 @@ import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.view.ScreenViewDelegate
 import com.xfinity.blueprint_sample.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample.mvp.presenter.StaticScreenPresenter
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 /**
  * The static screen example documents how to compose a simple presentation of data.  The screen is interactable, but
@@ -50,7 +49,6 @@ class StaticScreenActivity : AppCompatActivity() {
         presenter.attachView(screenViewDelegate)
         presenter.present()
 
-        recyclerView.itemAnimator = SlideInUpAnimator()
         recyclerView.adapter = screenViewDelegate.componentAdapter
     }
 }

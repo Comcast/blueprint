@@ -14,4 +14,6 @@
     <string name="static_screen">Static Screen Example</string>
     <string name="dynamic_screen">Dynamic Screen Example</string>
     <string name="bp_arch_screen">Blueprint Architecture Lib Example</string>
+    <string name="custom_screen_activity">Custom Screen View Activity Example</string>
+    <string name="custom_screen_fragment">Custom Screen View Fragment Example</string>
 </resources>

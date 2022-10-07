@@ -14,31 +14,24 @@
 
 package com.xfinity.blueprint_bootstrap
 
-import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.xfinity.blueprint.architecture.DefaultArchitect
 import com.xfinity.blueprint.architecture.DefaultScreenView
 import com.xfinity.blueprint.architecture.DefaultScreenViewArchitect
-import com.xfinity.blueprint.architecture.activity.ScreenViewActivity
-import com.xfinity.blueprint_bootstrap.screen.presenter.MainPresenter
-import dagger.android.AndroidInjection
+import com.xfinity.blueprint.architecture.ToolbarPresenter
+import com.xfinity.blueprint.architecture.activity.ToolbarScreenViewActivity
+import com.xfinity.blueprint.presenter.ScreenPresenter
+import com.xfinity.blueprint_bootstrap.screen.presenter.ToolbarScreenPresenter
 import javax.inject.Inject
 
-class MainActivity : ScreenViewActivity<DefaultScreenView>() {
-    @Inject override lateinit var architect: DefaultScreenViewArchitect
-    @Inject override lateinit var presenter: MainPresenter
+class MainToolbarActivity : ToolbarScreenViewActivity<DefaultScreenView>() {
+    @Inject lateinit var defaultArchitect: DefaultScreenViewArchitect
+    @Inject lateinit var mainPresenter: ToolbarScreenPresenter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        AndroidInjection.inject(this)
-        super.onCreate(savedInstanceState)
-    }
+    override val architect: DefaultArchitect<DefaultScreenView> by lazy { defaultArchitect }
+    override val presenter: ScreenPresenter<DefaultScreenView> by lazy { mainPresenter }
+    override val toolbarPresenter: ToolbarPresenter by lazy { mainPresenter }
 
-    override fun onResume() {
-        super.onResume()
-        presenter.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        presenter.onPause()
+    init {
+        menuId = R.menu.toolbar_actions
     }
 }

@@ -24,7 +24,6 @@ import com.xfinity.blueprint_sample_library_app.blueprint.AppComponentRegistry
 import com.xfinity.blueprint_sample_library_app.mvp.presenter.DynamicScreenPresenter
 import com.xfinity.blueprint_sample_library_app.mvp.view.DefaultDynamicScreenView
 import com.xfinity.blueprint_sample_library_app.mvp.view.DynamicScreenView
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 /**
  * The dynamic screen example documents how to compose a screen that can change based on the user's interactions with
@@ -56,7 +55,6 @@ class DynamicScreenActivity : AppCompatActivity(), DynamicScreenView {
         presenter.attachView(mainScreenView)
         presenter.present()
 
-        recyclerView.itemAnimator = SlideInUpAnimator()
         recyclerView.adapter = screenViewDelegate.componentAdapter
     }
 

@@ -10,9 +10,9 @@ dependencies {
   implementation project(path: ':blueprint-annotations')
   implementation 'com.google.auto.service:auto-service:1.0-rc3'
   implementation 'com.squareup:javapoet:1.9.0'
-  implementation files("${System.properties['java.home']}/../lib/tools.jar")
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
   implementation 'androidx.recyclerview:recyclerview:1.0.0'
+  implementation 'org.apache.commons:commons-lang3:3.0'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

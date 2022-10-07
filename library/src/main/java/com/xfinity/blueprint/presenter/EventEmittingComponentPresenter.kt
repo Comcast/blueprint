@@ -15,7 +15,7 @@ import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.ComponentModel
 import com.xfinity.blueprint.view.ComponentView
 
-
+@Deprecated("Any Component that has access to the ComponentEventManager can send events. Don't use a subclass for this.")
 interface EventEmittingComponentPresenter<V : ComponentView<*>, M : ComponentModel> : ComponentPresenter<V, M> {
     val componentEventManager: ComponentEventManager
 }

@@ -9,13 +9,15 @@
  * limitations under the License.
  */
 
-package com.xfinity.blueprint_sample.mvp.model
+package com.xfinity.blueprint_sample.mvp.view
 
-import com.xfinity.blueprint_sample.R
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import com.xfinity.blueprint_annotations.ComponentViewClass
+import com.xfinity.blueprint_annotations.ComponentViewHolder
 
-open class DynamicScreenModel {
-    open var headerModel: HeaderModel = HeaderModel()
-    var footerModel: FooterModel = FooterModel()
-    open var dataItemModels: MutableList<DataItemModel> = mutableListOf(DataItemModel(), DataItemModel(), DataItemModel(),
-            DataItemModel(), DataItemModel(resourceId = R.drawable.ic_launcher), DataItemModel())
-}
+@ComponentViewClass(viewHolderClass = LoadingIndicatorViewHolder::class)
+class LoadingIndicator : LoadingIndicatorBase()
+
+@ComponentViewHolder(viewType = "loading_indicator")
+class LoadingIndicatorViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
