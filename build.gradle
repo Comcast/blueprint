@@ -22,8 +22,6 @@ allprojects {
         google()
     }
 
-    apply plugin: 'maven'
-
     group = 'com.xfinity'
     version = '2.1.0'
 }
