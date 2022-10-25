@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 1
         versionName rootProject.publishVersion
 
@@ -27,19 +27,17 @@ android {
 }
 
 dependencies {
-    def ANDROID_SUPPORT_LIB_VERSION = "28.0.0"
-
     implementation fileTree(dir: 'libs', include: ['*.jar']),
-                   project(':library'),
-            'androidx.appcompat:appcompat:1.0.0',
-            'com.google.android.material:material:1.0.0',
-            'androidx.constraintlayout:constraintlayout:1.1.3',
-                   'in.srain.cube:ultra-ptr:1.0.11',
-                   "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+                   project(':library')
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'in.srain.cube:ultra-ptr:1.0.11'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 }
 
 repositories {
