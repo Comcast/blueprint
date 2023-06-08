@@ -95,8 +95,7 @@ class BlueprintProcessor : AbstractProcessor() {
             val methodNames = mutableListOf<String>()
 
             for (supertype in processingEnv.typeUtils.directSupertypes(annotatedElement.asType())) {
-                val declared =
-                    supertype as DeclaredType //you should of course check this is possible first
+                val declared = supertype as DeclaredType
                 val supertypeElement: Element = declared.asElement()
                 processViewHolderElement(supertypeElement, methodNames, children)
             }
