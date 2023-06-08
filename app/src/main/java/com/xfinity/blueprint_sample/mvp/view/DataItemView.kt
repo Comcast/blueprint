@@ -27,7 +27,13 @@ class DataItemView : DataItemViewBase() {
 }
 
 @ComponentViewHolder(viewType = "data_item_view")
-class DataItemViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-    val data : TextView = itemView.findViewById(R.id.data) as TextView
-    val image: ImageView = itemView.findViewById(R.id.image) as ImageView
+class DataItemViewHolder(itemView: View) : BaseViewHolder(itemView)
+
+//Example of how to create a base class for ViewHolders.  This is useful if you expect to have
+// many components presenting the same or similar types of views, but laid out differently.  Using
+// a ViewHolder base class and nullable views, a single large ViewHolder class can be reused
+// across many components without redefining all the individual views themselves.
+open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    val data : TextView? = itemView.findViewById(R.id.data) as? TextView
+    val image: ImageView? = itemView.findViewById(R.id.image) as? ImageView
 }
