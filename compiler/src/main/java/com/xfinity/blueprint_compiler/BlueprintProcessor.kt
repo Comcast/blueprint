@@ -20,17 +20,21 @@ import com.xfinity.blueprint_annotations.DefaultPresenterConstructor
 import org.apache.commons.lang3.tuple.ImmutablePair
 import org.apache.commons.lang3.tuple.Pair
 import java.io.IOException
+import java.util.Locale
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
+import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
+import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.MirroredTypeException
 import javax.lang.model.type.TypeMirror
+
 
 @AutoService(Processor::class)
 class BlueprintProcessor : AbstractProcessor() {
@@ -90,39 +94,14 @@ class BlueprintProcessor : AbstractProcessor() {
             val children = mutableMapOf<String, String>()
             val methodNames = mutableListOf<String>()
 
-            for (enclosedElement in annotatedElement.getEnclosedElements()) { // We only look at fields
-                if (enclosedElement.kind == ElementKind.METHOD) {
-                    methodNames.add(enclosedElement.simpleName.toString().toLowerCase())
-                }
+            for (supertype in processingEnv.typeUtils.directSupertypes(annotatedElement.asType())) {
+                val declared = supertype as DeclaredType
+                val supertypeElement: Element = declared.asElement()
+                processViewHolderElement(supertypeElement, methodNames, children)
             }
-            for (enclosedElement in annotatedElement.getEnclosedElements()) { // We only look at fields
-                if (enclosedElement.kind.isField) {
-                    val variable = enclosedElement as VariableElement
-                    val variableName = enclosedElement.getSimpleName().toString()
 
-                    //we'll only generate methods for this field if this class has
-                    // a getter for the field. We'll assume a naming convention of getFieldName()
-                    var hasGetter = false
-                    for (methodName in methodNames) {
-                        if (methodName == "get${variableName.toLowerCase()}") {
-                            hasGetter = true
-                            break
-                        }
-                    }
-                    if (!hasGetter) {
-                        continue
-                    }
-                    if (isEditText(variable)) {
-                        children[variableName] = "android.widget.EditText"
-                    } else if (isTextView(variable)) {
-                        children[variableName] = "android.widget.TextView"
-                    } else if (isImageView(variable)) {
-                        children[variableName] = "android.widget.ImageView"
-                    } else if (isAndroidView(variable)) {
-                        children[variableName] = "android.view.View"
-                    }
-                }
-            }
+            processViewHolderElement(annotatedElement, methodNames, children)
+
             val componentViewInfo = ComponentViewInfo(viewType, viewHolderClassName)
             componentViewInfo.children = children
             componentViewInfoList.add(componentViewInfo)
@@ -181,6 +160,46 @@ class BlueprintProcessor : AbstractProcessor() {
             }
         }
         return true
+    }
+
+    private fun processViewHolderElement(element: Element, methodNames: MutableList<String>,
+                                         children: MutableMap<String, String>) {
+        for (enclosedElement in element.enclosedElements) {
+            if (enclosedElement.kind == ElementKind.METHOD) {
+                methodNames.add(enclosedElement.simpleName.toString().lowercase(Locale.getDefault()))
+            }
+        }
+
+        if (methodNames.isNotEmpty()) {
+            for (enclosedElement in element.enclosedElements) {
+                if (enclosedElement.kind.isField) {
+                    val variable = enclosedElement as VariableElement
+                    val variableName = enclosedElement.getSimpleName().toString()
+
+                    //we'll only generate methods for this field if this class has
+                    // a getter for the field. We'll assume a naming convention of getFieldName()
+                    var hasGetter = false
+                    for (methodName in methodNames) {
+                        if (methodName == "get${variableName.lowercase(Locale.getDefault())}") {
+                            hasGetter = true
+                            break
+                        }
+                    }
+                    if (!hasGetter) {
+                        continue
+                    }
+                    if (isEditText(variable)) {
+                        children[variableName] = "android.widget.EditText"
+                    } else if (isTextView(variable)) {
+                        children[variableName] = "android.widget.TextView"
+                    } else if (isImageView(variable)) {
+                        children[variableName] = "android.widget.ImageView"
+                    } else if (isAndroidView(variable)) {
+                        children[variableName] = "android.view.View"
+                    }
+                }
+            }
+        }
     }
 
     private fun getFullClassName(element: TypeElement): String {
