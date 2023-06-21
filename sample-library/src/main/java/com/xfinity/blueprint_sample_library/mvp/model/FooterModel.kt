@@ -15,5 +15,6 @@ import com.xfinity.blueprint.model.ComponentModel
 
 class FooterModel : ComponentModel {
     val footer : String = "This is the footer"
+    //Whats the point of this variable if im not doing anything with the variable when its changed
     var enabled = false
 }

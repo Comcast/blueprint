@@ -17,11 +17,12 @@ open class StaticScreenModel {
     val dataItemModels: List<DataItemModel> = listOf(DataItemModel(), DataItemModel(), DataItemModel(),
             DataItemModel(), DataItemModel(), DataItemModel())
 
+
     init {
         headerModel.enabled = true
         footerModel.enabled = true
-        dataItemModels.forEach({
+        dataItemModels.forEach {
             it.enabled = true
-        })
+        }
     }
 }

@@ -44,7 +44,7 @@ class DynamicScreenActivity : AppCompatActivity(), DynamicScreenView {
         setContentView(R.layout.activity_main)
 
         content = findViewById(R.id.content)
-        val recyclerView = findViewById(R.id.recycler_view) as androidx.recyclerview.widget.RecyclerView
+        val recyclerView = findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this, androidx.recyclerview.widget.LinearLayoutManager.VERTICAL, false)
 
         screenViewDelegate = ScreenViewDelegate(componentRegistry, null, recyclerView)

@@ -38,6 +38,9 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'com.xfinity:blueprint-library:2.2.0'
+    implementation 'com.xfinity:blueprint-annotations:2.2.0'
+
 }
 
 repositories {

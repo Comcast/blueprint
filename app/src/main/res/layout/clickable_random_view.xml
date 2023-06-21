@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent">
+
+    <TextView
+        android:id="@+id/xfinity_text"
+        android:layout_width="242dp"
+        android:layout_height="match_parent"
+        android:text="Click this!">
+
+    </TextView>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="136dp"
+        android:layout_height="86dp"
+        android:layout_gravity="end
+"
+        app:srcCompat="@drawable/xfinity_phone" />
+
+
+</FrameLayout>

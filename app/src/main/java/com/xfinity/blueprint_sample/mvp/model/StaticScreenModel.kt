@@ -16,12 +16,16 @@ open class StaticScreenModel {
     val footerModel: FooterModel = FooterModel()
     val dataItemModels: List<DataItemModel> = listOf(DataItemModel(), DataItemModel(), DataItemModel(),
             DataItemModel(), DataItemModel(), DataItemModel())
+    val clickableRandomModel: ClickableRandomModel = ClickableRandomModel()
+    val randomModel: RandomModel = RandomModel()
 
     init {
         headerModel.enabled = true
         footerModel.enabled = true
-        dataItemModels.forEach({
+        clickableRandomModel.enabled = true
+        randomModel.enabled = true
+        dataItemModels.forEach {
             it.enabled = true
-        })
+        }
     }
 }

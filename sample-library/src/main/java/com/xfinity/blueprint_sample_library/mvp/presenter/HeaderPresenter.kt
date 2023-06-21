@@ -20,6 +20,6 @@ import com.xfinity.blueprint_sample_library.mvp.view.HeaderView
 class HeaderPresenter : ComponentPresenter<HeaderView, HeaderModel> {
     override fun present(view: HeaderView, model: HeaderModel) {
         view.setEnabled(model.enabled)
-        view.setHeaderText(model.header)
+        view.setHeaderText(" ")
     }
 }

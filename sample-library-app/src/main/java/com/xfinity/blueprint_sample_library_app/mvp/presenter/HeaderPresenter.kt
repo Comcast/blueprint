@@ -17,7 +17,7 @@ import com.xfinity.blueprint_sample_library_app.mvp.model.HeaderModel
 import com.xfinity.blueprint_sample_library_app.mvp.view.HeaderView
 
 @DefaultPresenter(viewClass = HeaderView::class)
-class HeaderPresenter : ComponentPresenter<HeaderView, HeaderModel> {
+class HeaderPresenter : ComponentPresenter< HeaderView, HeaderModel> {
     override fun present(view: HeaderView, model: HeaderModel) {
         view.setEnabled(model.enabled)
         view.setHeaderText(model.header)

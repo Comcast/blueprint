@@ -31,10 +31,11 @@ class StaticScreenPresenter : ScreenPresenter<ScreenView> {
     override fun present() {
         val screenComponents = mutableListOf<Component>()
         screenComponents.add(Component(model.headerModel, AppComponentRegistry.HeaderView_VIEW_TYPE))
+        screenComponents.add(Component(model.randomModel, AppComponentRegistry.RandomView_VIEW_TYPE))
         model.dataItemModels.forEach {
             screenComponents.add(Component(it, AppComponentRegistry.DataItemView_VIEW_TYPE))
         }
-
+        screenComponents.add(Component(model.clickableRandomModel, AppComponentRegistry.ClickableRandomView_VIEW_TYPE))
         screenComponents.add(Component(model.footerModel, AppComponentRegistry.FooterView_VIEW_TYPE))
         screenView.updateComponents(screenComponents)
     }

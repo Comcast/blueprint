@@ -14,7 +14,7 @@ package com.xfinity.blueprint_sample_library.mvp.model
 import com.xfinity.blueprint.model.ComponentModel
 
 class DataItemModel : ComponentModel {
-    val data : String = "This is some data"
+    val data : String = "Pew Pew Pew"
     var enabled = false
 
     override fun equals(other: Any?): Boolean {

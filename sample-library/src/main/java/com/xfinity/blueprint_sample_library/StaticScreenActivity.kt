@@ -41,7 +41,7 @@ class StaticScreenActivity : AppCompatActivity() {
         content = findViewById(R.id.content)
         content.setBackgroundColor(resources.getColor(android.R.color.white))
 
-        val recyclerView = findViewById(R.id.recycler_view) as RecyclerView
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
 
         screenViewDelegate = ScreenViewDelegate(componentRegistry, null, recyclerView)

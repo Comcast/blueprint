@@ -37,8 +37,7 @@ with which to present each view.  in onCreateViewHolder, the Adapter queries the
 To use Blueprint, in your project build.gradle add
 
 ```xml
-compile 'com.xfinity:blueprint-library:<version>'
-compile 'com.xfinity:blueprint-annotations:<version>'
+
 ```
 
 and either

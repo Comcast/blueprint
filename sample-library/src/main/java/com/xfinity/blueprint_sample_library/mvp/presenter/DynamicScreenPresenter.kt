@@ -43,7 +43,7 @@ class DynamicScreenPresenter(override val componentEventManager: ComponentEventM
      */
     override fun present() {
         val screenComponents = mutableListOf<Component>()
-        if (!model.headerModel.header.isEmpty()) {
+        if (model.headerModel.header.isNotEmpty()) {
             screenComponents.add(
                 Component(model.headerModel, AppComponentRegistry.HeaderView_VIEW_TYPE))
 

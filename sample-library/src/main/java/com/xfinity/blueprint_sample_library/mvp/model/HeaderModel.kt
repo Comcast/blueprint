@@ -14,6 +14,6 @@ package com.xfinity.blueprint_sample_library.mvp.model
 import com.xfinity.blueprint.model.ComponentModel
 
 open class HeaderModel : ComponentModel {
-    open var header : String = "this is a header"
+    open var header : String = " "
     open var enabled : Boolean = false
 }
