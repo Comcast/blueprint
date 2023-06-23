@@ -16,4 +16,6 @@
     <string name="bp_arch_screen">Blueprint Architecture Lib Example</string>
     <string name="custom_screen_activity">Custom Screen View Activity Example</string>
     <string name="custom_screen_fragment">Custom Screen View Fragment Example</string>
+    <string name="basic_component_title">This is a basic component example</string>
+    <string name="basic_component_toast">Basic Component Example was clicked</string>
 </resources>
