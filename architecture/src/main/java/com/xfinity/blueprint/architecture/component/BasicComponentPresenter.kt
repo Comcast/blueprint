@@ -3,7 +3,7 @@ package com.xfinity.blueprint.architecture.component
 import androidx.annotation.VisibleForTesting
 import com.xfinity.blueprint.presenter.ComponentPresenter
 
-class BasicComponentPresenter<T: BasicComponentView<*>>:
+open class BasicComponentPresenter<T: BasicComponentView<*>>:
     ComponentPresenter<T, BasicComponentModel> {
     override fun present(view: T, model: BasicComponentModel) {
         presentOptionalText(view, BasicComponentPart.PRIMARY_LABEL, model.primaryLabel)

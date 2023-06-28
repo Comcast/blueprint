@@ -12,8 +12,8 @@ import com.squareup.picasso.Picasso
 import com.xfinity.blueprint.architecture.R
 import com.xfinity.blueprint.view.ComponentView
 
-interface BasicComponentView<T: BasicComponentViewHolder>: ComponentView<T> {
-    val basicComponentViewHolder: T
+abstract class BasicComponentView<T: BasicComponentViewHolder>: ComponentView<T> {
+    abstract val basicComponentViewHolder: T
     fun setIcon(resId: Int?) {
         basicComponentViewHolder.icon?.setImageResource(resId ?: 0)
     }

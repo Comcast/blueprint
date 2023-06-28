@@ -110,8 +110,8 @@ internal class CodeGenerator(private val packageName: String, private val compon
         return classBuilder.build()
     }
 
-    fun generateViewBaseClasses(): List<Pair<String?, TypeSpec?>> {
-        val viewDelegatePairs = mutableListOf<Pair<String?, TypeSpec?>>()
+    fun generateComponentClasses(): List<Pair<String?, TypeSpec?>> {
+        val componentClassSpecs = mutableListOf<Pair<String?, TypeSpec?>>()
         for (componentViewInfo in componentViewInfoList) {
             val componentViewPackageName = componentViewInfo.componentView?.let { componentView ->
                 componentView.substring(0, componentView.lastIndexOf("."))
@@ -148,8 +148,21 @@ internal class CodeGenerator(private val packageName: String, private val compon
 
             val positionParam = ParameterSpec.builder(TypeName.INT, "position").addAnnotation(notNullAnnotation).build()
 
-            val componentViewTypeName: TypeName =
-                ParameterizedTypeName.get(ClassName.get("com.xfinity.blueprint.view", "ComponentView"), viewHolderTypeName)
+            val componentViewTypeName: TypeName = if (componentViewInfo.isBasicComponent) {
+                ParameterizedTypeName.get(
+                    ClassName.get("com.xfinity.blueprint.architecture.component",
+                        "BasicComponentView"), viewHolderTypeName)
+            } else {
+                ParameterizedTypeName.get(
+                    ClassName.get("com.xfinity.blueprint.view", "ComponentView"),
+                    viewHolderTypeName)
+            }
+
+            val getBasicComponentViewHolderMethodSpec =
+                MethodSpec.methodBuilder("getBasicComponentViewHolder")
+                    .addModifiers(Modifier.PUBLIC).addAnnotation(Override::class.java)
+                    .returns(viewHolderTypeName)
+                    .addCode("return viewHolder;").build()
 
             val onBindViewHolderMethodBuilder =
                 MethodSpec.methodBuilder("onBindViewHolder").addModifiers(Modifier.PUBLIC).addAnnotation(Override::class.java)
@@ -187,11 +200,45 @@ internal class CodeGenerator(private val packageName: String, private val compon
                 }
             }
 
+            val componentViewClassName: String?
+            val componentPackageName: String?
+            if (componentViewInfo.isBasicComponent) {
+                methods.add(getBasicComponentViewHolderMethodSpec)
+                componentViewClassName = componentViewInfo.viewTypeName
+                componentPackageName = viewHolderPackageName
+            } else {
+                componentViewClassName = "${componentViewInfo.viewTypeName}Base"
+                componentPackageName = componentViewPackageName
+            }
+
             onBindViewHolderMethodFields.add(viewHolderFieldSpec)
             val classBuilder =
-                TypeSpec.classBuilder("${componentViewInfo.viewTypeName}Base").addModifiers(Modifier.PUBLIC).addSuperinterface(componentViewTypeName)
+                TypeSpec.classBuilder(componentViewClassName).addModifiers(Modifier.PUBLIC)
                     .addFields(onBindViewHolderMethodFields).addMethods(methods)
-            viewDelegatePairs.add(ImmutablePair(componentViewPackageName, classBuilder.build()))
+            if (componentViewInfo.isBasicComponent) {
+                classBuilder.superclass(componentViewTypeName)
+            } else {
+                classBuilder.addSuperinterface(componentViewTypeName)
+            }
+
+            componentClassSpecs.add(ImmutablePair(componentPackageName, classBuilder.build()))
+        }
+
+        componentClassSpecs.addAll(generateBasicComponentPresenterClasses())
+        return componentClassSpecs
+    }
+
+    private fun generateBasicComponentPresenterClasses(): List<Pair<String?, TypeSpec?>> {
+        val viewDelegatePairs = mutableListOf<Pair<String?, TypeSpec?>>()
+        componentViewInfoList.filter { it.isBasicComponent }.forEach { componentViewInfo ->
+            val presenterClassName = "${componentViewInfo.viewTypeName}Presenter"
+            val componentViewTypeName: TypeName =
+                ClassName.get(componentViewInfo.viewHolderPackageName, componentViewInfo.viewTypeName)
+            val componentPresenterTypeName: TypeName = ParameterizedTypeName.get(ClassName.get("com.xfinity.blueprint.architecture.component",
+                "BasicComponentPresenter"), componentViewTypeName)
+            val classBuilder =
+                TypeSpec.classBuilder(presenterClassName).addModifiers(Modifier.PUBLIC).superclass(componentPresenterTypeName)
+            viewDelegatePairs.add(ImmutablePair(componentViewInfo.presenterPackageName, classBuilder.build()))
         }
         return viewDelegatePairs
     }

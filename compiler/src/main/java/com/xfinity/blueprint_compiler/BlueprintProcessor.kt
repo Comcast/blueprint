@@ -13,6 +13,7 @@ package com.xfinity.blueprint_compiler
 import com.google.auto.service.AutoService
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.JavaFile
+import com.xfinity.blueprint_annotations.BasicComponent
 import com.xfinity.blueprint_annotations.ComponentViewClass
 import com.xfinity.blueprint_annotations.ComponentViewHolder
 import com.xfinity.blueprint_annotations.DefaultPresenter
@@ -52,6 +53,7 @@ class BlueprintProcessor : AbstractProcessor() {
         annotations.add(ComponentViewHolder::class.java.canonicalName)
         annotations.add(DefaultPresenter::class.java.canonicalName)
         annotations.add(DefaultPresenterConstructor::class.java.canonicalName)
+        annotations.add(BasicComponent::class.java.canonicalName)
         return annotations
     }
 
@@ -63,9 +65,15 @@ class BlueprintProcessor : AbstractProcessor() {
         var packageName: StringBuilder? = null
         var appPackageName: String? = null
         val componentViewInfoList: MutableList<ComponentViewInfo> = ArrayList()
+
+        val basicComponentElements = roundEnv.getElementsAnnotatedWith(BasicComponent::class.java).map {
+            it as TypeElement
+        }
         for (annotatedElement in roundEnv.getElementsAnnotatedWith(
             ComponentViewHolder::class.java)) { // annotation is only allowed on classes, so we can safely cast here
             val annotatedClass = annotatedElement as TypeElement
+            val isBasicComponent: Boolean = basicComponentElements.contains(annotatedClass)
+
             if (!isValidClass(annotatedClass)) {
                 continue
             }
@@ -94,18 +102,39 @@ class BlueprintProcessor : AbstractProcessor() {
             val children = mutableMapOf<String, String>()
             val methodNames = mutableListOf<String>()
 
+            val superTypeNames = mutableListOf<String>()
             for (supertype in processingEnv.typeUtils.directSupertypes(annotatedElement.asType())) {
                 val declared = supertype as DeclaredType
                 val supertypeElement: Element = declared.asElement()
+                superTypeNames.add(supertypeElement.simpleName.toString())
                 processViewHolderElement(supertypeElement, methodNames, children)
             }
 
+            //TODO - if this is a basic component validate that the direct super type is BasicComponentViewHolder
             processViewHolderElement(annotatedElement, methodNames, children)
 
             val componentViewInfo = ComponentViewInfo(viewType, viewHolderClassName)
             componentViewInfo.children = children
+            componentViewInfo.isBasicComponent = isBasicComponent
+
+            if (isBasicComponent) {
+                val viewHolderName =
+                    viewHolderClassName.substring(componentViewInfo.viewHolder.lastIndexOf(".") + 1,
+                        componentViewInfo.viewHolder.length)
+                val vhIndex = viewHolderName.lastIndexOf("ViewHolder")
+                componentViewInfo.viewTypeName = if (vhIndex > -1) {
+                    viewHolderName.substring(0, vhIndex)
+                } else {
+                    "${viewHolderName}ComponentView"
+                }
+
+                componentViewInfo.componentView = "${componentViewInfo.viewHolderPackageName}.${componentViewInfo.viewTypeName}"
+                componentViewInfo.defaultPresenter = "${componentViewInfo.presenterPackageName}.${componentViewInfo.viewTypeName}Presenter"
+            }
+
             componentViewInfoList.add(componentViewInfo)
         }
+
         for (annotatedElement in roundEnv.getElementsAnnotatedWith(ComponentViewClass::class.java)) {
             val annotatedClass = annotatedElement as TypeElement
             var viewHolderClassName: String? = null
@@ -239,7 +268,7 @@ class BlueprintProcessor : AbstractProcessor() {
         val generatedClass = codeGeneratorJava.generateComponentRegistry()
         val javaFile = JavaFile.builder(packageName, generatedClass).build()
         javaFile.writeTo(processingEnv.filer)
-        val viewDelegates = codeGeneratorJava.generateViewBaseClasses()
+        val viewDelegates = codeGeneratorJava.generateComponentClasses()
         for (viewDelegate in viewDelegates) {
             val file = JavaFile.builder(viewDelegate.left, viewDelegate.right).build()
             file.writeTo(processingEnv.filer)
@@ -251,5 +280,14 @@ class BlueprintProcessor : AbstractProcessor() {
         var defaultPresenter: String? = null
         var componentView: String? = null
         var children: Map<String, String>? = null
+        var isBasicComponent = false
+
+        val viewHolderPackageName: String? get() =
+            viewHolder.substring(0, viewHolder.lastIndexOf("."))
+
+        val presenterPackageName: String? get() = viewHolderPackageName?.lastIndexOf(".")?.let {
+            val componentPackageName = viewHolderPackageName?.substring(0, it)
+            "${componentPackageName}.presenter"
+        } ?: viewHolderPackageName
     }
 }
