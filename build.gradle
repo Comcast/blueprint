@@ -23,7 +23,7 @@ allprojects {
     }
 
     group = 'com.xfinity'
-    version = '2.4.0'
+    version = '2.5.0'
 }
 
 ext {
@@ -31,6 +31,6 @@ ext {
     groupId = 'com.xfinity'
     projectName = 'Blueprint'
     uploadName = 'blueprint'
-    publishVersion = '2.4.0'
+    publishVersion = '2.5.0'
     description = 'Blueprint for Android'
 }

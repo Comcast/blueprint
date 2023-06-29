@@ -13,6 +13,10 @@ package com.xfinity.blueprint_sample.mvp.presenter
 
 import android.annotation.SuppressLint
 import com.xfinity.blueprint.architecture.*
+import com.xfinity.blueprint.architecture.component.BasicComponentModel
+import com.xfinity.blueprint.architecture.component.Cta
+import com.xfinity.blueprint.architecture.component.Cta.Companion.COMPONENT_CTA
+import com.xfinity.blueprint.architecture.component.IconResource
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
@@ -90,8 +94,9 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
                             dataItemPresenter))
                 }
             }
-        }
 
+            screenComponents.add(getBasicComponentExample())
+        }
 
         if (model.headerModel.enabled && !model.footerModel.enabled) {
             screenComponents.add(Component(AppComponentRegistry.LoadingIndicator_VIEW_TYPE))
@@ -155,5 +160,16 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
                 else -> false
             }
         }
+    }
+
+    private fun getBasicComponentExample(): Component {
+        val componentCta = Cta(id = COMPONENT_CTA,
+            behavior = { view.showMessage(resourceProvider.strings.getBasicComponentToast()) })
+        val basicComponentExampleModel =
+            BasicComponentModel(primaryLabel = resourceProvider.strings.getBasicComponentTitle(),
+                iconResource = IconResource(resourceProvider.ids.icLauncherDrawableId),
+                componentCta = componentCta)
+        return Component(basicComponentExampleModel,
+            AppComponentRegistry.BasicComponentExample_VIEW_TYPE)
     }
 }

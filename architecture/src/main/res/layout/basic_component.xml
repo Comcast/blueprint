@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This layout is just a placeholder to make sure that all the ids we associate with the
+BasicComponentViewHolder exist. It shouldn't be deleted, even thought it will never be used -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:drawablePadding="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/primaryLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:drawablePadding="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/primaryImageCta"
+        app:layout_constraintStart_toEndOf="@id/icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Logout" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/secondaryLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/primaryLabel"
+        app:layout_constraintTop_toBottomOf="@+id/primaryLabel"
+        tools:text="Logout" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tertiaryLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/primaryLabel"
+        app:layout_constraintTop_toBottomOf="@+id/secondaryLabel"
+        tools:text="Logout" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/primaryImageCta"
+        android:layout_width="40dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@null"
+        android:minHeight="32dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/secondaryImageCta"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toStartOf="@+id/secondaryImageCta"
+        app:layout_constraintTop_toTopOf="@+id/secondaryImageCta"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/secondaryImageCta"
+        android:layout_width="40dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@null"
+        android:includeFontPadding="false"
+        android:minHeight="32dp"
+        android:padding="8dp"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/tertiaryImageCta"
+        android:layout_width="40dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@null"
+        android:includeFontPadding="false"
+        android:minHeight="32dp"
+        android:padding="8dp"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/secondaryImageCta"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/primaryCta"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tertiaryImageCta"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/secondaryCta"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
+        app:layout_constraintStart_toEndOf="@id/primaryCta"
+        app:layout_constraintTop_toTopOf="@id/primaryCta"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/tertiaryCta"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
+        app:layout_constraintStart_toEndOf="@id/secondaryCta"
+        app:layout_constraintTop_toTopOf="@id/primaryCta"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
