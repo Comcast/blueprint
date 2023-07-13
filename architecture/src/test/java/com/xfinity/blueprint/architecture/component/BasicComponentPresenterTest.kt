@@ -1,6 +1,6 @@
 package com.xfinity.blueprint.architecture.component
 
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,7 +27,7 @@ class BasicComponentPresenterTest {
         val partCaptor = argumentCaptor<BasicComponentPart>()
 
         //when
-        whenever(model.primaryLabel).thenReturn(title)
+        whenever(model.primaryLabel).thenReturn(Label(title))
 
         presenter.present(view, model)
 
@@ -39,24 +39,38 @@ class BasicComponentPresenterTest {
     @Test
     fun `verify optional text is presented correctly when text it not null`() {
         //given
-        val titles = listOf("title0", "title1", "title2")
+        val labels = listOf(Label("title0", 0, fontFilePath = "fontPath0"),
+            Label("title1", 1, fontFilePath = "fontPath"),
+            Label("title2", 2, fontFilePath = "fontPath"))
         val partList = listOf(BasicComponentPart.PRIMARY_LABEL, BasicComponentPart.SECONDARY_LABEL,
             BasicComponentPart.TERTIARY_LABEL)
 
         val titleCaptor = argumentCaptor<String>()
         val partCaptor = argumentCaptor<BasicComponentPart>()
+        val colorCaptor = argumentCaptor<Int>()
+        val fontPathCaptor = argumentCaptor<String>()
 
         partList.forEachIndexed { index, basicComponentPart ->
-            presenter.presentOptionalText(view, basicComponentPart, titles[index])
+            presenter.presentOptionalText(view, basicComponentPart, labels[index])
         }
 
         verify(view, times(3)).setPartText(partCaptor.capture(), titleCaptor.capture())
         verify(view, times(3)).makePartVisible(partCaptor.capture())
+        verify(view, times(3)).setPartTextColor(partCaptor.capture(), colorCaptor.capture())
+        verify(view, times(3)).setPartFont(partCaptor.capture(), fontPathCaptor.capture())
         verify(view, never()).makePartGone(any())
 
-        assertEquals(titles[0], titleCaptor.allValues[0])
-        assertEquals(titles[1], titleCaptor.allValues[1])
-        assertEquals(titles[2], titleCaptor.allValues[2])
+        assertEquals(labels[0].text, titleCaptor.allValues[0])
+        assertEquals(labels[1].text, titleCaptor.allValues[1])
+        assertEquals(labels[2].text, titleCaptor.allValues[2])
+
+        assertEquals(labels[0].fontColor, colorCaptor.allValues[0])
+        assertEquals(labels[1].fontColor, colorCaptor.allValues[1])
+        assertEquals(labels[2].fontColor, colorCaptor.allValues[2])
+
+        assertEquals(labels[0].fontFilePath, fontPathCaptor.allValues[0])
+        assertEquals(labels[1].fontFilePath, fontPathCaptor.allValues[1])
+        assertEquals(labels[2].fontFilePath, fontPathCaptor.allValues[2])
 
         assertEquals(partList[0], partCaptor.allValues[0])
         assertEquals(partList[1], partCaptor.allValues[1])
@@ -85,6 +99,89 @@ class BasicComponentPresenterTest {
     }
 
     @Test
+    fun `verify bold text style is presented correctly`() {
+        val fontStyles = listOf(Label.FontStyle.BOLD)
+        val partCaptor = argumentCaptor<BasicComponentPart>()
+        presenter.setPartTextStyles(view, BasicComponentPart.PRIMARY_LABEL, fontStyles)
+
+        verify(view, times(1)).setPartTextBold(partCaptor.capture())
+        verify(view, never()).setPartTextBoldItalic(any())
+        verify(view, never()).setPartTextItalic(any())
+        verify(view, never()).setPartTextUnderlined(any())
+    }
+
+    @Test
+    fun `verify italic text style is presented correctly`() {
+        val fontStyles = listOf(Label.FontStyle.ITALIC)
+        val partCaptor = argumentCaptor<BasicComponentPart>()
+        presenter.setPartTextStyles(view, BasicComponentPart.PRIMARY_LABEL, fontStyles)
+
+        verify(view, never()).setPartTextBold(partCaptor.capture())
+        verify(view, never()).setPartTextBoldItalic(any())
+        verify(view, times(1)).setPartTextItalic(any())
+        verify(view, never()).setPartTextUnderlined(any())
+    }
+    @Test
+    fun `verify bold italic text style is presented correctly`() {
+        val fontStyles = listOf(Label.FontStyle.BOLD, Label.FontStyle.ITALIC)
+        val partCaptor = argumentCaptor<BasicComponentPart>()
+        presenter.setPartTextStyles(view, BasicComponentPart.PRIMARY_LABEL, fontStyles)
+
+        verify(view, never()).setPartTextBold(partCaptor.capture())
+        verify(view, times(1)).setPartTextBoldItalic(any())
+        verify(view, never()).setPartTextItalic(any())
+        verify(view, never()).setPartTextUnderlined(any())
+    }
+
+    @Test
+    fun `verify underlined text style is presented correctly`() {
+        val fontStyles = listOf(Label.FontStyle.UNDERLINED)
+        val partCaptor = argumentCaptor<BasicComponentPart>()
+        presenter.setPartTextStyles(view, BasicComponentPart.PRIMARY_LABEL, fontStyles)
+
+        verify(view, never()).setPartTextBold(partCaptor.capture())
+        verify(view, never()).setPartTextBoldItalic(any())
+        verify(view, never()).setPartTextItalic(any())
+        verify(view, times(1)).setPartTextUnderlined(any())
+    }
+
+    @Test
+    fun `verify bold underlined text style is presented correctly`() {
+        val fontStyles = listOf(Label.FontStyle.BOLD, Label.FontStyle.UNDERLINED)
+        val partCaptor = argumentCaptor<BasicComponentPart>()
+        presenter.setPartTextStyles(view, BasicComponentPart.PRIMARY_LABEL, fontStyles)
+
+        verify(view, times(1)).setPartTextBold(partCaptor.capture())
+        verify(view, never()).setPartTextBoldItalic(any())
+        verify(view, never()).setPartTextItalic(any())
+        verify(view, times(1)).setPartTextUnderlined(any())
+    }
+
+    @Test
+    fun `verify italic underlined text style is presented correctly`() {
+        val fontStyles = listOf(Label.FontStyle.ITALIC, Label.FontStyle.UNDERLINED)
+        val partCaptor = argumentCaptor<BasicComponentPart>()
+        presenter.setPartTextStyles(view, BasicComponentPart.PRIMARY_LABEL, fontStyles)
+
+        verify(view, never()).setPartTextBold(partCaptor.capture())
+        verify(view, never()).setPartTextBoldItalic(any())
+        verify(view, times(1)).setPartTextItalic(any())
+        verify(view, times(1)).setPartTextUnderlined(any())
+    }
+
+    @Test
+    fun `verify bold italic underlined text style is presented correctly`() {
+        val fontStyles = listOf(Label.FontStyle.BOLD, Label.FontStyle.ITALIC, Label.FontStyle.UNDERLINED)
+        val partCaptor = argumentCaptor<BasicComponentPart>()
+        presenter.setPartTextStyles(view, BasicComponentPart.PRIMARY_LABEL, fontStyles)
+
+        verify(view, never()).setPartTextBold(partCaptor.capture())
+        verify(view, times(1)).setPartTextBoldItalic(any())
+        verify(view, never()).setPartTextItalic(any())
+        verify(view, times(1)).setPartTextUnderlined(any())
+    }
+
+    @Test
     fun `verify optional CTA is presented correctly when it is not null`() {
         //given
         val ctas = listOf(getFakeCta(0), getFakeCta(1), getFakeCta(2))
@@ -92,7 +189,7 @@ class BasicComponentPresenterTest {
             BasicComponentPart.TERTIARY_CTA)
 
         val ctaBehaviorCaptor = argumentCaptor<() -> Unit>()
-        val ctaLabelCaptor = argumentCaptor<String>()
+        val ctaLabelCaptor = argumentCaptor<Label>()
         val ctaIconCaptor = argumentCaptor<IconResource>()
         val partCaptor = argumentCaptor<BasicComponentPart>()
         val viewCaptor = argumentCaptor<BasicComponentView<BasicComponentViewHolder>>()
@@ -103,15 +200,21 @@ class BasicComponentPresenterTest {
             presenterSpy.presentOptionalCta(view, basicComponentPart, ctas[index])
         }
 
-        verify(view, times(3)).setPartText(partCaptor.capture(), ctaLabelCaptor.capture())
-        verify(presenterSpy, times(3)).presentOptionalIcon(viewCaptor.capture(), partCaptor.capture(), ctaIconCaptor.capture())
-        verify(view, times(3)).makePartVisible(partCaptor.capture())
+        verify(presenterSpy, times(3)).presentOptionalText(viewCaptor.capture(),
+            partCaptor.capture(), ctaLabelCaptor.capture())
+        verify(presenterSpy, times(3)).presentOptionalIcon(viewCaptor.capture(),
+            partCaptor.capture(), ctaIconCaptor.capture())
+
+        //the cta is made visible if it is not null, but presenting the label also makes it visible, so we actually wind up calling it
+        //6 times instead of 3. There's no noticeable consequence for this, so it's fine.
+        verify(view, times(6)).makePartVisible(partCaptor.capture())
         verify(view, times(3)).setPartAction(partCaptor.capture(), ctaBehaviorCaptor.capture())
         verify(view, never()).makePartGone(any())
 
-        assertEquals(ctas[0].label, ctaLabelCaptor.allValues[0])
-        assertEquals(ctas[1].label, ctaLabelCaptor.allValues[1])
-        assertEquals(ctas[2].label, ctaLabelCaptor.allValues[2])
+        //we test the rest of the label presentation in other tests, no need to repeat that here.
+        assertEquals(ctas[0].label?.text, ctaLabelCaptor.allValues[0].text)
+        assertEquals(ctas[1].label?.text, ctaLabelCaptor.allValues[1].text)
+        assertEquals(ctas[2].label?.text, ctaLabelCaptor.allValues[2].text)
 
         assertEquals(ctas[0].iconResource, ctaIconCaptor.allValues[0])
         assertEquals(ctas[1].iconResource, ctaIconCaptor.allValues[1])
@@ -227,7 +330,7 @@ class BasicComponentPresenterTest {
         assertEquals(iconResourceList[3].placeholderId, placeholderIdCaptor.allValues[3])
     }
     private fun getFakeCta(id: Int): Cta {
-        return Cta(id.toString(), "ctaLabel$id", IconResource(id))
+        return Cta(id.toString(), Label("ctaLabel$id", fontColor = id), IconResource(id))
     }
 }
 

@@ -20,11 +20,41 @@ open class BasicComponentPresenter<T: BasicComponentView<*>>:
     }
 
     @VisibleForTesting
-    fun presentOptionalText(view: T, part: BasicComponentPart, text: String?) {
-        text?.let {
-            view.setPartText(part, it)
+    fun presentOptionalText(view: T, part: BasicComponentPart, label: Label?) {
+        label?.let {
+            view.setPartText(part, it.text)
+            it.fontColor?.let { colorId ->
+                view.setPartTextColor(part, colorId)
+            }
+
+            if (it.fontStyles?.isNotEmpty() == true) {
+                setPartTextStyles(view, part, it.fontStyles)
+            }
+
+            it.fontFilePath?.let { fontFilePath ->
+                view.setPartFont(part, fontFilePath)
+            }
             view.makePartVisible(part)
         } ?: kotlin.run { view.makePartGone(part) }
+    }
+
+    @VisibleForTesting
+    fun setPartTextStyles(view: T, part: BasicComponentPart, fontStyles: List<Label.FontStyle>) {
+        if (fontStyles.contains(Label.FontStyle.UNDERLINED)) {
+            view.setPartTextUnderlined(part)
+        }
+
+        if (fontStyles.contains(Label.FontStyle.BOLD) && fontStyles.contains(
+                Label.FontStyle.ITALIC)) {
+            view.setPartTextBoldItalic(part)
+        } else {
+            if (fontStyles.contains(Label.FontStyle.BOLD)) {
+                view.setPartTextBold(part)
+            }
+            if (fontStyles.contains(Label.FontStyle.ITALIC)) {
+                view.setPartTextItalic(part)
+            }
+        }
     }
 
     @VisibleForTesting
@@ -37,7 +67,9 @@ open class BasicComponentPresenter<T: BasicComponentView<*>>:
     @VisibleForTesting
     fun presentCta(view: T, part: BasicComponentPart, cta: Cta) {
         presentOptionalIcon(view, part, cta.iconResource)
-        view.setPartText(part, cta.label)
+        cta.label?.let { label ->
+            presentOptionalText(view, part, label)
+        }
         view.makePartVisible(part)
         view.setPartAction(part, cta.behavior)
     }

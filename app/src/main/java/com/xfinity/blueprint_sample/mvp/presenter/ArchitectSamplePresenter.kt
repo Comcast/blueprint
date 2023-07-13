@@ -17,6 +17,7 @@ import com.xfinity.blueprint.architecture.component.BasicComponentModel
 import com.xfinity.blueprint.architecture.component.Cta
 import com.xfinity.blueprint.architecture.component.Cta.Companion.COMPONENT_CTA
 import com.xfinity.blueprint.architecture.component.IconResource
+import com.xfinity.blueprint.architecture.component.Label
 import com.xfinity.blueprint.event.ComponentEvent
 import com.xfinity.blueprint.event.ComponentEventManager
 import com.xfinity.blueprint.model.Component
@@ -165,8 +166,11 @@ class ArchitectSamplePresenter(override val componentEventManager: ComponentEven
     private fun getBasicComponentExample(): Component {
         val componentCta = Cta(id = COMPONENT_CTA,
             behavior = { view.showMessage(resourceProvider.strings.getBasicComponentToast()) })
-        val basicComponentExampleModel =
-            BasicComponentModel(primaryLabel = resourceProvider.strings.getBasicComponentTitle(),
+        val basicComponentExampleModel = BasicComponentModel(
+            primaryLabel = Label(resourceProvider.strings.getBasicComponentTitle(),
+                resourceProvider.ids.redColorId,
+                listOf(Label.FontStyle.ITALIC, Label.FontStyle.UNDERLINED),
+                "fonts/poppins_bold.ttf"),
                 iconResource = IconResource(resourceProvider.ids.icLauncherDrawableId),
                 componentCta = componentCta)
         return Component(basicComponentExampleModel,

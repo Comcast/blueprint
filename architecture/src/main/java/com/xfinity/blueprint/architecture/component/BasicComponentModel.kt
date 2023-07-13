@@ -5,13 +5,13 @@ import com.xfinity.blueprint.architecture.component.Cta.Companion.SECONDARY_CTA_
 import com.xfinity.blueprint.architecture.component.Cta.Companion.TERTIARY_CTA_ID
 import com.xfinity.blueprint.model.ComponentModel
 
-data class BasicComponentModel(val primaryLabel: String? = null, val secondaryLabel: String? = null,
-                               val tertiaryLabel: String? = null,
+data class BasicComponentModel(val primaryLabel: Label? = null, val secondaryLabel: Label? = null,
+                               val tertiaryLabel: Label? = null,
                                val iconResource: IconResource? = null,
                                val componentCta: Cta? = null, val ctas: List<Cta>? = null) :
     ComponentModel
 
-data class Cta(val id: String, val label: String? = null, val iconResource: IconResource? = null,
+data class Cta(val id: String, val label: Label? = null, val iconResource: IconResource? = null,
                val behavior: (() -> Unit)? = null) {
 
     companion object {
@@ -21,6 +21,16 @@ data class Cta(val id: String, val label: String? = null, val iconResource: Icon
         const val TERTIARY_CTA_ID = "tertiary"
     }
 }
+
+data class Label(val text: String, val fontColor: Int? = null, val fontStyles: List<FontStyle>? = null,
+                 val fontFilePath: String? = null) {
+    enum class FontStyle {
+        BOLD,
+        ITALIC,
+        UNDERLINED
+    }
+}
+
 
 data class IconResource(val resourceId: Int, val resourceUri: String? = null,
                         val placeholderId: Int? = null)
