@@ -20,6 +20,56 @@ class BasicComponentPresenterTest {
     }
 
     @Test
+    fun `verify all views are presented correctly `() {
+        var cCtaCounter = 6
+        val componentCta = Cta("componentCta", behavior = { ++cCtaCounter} )
+
+        val labels = listOf(Label("title1"), Label("title2"), Label("title3"))
+        whenever(model.componentCta).thenReturn(componentCta)
+        whenever(model.primaryLabel).thenReturn(labels[0])
+        whenever(model.secondaryLabel).thenReturn(labels[1])
+        whenever(model.tertiaryLabel).thenReturn(labels[2])
+
+        val ctas = listOf(Cta(Cta.PRIMARY_CTA_ID), Cta(Cta.SECONDARY_CTA_ID), Cta(Cta.TERTIARY_CTA_ID))
+        whenever(model.ctas).thenReturn(ctas)
+
+        val presenterSpy = spy(presenter)
+        presenterSpy.present(view, model)
+
+        val partCaptor = argumentCaptor<BasicComponentPart>()
+        val labelCaptor = argumentCaptor<Label>()
+        val iconCaptor = argumentCaptor<IconResource>()
+        val ctaCaptor = argumentCaptor<Cta>()
+        val behaviorCaptor = argumentCaptor<() -> Unit>()
+
+        verify(presenterSpy, times(3)).presentOptionalText(any(), partCaptor.capture(), labelCaptor.capture())
+
+        //called once for the component, once for each cta
+        verify(presenterSpy, times(4)).presentOptionalIcon(any(), partCaptor.capture(), iconCaptor.capture())
+
+        verify(presenterSpy, times(3)).presentOptionalCta(any(), partCaptor.capture(), ctaCaptor.capture())
+
+        assertEquals(BasicComponentPart.PRIMARY_LABEL, partCaptor.firstValue)
+        assertEquals(labels[0].text, labelCaptor.firstValue.text)
+        assertEquals(BasicComponentPart.SECONDARY_LABEL, partCaptor.secondValue)
+        assertEquals(labels[1].text, labelCaptor.secondValue.text)
+        assertEquals(BasicComponentPart.TERTIARY_LABEL, partCaptor.thirdValue)
+        assertEquals(labels[2].text, labelCaptor.thirdValue.text)
+
+        assertEquals(BasicComponentPart.ICON, partCaptor.allValues[3])
+
+        assertEquals(BasicComponentPart.PRIMARY_CTA, partCaptor.allValues[4])
+        assertEquals(ctas[0].id, ctaCaptor.firstValue.id)
+        assertEquals(BasicComponentPart.SECONDARY_CTA, partCaptor.allValues[5])
+        assertEquals(ctas[1].id, ctaCaptor.secondValue.id)
+        assertEquals(BasicComponentPart.TERTIARY_CTA, partCaptor.allValues[6])
+        assertEquals(ctas[2].id, ctaCaptor.thirdValue.id)
+
+        verify(view, times(1)).setComponentCtaAction(behaviorCaptor.capture())
+        behaviorCaptor.firstValue.invoke()
+        assertEquals(7, cCtaCounter)
+    }
+    @Test
     fun `verify title is set correctly`() {
         //given
         val title = "title"
