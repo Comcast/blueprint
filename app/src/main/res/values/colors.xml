@@ -17,4 +17,5 @@
     <color name="component_disabled">#909090</color>
     <color name="disabled_bg">#cccccc</color>
     <color name="white">#ffffff</color>
+    <color name="red">#ff0000</color>
 </resources>

@@ -1,5 +1,7 @@
 package com.xfinity.blueprint.architecture.component
 
+import android.graphics.Paint
+import android.graphics.Typeface
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -7,10 +9,13 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.xfinity.blueprint.architecture.R
 import com.xfinity.blueprint.view.ComponentView
+
 
 abstract class BasicComponentView<T: BasicComponentViewHolder>: ComponentView<T> {
     abstract val basicComponentViewHolder: T
@@ -98,6 +103,37 @@ abstract class BasicComponentView<T: BasicComponentViewHolder>: ComponentView<T>
     }
     fun setPartText(basicComponentPart: BasicComponentPart, labelText: String?) {
         (getPart(basicComponentPart) as? TextView)?.text = labelText
+    }
+
+    fun setPartTextBold(basicComponentPart: BasicComponentPart) {
+        (getPart(basicComponentPart) as? TextView)?.setTypeface(null, Typeface.BOLD)
+    }
+
+    fun setPartTextItalic(basicComponentPart: BasicComponentPart) {
+        (getPart(basicComponentPart) as? TextView)?.setTypeface(null, Typeface.ITALIC)
+    }
+
+    fun setPartTextBoldItalic(basicComponentPart: BasicComponentPart) {
+        (getPart(basicComponentPart) as? TextView)?.setTypeface(null, Typeface.BOLD_ITALIC)
+    }
+
+    fun setPartTextUnderlined(basicComponentPart: BasicComponentPart) {
+        (getPart(basicComponentPart) as? TextView)?.let { textView ->
+            textView.paintFlags = textView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        }
+    }
+
+    fun setPartTextColor(basicComponentPart: BasicComponentPart, @ColorRes colorResId: Int) {
+        (getPart(basicComponentPart) as? TextView)?.let {
+            val color = ContextCompat.getColor(it.context, colorResId)
+            it.setTextColor(color)
+        }
+    }
+
+    fun setPartFont(basicComponentPart: BasicComponentPart, fontFamilyPath: String) {
+        (getPart(basicComponentPart) as? TextView)?.let {
+            it.typeface = Typeface.createFromAsset(it.context.assets, fontFamilyPath)
+        }
     }
 
     fun fetchImage(basicComponentPart: BasicComponentPart, imageUri: String, placeholderId: Int?) {
